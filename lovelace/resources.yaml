@@ -1,0 +1,130 @@
+# https://github.com/kalkih/mini-graph-card
+- url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js?v=0.9.4
+  type: module
+- url: /hacsfiles/xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js
+  type: module
+# Получите больший контроль над размещением карточек ловеласа
+# https://github.com/thomasloven/lovelace-layout-card
+- url: /hacsfiles/lovelace-layout-card-master/layout-card.js
+  type: module
+# https://github.com/denysdovhan/vacuum-card
+- url: /hacsfiles/vacuum-card/vacuum-card.js
+  type: module
+# его цель - дать возможность добавить статический текст на карточку picture-elements.
+# https://github.com/custom-cards/text-element
+- url: /hacsfiles/text-element/text-element.js
+  type: module
+# https://github.com/iantrich/config-template-card
+- url: /hacsfiles/config-template-card/config-template-card.js
+  type: module
+# показания датчика в столбик или строку
+# https://github.com/custom-cards/bar-card
+- url: /hacsfiles/bar-card/bar-card.js
+  type: module
+# один тип карточек вкладывать в другой тип
+# https://github.com/thomasloven/lovelace-hui-element
+- url: /hacsfiles/lovelace-hui-element/hui-element.js
+  type: module
+# Allows you to add css styles to any lovelace card.
+# https://github.com/thomasloven/lovelace-card-mod
+- url: /hacsfiles/lovelace-card-mod/card-mod.js
+  type: module
+# https://github.com/custom-cards/button-card
+- url: /hacsfiles/button-card/button-card.js
+  type: module
+# https://github.com/matt8707/kiosk-mode
+- url: /hacsfiles/kiosk-mode/kiosk-mode.js
+  type: module
+# Размытие за всплывающей картой
+# https://github.com/gabe565/popup-backdrop-filter
+- url: /local/popup-backdrop-filter/popup-backdrop-filter.js
+  type: module
+# https://github.com/kalkih/simple-weather-card
+- url: /local/simple-weather-card/simple-weather-card-bundle.js
+  type: module
+# https://github.com/DBuit/Homekit-panel-card
+- url: /hacsfiles/Homekit-panel-card/homekit-panel-card.js
+  type: module
+# https://github.com/bradcrc/now-playing-card
+- url: /local/now-playing-card-master/now-playing-card.js
+  type: js
+# https://github.com/ben8p/lovelace-auto-reload-card
+- url: /hacsfiles/lovelace-auto-reload-card/auto-reload-card.js
+  type: module
+# https://github.com/lukevink/lovelace-buien-rain-card
+- url: /local/buien-rain-card.js
+  type: module
+# https://github.com/bramkragten/weather-card
+- url: /hacsfiles/weather-card/weather-card.js
+  type: module
+# https://github.com/DBuit/light-popup-card
+- url: /hacsfiles/light-popup-card/light-popup-card.js
+  type: module
+# https://github.com/thomasloven/hass-browser_mod
+- url: /browser_mod.js
+  type: module
+# https://github.com/custom-cards/stack-in-card
+- url: /hacsfiles/stack-in-card/stack-in-card.js
+  type: module
+# https://github.com/DBuit/thermostat-popup-card
+- url: /hacsfiles/thermostat-popup-card/thermostat-popup-card.js
+  type: module
+# https://github.com/tomasrudh/analogclock
+- url: /hacsfiles/analogclock/analogclock.js
+  type: module
+# https://github.com/custom-cards/upcoming-media-card
+- url: /hacsfiles/upcoming-media-card/upcoming-media-card.js
+  type: module
+# https://github.com/nielsfaber/scheduler-card
+- url: /hacsfiles/scheduler-card/scheduler-card.js
+  type: module
+# https://github.com/benct/lovelace-multiple-entity-row
+- url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
+  type: module
+# https://github.com/htmltiger/numberbox-card
+- url: /hacsfiles/numberbox-card/numberbox-card.js
+  type: module
+# https://github.com/JurajNyiri/PlexMeetsHomeAssistant
+- url: /hacsfiles/PlexMeetsHomeAssistant/plex-meets-homeassistant.js
+  type: module
+# https://github.com/thomasloven/lovelace-state-switch
+- url: /hacsfiles/lovelace-state-switch/state-switch.js
+  type: module
+# https://github.com/custom-cards/circle-sensor-card
+- url: /hacsfiles/circle-sensor-card/circle-sensor-card.js
+  type: module
+# https://github.com/bramkragten/swipe-card
+- url: /hacsfiles/swipe-card/swipe-card.js
+  type: module
+# https://github.com/kalkih/mini-media-player
+- url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
+  type: module
+# https://github.com/menahishayan/HomeAssistant-Cupertino-Icons
+- url: /hacsfiles/HomeAssistant-Cupertino-Icons/HomeAssistant-Cupertino-Icons.js
+  type: module
+# https://github.com/fufar/simple-clock-card
+- url: /hacsfiles/simple-clock-card/simple-clock-card.js
+  type: module
+# https://github.com/GeorgeSG/lovelace-time-picker-card
+- url: /hacsfiles/lovelace-time-picker-card/time-picker-card.js
+  type: module
+# https://github.com/lukevink/home-assistant-custom-iframe
+- type: js
+  url: /local/custom-iframe-card.js
+# https://github.com/RomRider/apexcharts-card
+- url: /hacsfiles/apexcharts-card/apexcharts-card.js
+  type: module
+# https://github.com/fineemb/lovelace-thermostat-card
+- url: /hacsfiles/lovelace-thermostat-card/main.js
+  type: module
+
+- url: /hacsfiles/lovelace-thermostat-dark-card/thermostat-dark-card.js
+  type: module
+# https://github.com/nervetattoo/simple-thermostat
+- url: /hacsfiles/simple-thermostat/simple-thermostat.js
+  type: module
+
+- url: /hacsfiles/kiosk-mode/kiosk-mode.js
+  type: module
+
+  #

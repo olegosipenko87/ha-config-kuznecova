@@ -1,0 +1,9 @@
+  action: none
+  image: /local/ui/sidebar/sideShadow.png
+  style:
+    height: 35%
+    left: 18.45%
+    pointer-events: none
+    top: 83%
+    width: 10%
+  type: image

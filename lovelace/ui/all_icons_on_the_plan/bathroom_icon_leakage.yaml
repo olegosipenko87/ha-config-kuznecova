@@ -1,0 +1,9 @@
+        type: state-icon
+        entity: binary_sensor.vd_kitchen_leakage
+        hold_action:
+          action: more-info
+        style:
+          left: 77.25%
+          top: 89.5%
+          "--paper-item-icon-active-color": red
+          "--paper-item-icon-color": green

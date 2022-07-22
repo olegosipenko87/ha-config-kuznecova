@@ -1,0 +1,275 @@
+homeassistant:
+  name: my home
+  latitude: !secret latitude
+  longitude: !secret longitude
+  elevation: 50
+  unit_system: metric
+  time_zone: Europe/Kiev
+  packages: !include_dir_merge_named includes/packages
+  customize: !include customize.yaml
+#  auth_providers:
+#    - type: homeassistant
+#  - type: trusted_networks
+#    trusted_networks:
+#      - 192.168.1.0/24
+#      - 172.30.33.0/24
+#      - 172.30.32.0/23
+#      - 172.17.0.0/16
+#      - 172.30.33.0
+
+http:
+  #  base_url: https://olegosipenko.duckdns.org:8123/
+  #  ssl_certificate: /ssl/fullchain.pem
+  #  ssl_key: /ssl/privkey.pem
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 192.168.1.0/24
+    - 172.30.33.0/24
+    - 172.30.32.0/24
+  #    - 172.16.0.0/16
+  ip_ban_enabled: false
+  login_attempts_threshold: 5
+
+default_config:
+
+lovelace: !include lovelace.yaml
+
+recorder:
+  db_url: !secret recorder
+  purge_keep_days: 2
+  exclude:
+    entities:
+      - sensor.time
+      - sensor.date_time_iso
+
+#mqtt:
+#  broker: core-mosquitto
+#broker: IP adress  # Внешний брокер
+#  discovery: true
+#  discovery_prefix: homeassistant
+#  keepalive: 30
+#  username: mqtt
+#  password: mqtt
+
+# публиковать сенсор из HA в MQTT
+#mqtt_statestream:
+#  base_topic: homeassistant/custom
+#  publish_attributes: true
+#  publish_timestamps: true
+#  include:
+#    entities:
+#      - weather.my_home
+
+#zodiac:
+
+logger:
+  default: warning
+  logs:
+    homeassistant.helpers.entity: error
+    homeassistant.components.vacuum: error
+
+#pyscript:
+#  allow_all_imports: true
+#  hass_is_global: true
+
+browser_mod:
+  prefix: "browser_mod_"
+  devices:
+    e536b007-c3e8df14:
+      name: laptop_safari
+      camera: true
+
+# https://github.com/custom-components/ble_monitor#configuration-parameters
+# для подключение блютуз сенсоров xiaomi
+#ble_monitor:
+#hci_interface: 0
+#  discovery: True
+#  devices:
+#    - mac: 'E4:AA:EC:35:03:6A'
+#      name: 'Hall door'
+#      encryption_key: '713c8219fdaef971290d2de8571d9978'
+#    - mac: '58:2D:34:60:33:6F'
+#      name: 'kitchen_motion_ble'
+#      encryption_key: 'aea144363b3bfa956272ba6e335091b4'
+#      reset_timer: 1
+#    - mac: 'E7:2E:00:41:A8:FD'
+#      name: 'bedroom_climate'
+
+# скорость загр/выгр и пинг
+#speedtestdotnet:
+#  scan_interval:
+#    minutes: 5
+
+#ffmpeg:
+
+#weather:
+#  - platform: gismeteo
+#    mode: daily
+
+zone:
+  - name: Home
+    latitude: !secret zone_home_latitude
+    longitude: !secret zone_home_longitude
+    radius: 70
+    icon: mdi:account-multiple
+  - name: Аптека
+    latitude: !secret zone_apteka_latitude
+    longitude: !secret zone_apteka_longitude
+    radius: 70
+    icon: mdi:account-multiple
+  - name: Зоо Магазин
+    latitude: !secret zone_petshop_latitude
+    longitude: !secret zone_petshop_longitude
+    radius: 70
+    icon: mdi:account-multiple
+
+cloud:
+
+# Уже настраивается через UI
+#remote:
+#- platform: broadlink
+#  name: rm4_mini
+#  type: rm4c_mini
+#  host: 192.168.1.142
+#  mac: 'A0:43:B0:14:80:BF'
+
+frontend:
+  themes: !include_dir_merge_named themes
+
+device_tracker:
+  - platform: google_maps
+    username: !secret username_google_maps
+    max_gps_accuracy: 100
+    scan_interval: 60 # integer(optional, default: 60)
+  #- platform: bluetooth_tracker
+  - platform: ping
+    hosts:
+      id_1_mob_wifi: 192.168.1.251
+      id_2_mob_wifi: 192.168.1.171
+
+person:
+  - name: Олег
+    id: id_1
+    device_trackers:
+      - device_tracker.google_maps_104273437963751507648 # через гугл мапс
+      - device_tracker.oleg_mob # через HA на телефоне
+      #- device_tracker.id_1_mob_wifi
+  - name: Аня
+    id: id_2
+    device_trackers:
+      - device_tracker.google_maps_112009635254071922708
+      - device_tracker.ann_mob
+      #- device_tracker.id_2_mob_wifi
+
+#https://www.youtube.com/watch?v=tV8RjvevVHs
+telegram_bot:
+  - platform: polling
+    api_key: !secret telegram_api
+    #  parse_mode: html
+    allowed_chat_ids:
+      - !secret telegram_chat_id_1
+      - !secret telegram_chat_id_2
+  #    - -1001242173185
+
+notify:
+  - name: telegram_id_1
+    platform: telegram
+    chat_id: !secret telegram_chat_id_1
+  - name: telegram_id_2
+    platform: telegram
+    chat_id: !secret telegram_chat_id_2
+  - name: telegram_media
+    platform: telegram
+    chat_id: !secret telegram_chat_id_3
+
+  - name: all_mob
+    platform: group
+    services:
+      - service: mobile_app_ann_mob
+      - service: mobile_app_oleg_mob
+
+duckdns:
+  domain: !secret duckdns_domain
+  access_token: !secret duckdns_token
+
+# Уже настраивается через UI
+#homekit: !include configuration/homekit.yaml
+
+google_assistant: !include configuration/google_assistant.yaml
+
+# Уже настраивается через UI
+#vacuum: !include configuration/vacuum.yaml
+
+# Уже настраивается через UI
+#hacs: !include configuration/hacs.yaml
+
+# кодовая панель для постановки на охрану
+#alarm_control_panel: !include configuration/alarm_control_panel.yaml
+
+# Text to speech
+tts:
+  - platform: google_translate
+    language: "ru"
+    service_name: google_say
+
+# Generic Thermostat
+#climate: !include configuration/climate.yaml
+
+# Вынос во внешнии файлы
+timer: !include includes/timer.yaml
+automation: !include_dir_merge_list includes/automations
+script: !include_dir_merge_named includes/scripts
+scene: !include includes/scenes.yaml
+group: !include includes/groups.yaml
+
+input_boolean: !include includes/input/input_boolean.yaml
+input_select: !include includes/input/input_select.yaml
+input_number: !include includes/input/input_number.yaml
+input_datetime: !include includes/input/input_datetime.yaml
+input_text: !include includes/input/input_text.yaml
+
+sensor: !include_dir_merge_list includes/sensor
+binary_sensor: !include_dir_merge_list includes/binary_sensor
+
+switch: !include configuration/switch.yaml
+light: !include configuration/light.yaml
+
+shell_command:
+  # ssh -F /config/.ssh/conf hass
+  # запуск всех программ для скачивания фильмов/сериалов
+  #docker_start_jackett: 'ssh -F /config/.ssh/conf hass docker start jackett'
+  #docker_stop_jackett: 'ssh -F /config/.ssh/conf hass docker stop jackett'
+  #docker_start_sonarr: 'ssh -F /config/.ssh/conf hass docker start sonarr'
+  #docker_stop_sonarr: 'ssh -F /config/.ssh/conf hass docker stop sonarr'
+  #docker_start_radarr: 'ssh -F /config/.ssh/conf hass docker start radarr'
+  #docker_stop_radarr: 'ssh -F /config/.ssh/conf hass docker stop radarr'
+  #docker_start_transmission: 'ssh -F /config/.ssh/conf hass docker start transmission'
+  #docker_stop_transmission: 'ssh -F /config/.ssh/conf hass docker stop transmission'
+  #docker_start_qbittorrent: 'ssh -F /config/.ssh/conf hass docker start qbittorrent'
+  #docker_stop_qbittorrent: 'ssh -F /config/.ssh/conf hass docker stop qbittorrent'
+  #docker_start_plex: 'ssh -F /config/.ssh/conf hass docker start plex'
+  #docker_stop_plex: 'ssh -F /config/.ssh/conf hass docker stop plex'
+
+  # удаление фильмов из радарр, которые были удалены в plex
+  #radarr_delete_unmonitored: 'ssh -F /config/.ssh/conf hass /mnt/ssd/config/radarr/radarr-delete-unmonitored.sh'
+  # на сонарре для запуска поиска не найденых сериалов
+  #sonarr_search_missing_episode: 'ssh -F /config/.ssh/conf hass /mnt/ssd/config/sonarr/sonarr_search_missing_episode.sh'
+
+  # исправление с перегрузкой процессора от контейнера hassio_audio
+  #hassio_audio_cpu_correction: 'ssh -F /config/.ssh/conf hass docker exec -it hassio_audio pactl load-module module-suspend-on-idle'
+
+  # прошиваем пылесос новыми голосами
+  vacuum_voice_alice: "ssh -F /config/.ssh/conf hass  mirobo --ip=192.168.1.54 --token=39577472794561627745434143666652  install-sound /data/vacuum/ru_scarlett_for_1gen.pkg"
+
+camera:
+  - platform: xiaomi_cloud_map_extractor
+    host: 192.168.1.54
+    token: !secret xiaomi_token
+    username: !secret xiaomi_username
+    password: !secret xiaomi_password
+    draw: ["all"]
+    attributes:
+      - calibration_points
+    colors:
+      color_map_outside: [0, 0, 0, 0.25]
+#

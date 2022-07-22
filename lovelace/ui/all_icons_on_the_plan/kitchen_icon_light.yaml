@@ -1,0 +1,10 @@
+        type: state-icon
+        entity: light.
+        icon: 'mdi:ceiling-light'
+        hold_action:
+          action: more-info
+        tap_action:
+          action: toggle
+        style:
+          left: 89.201389%
+          top: 83.762195%

@@ -1,0 +1,37 @@
+        action: none
+        type: image
+        entity: light.bedroom_lamp_dimmer
+        image: /local/ui/floorplan_my_home/ipad/bedroom_light_on.png
+        state_filter:
+          'off': opacity(0%)
+          'on': opacity(60%)
+          unknown: opacity(0%)
+        style:
+          left: 84.445898%
+          top: 57.066667%
+          width: 27.294922%
+          mix-blend-mode: lighten
+        tap_action:
+          action: toggle
+        hold_action:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
+            style:
+             .: |
+              :host .content {
+                width: 90%;
+              }
+            hide_header: true
+            card:
+              type: entities
+              entities:
+                - type: custom:light-popup-card
+                  entity: light.bedroom_lamp_dimmer
+                  icon: none
+                  fullscreen: false
+                  brightnessWidth: 130px
+                  brightnessHeight: 360px
+                  borderRadius: 1.7em
+                  sliderColor: '#c7c7c7'
+                  sliderTrackColor: rgba(25, 25, 25, 0.9)

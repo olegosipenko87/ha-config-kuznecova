@@ -1,0 +1,321 @@
+
+
+title: light
+panel: true
+path: ipad_control_rooms_light
+theme: jarvis_themes
+
+cards:
+
+  - type: picture-elements
+    image: /local/ui/floorplan_my_home/ipad/floorplan_light_off.png  # для макбука эир 13 размер картинки 2880*1640
+    style:
+    elements:
+
+      #########################    DAY BASE FLOORPLAN OVERLAY    #########################
+      #- action: none
+      #  entity: sun.sun
+      #  hold_action:
+      #    action: none
+      #  state_image:
+      #    above_horizon: /local/ui/floorplan_my_home/ipad/floorplan_day.png
+      #    below_horizon: /local/transparent.png
+      #  style:
+      #    height: 100%
+      #    left: 50%
+      #    top: 50%
+      #    width: 100%
+      #    opacity: '${ states[''sensor.sunlight_opacity''].state }'
+      #  tap_action:
+      #    action: none
+      #  type: image
+
+
+
+      #################################################################
+      #################################################################
+      #                            БОКОВОЕ МЕНЮ                       #
+      #################################################################
+
+      #################################################################
+      # ПОДЛОЖКА БОКОВОЙ ПАНЕЛИ
+      - !include ui/sidebar_bg/bg.yaml
+
+      #################################################################
+      #  НАЛОЖЕНИЕ ТЕНЕЙ на боковое меню
+      - !include ui/sidebar_bg/shadow.yaml
+      - !include ui/sidebar_bg/inner_shadow.yaml
+
+      #################################################################
+      #  ДАТА И ВРЕМЯ
+      #- !include ui/time.yaml
+      - !include ui/simple_clock_card.yaml
+      - !include ui/date_string.yaml
+      #- !include ui/analog_clock.yaml
+      - !include ui/simple_clock_card.yaml
+
+      #################################################################
+      #  КНОПКИ МЕНЮ
+      # Дом  Двор Уборка  Мультимедиа  ***  Настройки Графики
+
+      - !include ui/btns/1_on.yaml
+      #- !include ui/btns/1_off.yaml
+
+      #- !include ui/btns/2_on.yaml
+      - !include ui/btns/2_off.yaml
+
+      #- !include ui/btns/3_on.yaml
+      - !include ui/btns/3_off.yaml
+
+      #- !include ui/btns/4_on.yaml
+      - !include ui/btns/4_off.yaml
+
+      #- !include ui/btns/5_on.yaml
+      - !include ui/btns/5_off.yaml
+
+      #- !include ui/btns/6_on.yaml
+      - !include ui/btns/6_off.yaml
+
+      #################################################################
+      #  КТО ДОМА
+      - !include ui/who_is_home/id_1.yaml
+      - !include ui/who_is_home/id_2.yaml
+
+      # пустые для других людей
+      - !include ui/who_is_home/id_3.yaml
+      - !include ui/who_is_home/id_4.yaml
+
+      #################################################################
+      #  МИНИ КАРТА ПОГОДЫ
+#      - !include ui/weather/mini.yaml  # Перестало норм работать с 2021.6 (сбрасывает тему)
+
+
+
+      #################################################################
+      #  ГРАФИК ТЕМПЕРАТУРЫ В ДОМЕ И НА УЛИЦЕ
+      - !include ui/weather/weather_card.yaml
+      - !include ui/weather/graphs.yaml
+
+
+
+
+      #################################################################
+      #################################################################
+      #                         ВЕРХНИЕ КНОПКИ                        #
+      #################################################################
+
+
+      ################## Кнопки доп меню
+      - !include ui/btns_control/lights_on.yaml
+      #- !include ui/btns_control/lights_off.yaml
+
+      #- !include ui/btns_control/devices_on.yaml
+      - !include ui/btns_control/devices_off.yaml
+
+      #- !include ui/btns_control/climate_on.yaml
+      - !include ui/btns_control/climate_off.yaml
+
+      #- !include ui/btns_control/security_on.yaml
+      - !include ui/btns_control/security_off.yaml
+
+
+      ################## Кнопки управления СВЕТОМ
+
+      - type: custom:button-card
+        entity: light.all_lights
+        name: Весь свет
+        icon: 'mdi:lightbulb-group'
+        hold_action: none
+        style:
+          top: 22%   #12
+          left: 54.8%  #60
+          width: 9%
+        template:
+          - base
+          - state
+          - icon_light
+
+
+
+      - type: custom:button-card
+        entity: light.bedroom_lamp_dimmer
+        name: Спальня
+        icon: 'mdi:ceiling-light'
+        style:
+          top: 22%
+          left: 64.6%
+          width: 9%
+        template:
+          - base
+          - state
+          - circle
+          - light_popup
+          - icon_light
+
+
+      - type: custom:button-card
+        entity: light.kitchen_lamp
+        name: Кухня
+        icon: 'mdi:ceiling-light'
+        hold_action: none
+        style:
+          top: 22%   #12
+          left: 74.4%  #60
+          width: 9%
+        template:
+          - base
+          - state
+          - icon_light
+
+      - type: custom:button-card
+        entity: light.bathroom_lamp
+        name: Туалет
+        icon: 'mdi:ceiling-light'
+        hold_action: none
+        style:
+          top: 22%
+          left: 84.2%
+          width: 9%
+        template:
+          - base
+          - state
+          - icon_light
+
+      - type: custom:button-card
+        entity: light.hall_lamp
+        name: Коридор
+        icon: 'mdi:ceiling-light'
+        hold_action: none
+        style:
+          top: 22%
+          left: 94%
+          width: 9%
+        template:
+          - base
+          - state
+          - icon_light
+
+
+      ################## Второй ряд
+
+      #- type: custom:button-card
+      #  entity: light.bedroom_lamp_dimmer
+      #  name: Спальня
+      #  style:
+      #    top: 35%   #12
+      #    left: 54.8%  #60
+      #    width: 9%
+      #  template:
+      #    - light_base
+      #    - icon_hue
+
+      #- type: custom:button-card
+      #  entity: light.hall_lamp
+      #  name: Коридор
+      #  style:
+      #    top: 35%
+      #    left: 64.6%
+      #    width: 9%
+      #  template:
+      #    - light_base
+      #    - icon_shade
+
+      #- type: custom:button-card
+      #  entity: light.bedroom_lamp_dimmer
+      #  name: Спальня
+      #  style:
+      #    top: 35%   #12
+      #    left: 74.4%  #60
+      #    width: 9%
+      #  template:
+      #    - light_base
+      #    - icon_hue
+
+      #- type: custom:button-card
+      #  entity: light.hall_lamp
+      #  name: Коридор
+      #  style:
+      #    top: 35%
+      #    left: 84.2%
+      #    width: 9%
+      #  template:
+      #    - light_base
+      #    - icon_shade
+
+      #- type: custom:button-card
+      #  entity: light.hall_lamp
+      #  name: Коридор
+      #  style:
+      #    top: 35%
+      #    left: 94%
+      #    width: 9%
+      #  template:
+      #    - light_base
+      #    - icon_shade
+
+
+
+
+      #################################################################
+      #################################################################
+      #                             3D ПЛАН                           #
+      #################################################################
+
+      #################################################################
+      #  IMAGE
+
+      - !include ui/3d_plan/hall.yaml
+      - !include ui/3d_plan/livingroom.yaml
+      - !include ui/3d_plan/bedroom.yaml
+      - !include ui/3d_plan/kitchen.yaml
+      - !include ui/3d_plan/bathroom.yaml
+
+
+      #################################################################
+      #  Дополнительная инфа на плане
+
+      # Кнопка reload
+      - !include ui/all_icons_on_the_plan/reload.yaml
+      # Кнопка в админ
+      - !include ui/all_icons_on_the_plan/admin.yaml
+
+
+       #Living Room
+
+
+
+      # Bedroom
+
+
+      # Hall
+
+
+      # Kitchen
+
+
+      # bathroom
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

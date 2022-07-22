@@ -1,0 +1,9 @@
+        type: state-icon
+        entity: switch.bathroom_fan
+        icon: 'mdi:cog'
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-admin/server
+        style:
+          left: 93%
+          top: 4%

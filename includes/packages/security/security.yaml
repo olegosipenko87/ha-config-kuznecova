@@ -1,0 +1,101 @@
+security:
+
+  sensor:
+
+  binary_sensor:
+
+  switch:
+
+  light:
+    - platform: group
+      name: light to simulate
+      entities:
+        - light.bedroom_lamp_dimmer
+        - light.kitchen_lamp
+  group:
+    light_to_simulate:
+      name: light to simulate
+      entities:
+        - light.bedroom_lamp_dimmer
+        - light.kitchen_lamp
+
+  automation:
+  - alias: lighting simulation
+    id: lighting simulation
+    trigger:
+      - platform: state
+        entity_id: sun.sun
+        to: 'below_horizon'
+      - platform: state
+        entity_id: input_boolean.away_mode_lighting_simulation
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: input_boolean.away_mode_lighting_simulation
+        state: 'on'
+      - condition: state
+        entity_id: sun.sun
+        state: 'below_horizon'
+    action:
+      - repeat:
+          sequence:
+            - service: homeassistant.toggle
+              data:
+                entity_id: "{{ state_attr('group.light_to_simulate','entity_id') | random }}"
+            - delay:
+                minutes: "{{ range(5, 30) | random }}"
+          until:
+            - condition: template
+              value_template: "{{
+                is_state('input_boolean.away_mode_lighting_simulation','off')
+                or now().hour == 22
+                or states('group.person_id_1_id_2') == 'home'
+                }}"
+      - service: homeassistant.turn_off
+        data:
+          entity_id: group.light_to_simulate
+
+
+
+
+
+  script:
+
+  scene:
+
+  input_datetime:
+  input_number:
+  input_text:
+  input_select:
+  input_boolean:
+    away_mode_lighting_simulation:
+      name: away_mode_lighting_simulation
+
+
+  timer:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

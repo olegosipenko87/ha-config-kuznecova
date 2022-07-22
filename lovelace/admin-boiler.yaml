@@ -1,0 +1,65 @@
+
+title: Boiler
+path: boiler
+
+cards:
+  - type: entities
+    title: Расход на розетке
+    entities:
+      - entity: sensor.plug_pow_day
+      - entity: sensor.plug_pow_week
+      - entity: sensor.plug_pow_month
+      - entity: input_text.history_of_the_previous_week
+
+
+  - type: entities
+    title: График работы
+    show_header_toggle: false
+    entities:
+      - entity: automation.reset_plug
+        name: Сброс данных в 00:00
+      - entity: script.reset_plug
+        name: Сброс данных потребления эн
+
+      - type: section
+      - entity: sensor.universal_socket_power
+        name: Текущее потребление
+      - entity: switch.universal_socket
+        name: on/off розетки
+
+      - type: section
+        label: График работы в будни
+      - entity: input_datetime.time_workday_plug_on_1
+        #name:
+      - entity: input_datetime.time_workday_plug_off_1
+        #name:
+      - entity: input_datetime.time_workday_plug_on_2
+        #name:
+      - entity: input_datetime.time_workday_plug_off_2
+        #name:
+
+      - type: section
+        label: График работы в выходные
+      - entity: input_datetime.time_weekends_plug_on_1
+        #name:
+      - entity: input_datetime.time_weekends_plug_off_1
+        #name:
+
+  - type: entities
+    title:  Автоматизации графика работы
+    show_header_toggle: true
+    entities:
+      - entity: automation.workday_plug_on_1
+      - entity: automation.workday_plug_off_1
+      - entity: automation.workday_plug_on_2
+      - entity: automation.workday_plug_off_2
+      - type: section
+      - entity: automation.weekends_plug_on_1
+      - entity: automation.weekends_plug_off_1
+
+
+
+
+
+
+#

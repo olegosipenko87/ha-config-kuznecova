@@ -1,0 +1,13 @@
+        type: image
+        action: none
+        image: /local/ui/sidebar/btns4.png
+        style:
+          border-radius: 0.73vw
+          box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+          background-color: rgba(43, 46, 48, 0.8)
+          left: 11.7%
+          top: 50%
+          width: 20.5078125%
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_other

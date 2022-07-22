@@ -1,0 +1,9 @@
+        type: state-icon 
+        entity: binary_sensor.copy_hall_motion
+        icon: 'mdi:motion-sensor'
+        hold_action:
+          action: more-info
+        style:
+          left: 65%
+          top: 73%
+          "--paper-item-icon-active-color": red

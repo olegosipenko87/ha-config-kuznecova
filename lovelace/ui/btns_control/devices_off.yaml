@@ -1,0 +1,13 @@
+        type: custom:button-card
+        entity: input_boolean.navigation_buttons_off
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_control_rooms_devices
+        name: Устройства
+        entity_picture: /local/ui/icon/devices.png
+        style:
+          top: 22%
+          left: 39%
+          width: 9%
+        template:
+          - menu_button_new

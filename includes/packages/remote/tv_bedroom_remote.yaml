@@ -1,0 +1,126 @@
+tv_bedroom_remote:
+
+  sensor:
+  binary_sensor:
+  switch:
+  light:
+
+  group:
+
+  automation:
+
+  script:
+
+    remote_tv_bedroom_on_off:
+      sequence:
+        - service: remote.send_command
+          target:
+            entity_id: remote.rm4_remote
+          data:
+            device: bedroom_tv
+            command:
+              - power     
+
+    remote_tv_bedroom_exit:
+      sequence:
+        - service: remote.send_command
+          target:
+            entity_id: remote.rm4_remote
+          data:
+            device: bedroom_tv
+            delay_secs: 3
+            command:
+              - exit
+              - source
+              - exit
+   
+
+    remote_tv_bedroom_youtube:
+      sequence:
+        #- delay: '00:00:45'
+        - service: remote.send_command
+          target:
+            entity_id: remote.rm4_remote
+          data:
+            device: bedroom_tv
+            delay_secs: 3
+            command:
+              - media  
+              - left
+              - ok
+              - ok
+              - down
+              - right
+              - right
+              - ok
+
+    remote_tv_bedroom_plex:
+      sequence:
+        #- delay: '00:00:45'
+        - service: remote.send_command
+          target:
+            entity_id: remote.rm4_remote
+          data:
+            device: bedroom_tv
+            delay_secs: 3
+            command:
+              - media  
+              - left
+              - ok
+              - ok
+              - down
+              - right
+              - ok
+
+    remote_tv_bedroom_youtube_with_verification_tv_status:
+      sequence:
+        - choose:
+            - alias: "если TV выкл"
+              conditions: "{{ states('media_player.ue39f5500') == 'off' }}"
+              sequence:
+                - service: script.remote_tv_bedroom_on_off
+                - delay: "00:00:45"
+                - service: script.remote_tv_bedroom_youtube
+            - alias: "если TV вкл"
+              conditions: "{{ states('media_player.ue39f5500') == 'on' }}"
+              sequence:
+                - service: script.remote_tv_bedroom_exit
+                - delay: "00:00:5"
+                - service: script.remote_tv_bedroom_youtube
+
+    remote_tv_bedroom_plex_with_verification_tv_status:
+      sequence:
+        - choose:
+            - alias: "если TV выкл"
+              conditions: "{{ states('media_player.ue39f5500') == 'off' }}"
+              sequence:
+                - service: script.remote_tv_bedroom_on_off
+                - delay: "00:00:45"
+                - service: script.remote_tv_bedroom_plex
+            - alias: "если TV вкл"
+              conditions: "{{ states('media_player.ue39f5500') == 'on' }}"
+              sequence:
+                - service: script.remote_tv_bedroom_exit
+                - delay: "00:00:5"
+                - service: script.remote_tv_bedroom_plex
+
+
+
+  scene:
+
+  input_datetime:
+  input_text:
+  input_number:
+  input_select:
+  input_boolean:
+
+
+  timer:
+
+  recorder:
+
+
+
+
+
+#

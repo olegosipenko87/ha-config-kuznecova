@@ -1,0 +1,44 @@
+# https://www.home-assistant.io/integrations/binary_sensor/
+# https://www.home-assistant.io/docs/configuration/customizing-devices/
+# https://www.home-assistant.io/integrations/sensor/
+
+hall_devices:
+
+
+  sensor:
+
+
+  binary_sensor:
+  # Теперь switch автоматом пробрасывается. Раньше Надо было через MQTT
+  #switch:
+    # реле света в коридоре
+  #  - platform: mqtt
+  #    name: "hall_lamp"
+  #    state_topic: "stat/sonoffb4/POWER"
+  #    command_topic: "cmnd/sonoffb4/POWER"
+  #    availability_topic: "tele/sonoffb4/LWT"
+  #    payload_on: "ON"
+  #    payload_off: "OFF"
+  #    payload_available: "Online"
+  #    payload_not_available: "Offline"
+  #    optimistic: false
+  #    qos: 1
+  #    retain: true
+
+  ###################################################
+  light:
+    #### Из свитчей в light
+    - platform: switch
+      name: hall_lamp
+      entity_id: switch.hall_lamp
+
+
+
+
+
+
+
+
+
+
+#

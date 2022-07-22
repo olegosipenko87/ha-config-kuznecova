@@ -1,0 +1,129 @@
+                action: fire-dom-event
+                browser_mod:
+                  command: popup
+                  title: Олег
+                  hide_header: true
+                  deviceID: this
+                  style:
+                    $: |
+                      .mdc-dialog {
+                        backdrop-filter: blur(7px);
+                        -webkit-backdrop-filter: blur(7px);
+                        background: rgba(0,0,0,0.25);
+                      }
+                      .mdc-dialog .mdc-dialog__container .mdc-dialog__surface {
+                        border-radius: 20px;
+                      }
+                    ha-header-bar:
+                      $: |
+                        .mdc-top-app-bar {
+                          background: none !important;
+                        }
+                  card:
+                    type: custom:stack-in-card
+                    cards:
+                    - type: entities
+                      state_color: true
+                      show_header_toggle: false
+                      entities:
+
+                        - entity: person.id_1
+                          name: Олег
+                          secondary_info: last-changed
+                          tap_action: none
+                          hold_action: none
+
+                        - type: custom:hui-element
+                          card_type: history-graph
+                          entities: [entity: person.id_1]
+                          hours_to_show: 48
+                          refresh_interval: 0
+
+                        - type: custom:hui-element
+                          card_type: glance
+                          show_state: true
+                          style:
+                            .: |
+                              ha-card {
+                                background: none;
+                                box-shadow: none;
+                              }
+                            "ha-card>div>div:nth-child(1)":
+                              $:
+                                "state-badge":
+                                  $: |
+                                    ha-icon {
+                                      color: {{ 'green' if is_state('person.id_1', 'home') else 'red' }};
+                                    }
+                            "ha-card>div>div:nth-child(2)":
+                              $:
+                                "state-badge":
+                                  $: |
+                                    ha-icon {
+                                      color: {{ 'green' if is_state('device_tracker.id_1_mob_wifi', 'home') else 'red' }};
+                                    }
+                            "ha-card>div>div:nth-child(3)":
+                              $:
+                                "state-badge":
+                                  $: |
+                                    ha-icon {
+                                      color: {{ 'green' if (states('sensor.id_1_mob_ha_app_battery') > "20") else 'red' }};
+                                    }
+                            "ha-card>div>div:nth-child(4)":
+                              $:
+                                "state-badge":
+                                  $: |
+                                    ha-icon {
+                                      color:  {{ 'green' if is_state('input_boolean.button_to_display_the_map', 'on') else 'red' }};
+                                    }
+                          entities:
+
+                            - entity: person.id_1
+                              name: GPS
+                              icon: mdi:google-maps
+                              tap_action: none
+                              hold_action: none
+
+                            - entity: person.id_1
+                              name: WiFi
+                              icon: mdi:wifi
+                              tap_action: none
+                              hold_action: none
+
+                            - entity: sensor.id_1_mob_ha_app_battery
+                              name:  Ур заряда
+                              tap_action: none
+                              hold_action: none
+
+
+                            - entity: input_boolean.button_to_display_the_map
+                              name:  Адрес
+                              icon: mdi:earth
+                              #show_state: false
+                              tap_action:
+                                action: call-service
+                                service: input_boolean.toggle
+                                service_data:
+                                  entity_id: input_boolean.button_to_display_the_map
+
+                    - type: conditional
+                      conditions:
+                        - entity: input_boolean.button_to_display_the_map
+                          state: "on"
+                      card:
+                        type: entities
+                        entities:
+                          - entity: sensor.id_1_mob_ha_app_address
+                            name: 'Адрес:'
+                            tap_action: none
+                            hold_action: none
+                            #secondary_info: last-updated
+
+                          - type: custom:hui-element
+                            card_type: map
+                            class: map
+                            dark_mode: true
+                            aspect_ratio: 16:9
+                            hours_to_show: 1
+                            entities: [person.id_1]
+                            default_zoom: 16

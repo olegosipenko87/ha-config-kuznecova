@@ -1,0 +1,47 @@
+              action: call-service
+              service: browser_mod.popup
+              service_data:
+                title: Олег
+                hide_header: true
+                deviceID: this
+                large: true
+                style:
+                card:
+                  type: 'custom:weather-card'
+                  current: true
+                  details: true
+                  entity: weather.my_home
+                  forecast: true
+                  name: ' '
+                  style: |
+                    :host {
+                      overflow: hidden;
+                      height: 53%;
+                      background: none !important;
+                      box-shadow: none !important;
+                    }
+                    .current {
+                      margin-bottom: 7vw;
+                    }
+                    .variations {
+                      margin-bottom: 4vw;
+                    }
+                    ha-card {
+                      height: 100%;
+                      background: none  !important;
+                      box-shadow: none !important;
+                      border-radius: 1vw;
+                      font-size: 1.2vw !important;
+                    }
+                    .forecast{
+                      padding: 0 2.5%;
+                      width: 95%;
+                    }
+                    .forecast .day:first-child{
+                      border-left: 0.1em solid #d9d9d9;
+                    }
+                    .forecast .day:last-child{
+                      border-right: 0.1em solid #d9d9d9;
+                    }
+                  tap_action: none
+                  hold_action: none

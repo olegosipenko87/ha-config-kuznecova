@@ -1,0 +1,22 @@
+  type: image
+  action: none
+  entity: person.id_1
+  image: /local/people/id_1.png
+  #state_image:
+  #  home: /local/people/id_1.png
+  #  not_home: /local/people/id_1_gone.png
+  state_filter:
+    "home": opacity(100%)
+    "not_home": opacity(20%)
+    "Аптека": opacity(20%)
+    "Зоо Магазин": opacity(20%)
+  style:
+    background-color: 'rgba(255, 255, 255, 0.0)'
+    border: '0.1vw dashed rgba(255, 255, 255, 0.3)'
+    border-radius: 10vw
+    height: 4.2vw
+    left: 3.8%
+    top: 72%
+    width: 4.2vw
+  tap_action: !include popup/popup_id_1.yaml
+  hold_action: !include popup/popup_id_1.yaml

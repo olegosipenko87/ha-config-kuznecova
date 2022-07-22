@@ -1,0 +1,244 @@
+system:
+  ###################################################
+  automation:
+    - alias: "delay when ha start"
+      trigger:
+        - platform: homeassistant
+          event: start
+      action:
+        - service: script.turn_on
+          entity_id: script.delay_when_ha_start
+
+    # очистка уведомлений о паролях
+    - alias: persistent_notification_clear_pwned
+      initial_state: true
+      mode: parallel
+      trigger:
+        - platform: event
+          event_type: call_service
+          event_data:
+            domain: persistent_notification
+            service: create
+      condition:
+        - condition: template
+          value_template: >
+            {{ 'supervisor_issue_pwned' in trigger.event.data.service_data.notification_id }}
+      action:
+        - service: persistent_notification.dismiss
+          data:
+            notification_id: >
+              {{ trigger.event.data.service_data.notification_id }}
+
+    # уведомление в телегу о выходе новой версии HA
+    - alias: notification_new_ver_HA
+      trigger:
+        - platform: state
+          entity_id: sensor.latest_ver_ha
+      initial_state: true
+      mode: restart
+      condition: "{{ states.sensor.installed_ver_ha.state != states.sensor.latest_ver_ha.state and states.sensor.latest_ver_ha.state != 'unavailable' }}"
+      action:
+        - service: notify.telegram_id_1
+          data:
+            message: |
+              Вышла новая версия HA - {{states.sensor.latest_ver_ha.state}}
+
+    # уведомление в телегу о запуске HA
+    - alias: launching_HA
+      trigger:
+        - platform: homeassistant
+          event: start
+      initial_state: true
+      mode: restart
+      action:
+        - service: notify.telegram_id_1
+          data:
+            message: |
+              HA запущен
+
+  ###################################################
+  script:
+    delay_when_ha_start:
+      sequence:
+        #- service: automation.turn_off
+        #  entity_id: all
+        #- delay: 00:01:00
+        #- service: automation.turn_on
+        #  entity_id: all
+        #- delay: 00:01:00
+        #- service: homekit.start
+        #- delay: 00:10:00
+
+  scene:
+
+  input_datetime:
+  input_text:
+  input_number:
+  input_select:
+  input_boolean:
+
+  timer:
+
+  template:
+    - sensor:
+        - name: ha_online_custom
+          state: >
+            {% set uptime = as_timestamp (now()) -as_timestamp(states('sensor.time_online')) | int %}
+            {% set minutes = (( uptime % 3600) / 60) | int %}
+            {% set hours = ((uptime % 86400) / 3600) | int %}
+            {% set days = (uptime / 86400) | int %}
+
+            {% if uptime < 60 %}Меньше минуты
+            {% elif uptime >= 60 and uptime < 3600 %}{{minutes}}мин
+            {% elif uptime >= 3600 and uptime < 86400 %}{{hours}}ч.{{minutes}}мин
+            {% elif uptime >= 86400 %}{{days}}д.{{hours}}ч.
+            {% endif %}
+
+          icon: mdi:clock
+
+        - name: rpi_online_custom
+          state: >
+            {% set uptime = as_timestamp (now()) -as_timestamp(states('sensor.last_boot')) | int %}
+            {% set minutes = (( uptime % 3600) / 60) | int %}
+            {% set hours = ((uptime % 86400) / 3600) | int %}
+            {% set days = (uptime / 86400) | int %}
+
+            {% if uptime < 60 %}Меньше минуты
+            {% elif uptime >= 60 and uptime < 3600 %}{{minutes}}мин
+            {% elif uptime >= 3600 and uptime < 86400 %}{{hours}}ч.{{minutes}}мин
+            {% elif uptime >= 86400 %}{{days}}д.{{hours}}ч.
+            {% endif %}
+          icon: mdi:clock
+
+  sensor:
+    - platform: template
+      sensors:
+        # блок сенсоров по бекапам гугла
+        last_google_backup_train:
+          friendly_name: "Последний удачный бэкап"
+          value_template: >
+            {% if state_attr("sensor.backup_state","last_backup") %}
+            {{as_timestamp(state_attr("sensor.backup_state","last_backup"))|timestamp_custom("%d.%m.%Y %H:%M")}}
+            {% else %} 
+            Получение данных...
+            {% endif %}
+          icon_template: mdi:calendar-check-outline
+        snapshots_in_google_drive_train:
+          friendly_name: "Снапшотов на Googe Drive"
+          value_template: "{{ state_attr('sensor.backup_state', 'backups_in_google_drive') }}"
+          icon_template: mdi:folder-google-drive
+        snapshots_in_hassio_train:
+          friendly_name: "Снапшотов в Наssio"
+          value_template: "{{ state_attr('sensor.backup_state', 'backups_in_home_assistant') }}"
+          icon_template: mdi:home-assistant
+
+    # https://kvshome.ru/?p=1990#more-1990
+    # сенсор установленной версии HA
+    # https://home-assistant.io/components/sensor.command_line/
+    - platform: command_line
+      name: Installed ver HA
+      command: "head -5 /config/.HA_VERSION"
+
+    # https://kvshome.ru/?p=1990#more-1990
+    # сенсор последней версии HA
+    # https://www.home-assistant.io/components/sensor.rest/
+    - platform: rest
+      resource: https://pypi.python.org/pypi/homeassistant/json
+      name: Latest ver HA
+      value_template: "{{ value_json.info.version }}"
+      scan_interval: 3600
+
+    # https://www.home-assistant.io/integrations/time_date/
+    - platform: time_date
+      display_options:
+        - "time"
+        - "date"
+        - "date_time_iso"
+
+    # https://www.home-assistant.io/integrations/systemmonitor/
+    - platform: systemmonitor
+      resources:
+        - type: processor_use
+        - type: disk_use_percent
+          arg: /
+        - type: memory_use_percent
+        - type: last_boot
+        - type: disk_free
+          arg: /
+
+    # Размер БД
+    - platform: sql
+      db_url: mysql://hass:hass@core-mariadb/homeassistant?charset=utf8
+      queries:
+        - name: Maria DB size
+          query: 'SELECT table_schema "database", Round(Sum(data_length + index_length) / 1048576, 2) "value" FROM information_schema.tables WHERE table_schema="homeassistant" GROUP BY table_schema;'
+          column: "value"
+          unit_of_measurement: MB
+
+    # Время с последней перезагрузки одноплатника
+    - platform: template
+      sensors:
+        last_boot_rpi:
+          friendly_name: "Последняя перезагрузка RPi"
+          value_template: >
+            {% set uptime = as_timestamp (now()) -as_timestamp(states.sensor.last_boot.state) | int %}
+            {% set minutes = (( uptime % 3600) / 60) | int %}
+            {% set hours = ((uptime % 86400) / 3600) | int %}
+            {% set days = (uptime / 86400) | int %}
+              {% if uptime < 60 %} Меньше минуты
+              {% else %}
+                {% if days > 0 %}
+                  {{ days }} д.
+                {% endif %}
+                {% if hours > 0 %}
+                  {% if days > 0 %}
+                    {{ ' ' }}
+                  {% endif %}
+                  {{ hours }} ч.
+                {% endif %}
+                {% if minutes > 0 %}
+                  {% if days > 0 or hours > 0 %}
+                    {{ ' ' }}
+                  {% endif %}
+                    {{ minutes }} мин.
+                {% endif %}
+              {% endif %}
+          icon_template: mdi:clock
+
+    # Проверка тротлинга из за недостатка питания
+    #- platform: command_line
+    #  name: CPU get_throttled
+    #  command: "cat /sys/devices/platform/soc/soc:firmware/get_throttled"
+
+    # Темпаратура cpu . после 60 гр будет троттлинг
+    - platform: command_line
+      name: CPU Temperature
+      command: "cat /sys/class/thermal/thermal_zone0/temp"
+      unit_of_measurement: "°C"
+      value_template: "{{ value | multiply(0.001) | round(1) }}"
+
+    - platform: uptime
+      name: Time Online
+
+    # сенсор ИП
+    #- platform: dnsip
+    #  name: Public IP
+
+  ###################################################
+  binary_sensor:
+    # сенсор пинга гугла
+    #- platform: ping
+    #  host: google.com
+    #  count: 2
+    #  scan_interval: 60
+    #  name: google_is_available
+    # сенсор рабочих или выходных дней недели
+    - platform: workday
+      country: UA
+
+  ###################################################
+  switch:
+
+  ###################################################
+  light:
+#

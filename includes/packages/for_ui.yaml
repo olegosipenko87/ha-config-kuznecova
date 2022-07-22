@@ -1,0 +1,208 @@
+for_ui:
+  automation:
+    # для вкладки климат. переключение по комнатам. Должен быть включен
+    - alias: для выделения  одной из комнат
+      trigger:
+        - platform: state
+          to: 'on'
+          entity_id:
+            - input_boolean.livingroom_circle
+            - input_boolean.bedroom_circle
+            - input_boolean.kitchen_circle
+            - input_boolean.bathroom_circle
+      condition:
+      mode: restart
+      max_exceeded: silent
+      action:
+        - choose:
+            - conditions: "{{ trigger.entity_id == 'input_boolean.livingroom_circle' }}"
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id:
+                    - input_boolean.bedroom_circle
+                    - input_boolean.kitchen_circle
+                    - input_boolean.bathroom_circle
+            - conditions: "{{ trigger.entity_id == 'input_boolean.bedroom_circle' }}"
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id:
+                    - input_boolean.livingroom_circle
+                    - input_boolean.kitchen_circle
+                    - input_boolean.bathroom_circle
+            - conditions: "{{ trigger.entity_id == 'input_boolean.kitchen_circle' }}"
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id:
+                    - input_boolean.livingroom_circle
+                    - input_boolean.bedroom_circle
+                    - input_boolean.bathroom_circle
+            - conditions: "{{ trigger.entity_id == 'input_boolean.bathroom_circle' }}"
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id:
+                    - input_boolean.livingroom_circle
+                    - input_boolean.bedroom_circle
+                    - input_boolean.kitchen_circle
+
+    # для переключения режимов лето/хима
+    - alias: для переключения режимов лето/хима
+      trigger:
+        - platform: state
+          to: 'on'
+          entity_id:
+            - input_boolean.summer_mode
+            - input_boolean.winter_mode
+      condition:
+      mode: restart
+      max_exceeded: silent
+      action:
+        - choose:
+            - conditions: "{{ trigger.entity_id == 'input_boolean.summer_mode' }}"
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.winter_mode
+            - conditions: "{{ trigger.entity_id == 'input_boolean.winter_mode' }}"
+              sequence:
+                - service: input_boolean.turn_off
+                  target:
+                    entity_id: input_boolean.summer_mode
+    - alias: для переключения режимов лето/зима2
+      trigger:
+        - platform: state
+          to: 'off'
+          entity_id:
+            - input_boolean.summer_mode
+            - input_boolean.winter_mode
+      condition:
+      mode: restart
+      max_exceeded: silent
+      action:
+        - choose:
+            - conditions: "{{ trigger.entity_id == 'input_boolean.summer_mode' }}"
+              sequence:
+                - service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.winter_mode
+            - conditions: "{{ trigger.entity_id == 'input_boolean.winter_mode' }}"
+              sequence:
+                - service: input_boolean.turn_on
+                  target:
+                    entity_id: input_boolean.summer_mode
+
+
+  sensor:
+    # среднее значение нескольких сенсоров
+    #- platform: average
+    #  name: 'home average temperature'
+    #  entities:
+    #    - sensor.bedroom_temp_hum_temperature
+    #    - sensor.bathroom_temp_hum_temperature
+
+
+  - platform: template
+    sensors:
+      ## Calculates daylight brightness out of 100%
+      sunlight_pct:
+        value_template: >-
+              {%- set elevation = state_attr('sun.sun','elevation') | float %}
+              {%- set cloud_coverage = 50 | float %}
+              {%- set cloud_factor = (1 - (0.75 * ( cloud_coverage / 100) ** 3 )) %}
+              {%- set min_elevation = -6 %}
+              {%- set max_elevation = 90 %}
+              {%- set adjusted_elevation = elevation - min_elevation %}
+              {%- set adjusted_elevation = [adjusted_elevation,0] | max %}
+              {%- set adjusted_elevation = [adjusted_elevation,max_elevation - min_elevation] | min %}
+              {%- set adjusted_elevation = adjusted_elevation / (max_elevation - min_elevation) %}
+              {%- set adjusted_elevation = adjusted_elevation %}
+              {%- set adjusted_elevation = adjusted_elevation * 100 %}
+              {%- set brightness = adjusted_elevation * cloud_factor %}
+              {{ brightness | round }}
+        unit_of_measurement: '%'
+        device_class: 'illuminance'
+
+      ## Daylight brightness converted to opacity for CSS
+      sunlight_opacity:
+        value_template: >-
+                  {%- set sunpct = states('sensor.sunlight_pct') | float %}
+                  {%- set opacity =  sunpct / 100  | float %}
+                  {{ opacity }}
+
+
+      ## Converts time and date into sentence for UI
+      day_of_the_week:
+        value_template: "{{ ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'][now().weekday()] }}"
+
+      data_and_month:
+        value_template: >
+          {% set months = ["Января", "Ферваля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Сентября", "Октября", "Ноября", "Декабря"] %}
+          {{ strptime(states('sensor.date'), '%Y-%m-%d').day }}
+          {{ months[now().month-1] }}
+
+      month:
+        value_template: "{{ ['Января', 'Ферваля', 'Марта', 'Апреля', 'Мая', 'Июня', 'Июля', 'Августа', 'Сентября', 'Октября', 'Ноября', 'Декабря'][now().month-1] }}"
+
+      date_string:
+        friendly_name: "Full Date"
+        value_template: "{{ states('sensor.day_of_the_week') }}, {{ states('sensor.data_and_month') }} {{ now().year }}"
+
+
+
+
+
+  binary_sensor:
+  switch:
+  light:
+
+  group:
+
+
+  script:
+
+  scene:
+
+  input_datetime:
+  input_text:
+  input_number:
+  input_select:
+  input_boolean:
+    # для статуса кнопок навигации
+    navigation_buttons_on:
+      initial: true
+    navigation_buttons_off:
+      initial: false
+
+    # для кнопки отображения адреса в карточке юзера
+    button_to_display_the_map:
+      initial: false
+
+    #  для подсветки комнаты в режиме климата
+    bedroom_lamp_dimmer:
+      initial: true
+
+    #  для вкладки климат. переключение по комнатам
+    livingroom_circle:
+      initial: false
+    bedroom_circle:
+      initial: false
+    kitchen_circle:
+      initial: false
+    bathroom_circle:
+      initial: false
+    #  для вкладки климат. переключение режимов лето/зима
+    summer_mode:
+    winter_mode:
+
+  timer:
+
+  recorder:
+
+
+
+
+
+#

@@ -1,0 +1,218 @@
+
+
+title: weather
+panel: true
+path: ipad_weather
+theme: jarvis_themes
+
+cards:
+
+  - type: picture-elements
+    image: /local/ui/floorplan_my_home/ipad/clear.png  # для макбука эир 13 размер картинки 2880*1640
+    style: |
+      ha-card {
+        background: center / cover no-repeat url("/local/doski_1.jpg") fixed
+      }
+    elements:
+
+      #########################    АНИМАЦИЯ ДОЖДЯ    #########################
+      #- action: none
+      #  entity: input_select.test
+      #  hold_action:
+      #    action: none
+      #  image: /local/ui/floorplan/weather/rainstorm.gif
+      #  state_filter:
+      #    '1': opacity(0%)
+      #    '2': opacity(0%)
+      #    '3': opacity(100%)
+      #  style:
+      #    left: 60%
+      #    mix-blend-mode: color-dodge
+      #    top: 50%
+      #    width: 110%
+      #  tap_action:
+      #    action: none
+      #  type: image
+
+
+      #################################################################
+      #################################################################
+      #                            БОКОВОЕ МЕНЮ                       #
+      #################################################################
+
+      #################################################################
+      # ПОДЛОЖКА БОКОВОЙ ПАНЕЛИ
+      - !include ui/sidebar_bg/bg.yaml
+
+      #################################################################
+      #  НАЛОЖЕНИЕ ТЕНЕЙ на боковое меню
+      - !include ui/sidebar_bg/shadow.yaml
+      - !include ui/sidebar_bg/inner_shadow.yaml
+
+      #################################################################
+      #  ДАТА И ВРЕМЯ
+      #- !include ui/time.yaml
+      - !include ui/simple_clock_card.yaml
+      - !include ui/date_string.yaml
+      #- !include ui/analog_clock.yaml
+
+      #################################################################
+      #  КНОПКИ МЕНЮ
+      # Дом  Двор Уборка  Мультимедиа  ***  Настройки Графики
+
+      #- !include ui/btns/1_on.yaml
+      - !include ui/btns/1_off.yaml
+
+      #- !include ui/btns/2_on.yaml
+      - !include ui/btns/2_off.yaml
+
+      #- !include ui/btns/3_on.yaml
+      - !include ui/btns/3_off.yaml
+
+      #- !include ui/btns/4_on.yaml
+      - !include ui/btns/4_off.yaml
+
+      #- !include ui/btns/5_on.yaml
+      - !include ui/btns/5_off.yaml
+
+      #- !include ui/btns/6_on.yaml
+      - !include ui/btns/6_off.yaml
+
+      #################################################################
+      #  КТО ДОМА
+      - !include ui/who_is_home/id_1.yaml
+      - !include ui/who_is_home/id_2.yaml
+
+      # пустые для других людей
+      - !include ui/who_is_home/id_3.yaml
+      - !include ui/who_is_home/id_4.yaml
+
+      #################################################################
+      #  МИНИ КАРТА ПОГОДЫ
+#      - !include ui/weather/mini.yaml
+
+      #################################################################
+      #  ГРАФИК ТЕМПЕРАТУРЫ В ДОМЕ И НА УЛИЦЕ
+      - !include ui/weather/graphs.yaml
+
+
+      #################################################################
+      #  Дополнительная инфа на плане
+
+      # Кнопка reload
+      - !include ui/all_icons_on_the_plan/reload.yaml
+      # Кнопка в админ
+      - !include ui/all_icons_on_the_plan/admin.yaml
+
+      #################################################################
+      #################################################################
+      #                           ОСН ПОГОДА                          #
+      #################################################################
+
+
+      - type: 'custom:weather-card'
+        current: true
+        details: true
+        entity: weather.my_home
+        forecast: true
+        tap_action: none
+        hold_action: none
+        name: ' '
+        style: |
+          :host {
+            left: 61.5%;
+            top:  30%;
+            width: 70%;
+            overflow: hidden;
+            height: 53%;
+            background: none !important;
+            box-shadow: none !important;
+          }
+          .current {
+            margin-bottom: 7vw;
+          }
+          .variations {
+            margin-bottom: 4vw;
+          }
+          ha-card {
+            height: 100%;
+            background: none  !important;
+            box-shadow: none !important;
+            border-radius: 1vw;
+            font-size: 1.2vw !important;
+          }
+          .forecast{
+            padding: 0 2.5%;
+            width: 95%;
+          }
+          .forecast .day:first-child{
+            border-left: 0.1em solid #d9d9d9;
+          }
+          .forecast .day:last-child{
+            border-right: 0.1em solid #d9d9d9;
+          }
+
+      - type: 'custom:custom-iframe' 
+        aspect_ratio: 100%
+        style:
+          top: 73%
+          left: 61.5%
+          width: 70%
+          height: 50%
+          border-radius: 0.73vw
+        url: >-
+          https://embed.windy.com/embed2.html?lat=46.411&lon=31.135&zoom=7&level=surface&overlay=rain&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=59.898&detailLon=30.262&metricWind=m/s&metricTemp=°C&radarRange=-1"
+          frameborder="0"></iframe>
+
+
+      # не работает с моими координатами
+      #- type: 'custom:buien-rain-forecast'
+      #  long: 46.4673
+      #  lat: 30.7262
+      #  #46.467350962234875, 30.72623051242798
+      #  fillColor: 'rgba(89, 160, 238, 0.2)'
+      #  lineColor: 'rgba(89, 160, 238, 1)'
+      #  update_interval: 20
+      #  style: |
+      #    :host {
+      #      left: 60.5%;
+      #      top:  80%;
+      #      width: 68%;
+      #      overflow: hidden;
+      #      height: 28%;
+      #      background: none !important;
+      #      box-shadow: none !important;
+      #    }
+      #    ha-card {
+      #      height: 100%;
+      #      background: none  !important;
+      #      box-shadow: none !important;
+      #      border-radius: 1vw;
+      #      position: relative;
+      #      font-size: 1vw !important;
+      #    }
+      #    .chart-container {
+      #        height:100%;
+      #        width:100%
+      #    }
+      #    #container {
+      #        height:100%;
+      #        width:100%;
+      #        padding: 0 !important;
+      #        margin: 0 !important;
+      #    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

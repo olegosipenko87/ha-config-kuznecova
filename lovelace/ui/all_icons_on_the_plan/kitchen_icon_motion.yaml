@@ -1,0 +1,9 @@
+        type: state-icon
+        entity: binary_sensor.vd_kitchen_motion
+        icon: 'mdi:motion-sensor'
+        hold_action:
+          action: more-info
+        style:
+          left: 88%
+          top: 81.5%
+          "--paper-item-icon-active-color": red

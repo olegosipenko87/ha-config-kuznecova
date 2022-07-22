@@ -1,0 +1,32 @@
+# .gitignore
+.HA_VERSION
+._*
+secrets.yaml
+known_devices.yaml
+.HA_VERSION
+.cloud/
+.ssh/
+.storage/
+appdaemon/
+custom_components/
+deps/
+esphome/
+node-red/
+tts/
+zigbee2mqtt/
+*.log
+*.xml
+*.db
+*.sqlite
+.google_maps_location_sharing.cookies.home_assistant_location_1_gmail_com
+._configuration.yaml
+.shopping_list.json
+home-assistant.log.1
+home-assistant.log.fault
+._.google_maps_location_sharing.cookies.home_assistant_location_1_gmail_com
+
+# /themes/
+/www/*
+# !/www/background/
+# !/www/people/
+# !/www/ui/

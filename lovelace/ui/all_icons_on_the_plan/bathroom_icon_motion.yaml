@@ -1,0 +1,9 @@
+        type: state-icon
+        entity: binary_sensor.copy_bathroom_motion
+        icon: 'mdi:motion-sensor'
+        hold_action:
+          action: more-info
+        style:
+          left: 74%
+          top: 84%
+          "--paper-item-icon-active-color": red

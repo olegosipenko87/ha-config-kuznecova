@@ -1,0 +1,88 @@
+
+title: Hall
+path: hall
+
+type: custom:layout-card
+column_num: 4
+#column_width: [300, 500] # 1300
+layout: horizontal
+cards:
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+
+      - type: entities
+        title: Устройства
+        show_header_toggle: false
+        entities:
+           - type: section
+             label: Движения Xiaomi (0x00158d000465fa3e)
+           - binary_sensor.hall_motion_occupancy
+           - sensor.hall_motion_battery
+           - sensor.hall_motion_illuminance
+           - sensor.hall_motion_linkquality
+           - sensor.hall_motion_temperature
+           - type: section
+             label: Двери Xiaomi (0x00158d00051e2624)
+           - binary_sensor.hall_door_contact
+           - sensor.hall_door_battery
+           - sensor.hall_door_linkquality
+           - type: section
+             label: Свет sonoffb4 (192.168.1.200)
+           - light.hall_lamp
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+    - type: custom:gap-card
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Автоматизации
+        show_header_toggle: false
+        entities:
+
+           - type: section
+             label: Свет (движение и дверь)
+           - automation.hall_light_motion_and_door_ver1
+           - input_number.hall_light_minute_delay_ver1
+           - automation.hall_light_emergency_shutdown
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Автоматизации
+        show_header_toggle: false
+        entities:
+
+           - type: section
+             label: Коридор/Вход
+           - type: section
+             label: Туалет/Ванная
+           - type: section
+             label: Кухня
+           - type: section
+             label: Спальня
+           - type: section
+             label: Гостиная
+           - entity: switch.universal_socket
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

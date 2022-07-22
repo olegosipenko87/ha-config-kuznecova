@@ -1,0 +1,73 @@
+  project_id: !secret google_project_id
+  service_account:
+    private_key: !secret google_private_key
+    client_email: !secret google_client_email
+  report_state: true
+  secure_devices_pin: '1234'
+  exposed_domains:
+    #- switch
+    #- light
+    #- alarm_control_panel
+    #- media_player
+    #- vacuum
+    #- sensor
+  entity_config:
+  ############## Спальня
+    light.bedroom_lamp_dimmer:
+      name: свет
+    sensor.ble_temperature_bedroom_climate:
+      name: климат
+    sensor.ble_humidity_bedroom_climate:
+      name: климат
+
+  ############## Туалет
+    light.bathroom_lamp:
+      name: свет
+    sensor.bathroom_temp_hum_temperature:
+      name: температура
+    sensor.bathroom_temp_hum_humidity:
+      name: влажность
+    switch.bathroom_fan:
+      name: вытяжка
+
+  ############## Коридор
+    light.hall_lamp:
+      name: свет
+    binary_sensor.hall_door_contact:
+      name: дверь
+
+  ############## Кухня
+    light.kitchen_lamp:
+      name: свет
+
+
+    vacuum.rockrobo_vacuum_v1:
+      name: пылесос
+    switch.kitchen_fan:
+      name: вытяжка
+
+  ############## скрипты
+    script.tv_bedroom_media_on:
+      name: утюг
+      expose: true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

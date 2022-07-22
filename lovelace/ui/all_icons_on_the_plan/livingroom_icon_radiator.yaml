@@ -1,0 +1,11 @@
+        type: state-icon
+        entity: binary_sensor.vd_livingroom_radiator
+        hold_action:
+          action: more-info
+        tap_action:
+          action: toggle
+        style:
+          left: 31%
+          top: 52%
+          "--paper-item-icon-active-color": green
+          "--paper-item-icon-color": red

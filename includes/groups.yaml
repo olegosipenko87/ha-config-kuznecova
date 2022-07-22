@@ -1,0 +1,7 @@
+
+
+  person_id_1_id_2:
+    name: group device tracker
+    entities:
+      - person.id_1
+      - person.id_2

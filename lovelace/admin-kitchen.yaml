@@ -1,0 +1,84 @@
+
+title: Kitchen
+path: kitchen
+
+type: custom:layout-card
+column_num: 4
+#column_width: [300, 500] # 1300
+layout: horizontal
+cards:
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+
+      - type: entities
+        title: Устройства
+        show_header_toggle: false
+        entities:
+           - type: section
+             label: Движение Xiaomi (0x00158d0004ab6c98)
+           - binary_sensor.kitchen_motion_occupancy
+           - sensor.kitchen_motion_battery
+           - sensor.kitchen_motion_illuminance
+           - sensor.kitchen_motion_linkquality
+           - sensor.kitchen_motion_temperature
+           - type: section
+             label: Свет sonoffb3 (192.168.1.153)
+           - light.kitchen_lamp
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+    - type: custom:gap-card
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Автоматизации
+        show_header_toggle: false
+        entities:
+
+           - type: section
+             label: Свет (движение + солнце)
+           - automation.kitchen_light_motion_ver1
+           - input_number.kitchen_light_minute_delay_ver1
+           - automation.kitchen_light_emergency_shutdown
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Автоматизации
+        show_header_toggle: false
+        entities:
+
+           - type: section
+             label: Коридор/Вход
+           - type: section
+             label: Туалет/Ванная
+           - type: section
+             label: Кухня
+           - type: section
+             label: Спальня
+           - type: section
+             label: Гостиная
+           - entity: switch.universal_socket
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

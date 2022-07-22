@@ -1,0 +1,12 @@
+        type: image
+        action: none
+        image: /local/ui/sidebar/btns1.png
+        style:
+          border-radius: 0.73vw # степень закругления как у кнопок homekit style расчет: (12px/ширину экрана)*100
+          box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)' #rgba(243,214,88,0.4)'
+          left: 11.7%
+          top: 29%
+          width: 20.5078125%
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_control_rooms_light

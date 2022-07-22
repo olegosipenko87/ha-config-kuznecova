@@ -1,0 +1,413 @@
+vacuum_control:
+
+  automation:
+
+
+    ################  TELEGRAM/ANDROID Уборка по расписанию когда никого нет дома + запрос на действие когда кто то есть дома
+
+    # настало время уборки
+    - alias: 'Настало время уборки'
+      trigger:
+        # время начала уборки
+        platform: time
+        at: input_datetime.choose_time_for_cleaning
+      # надо ли в этот день убирать согласно графика
+      condition: '{{ states("input_boolean.vacuum_"+now().strftime("%A"))== "on"}}'
+      mode: queued
+      action:
+        - choose:
+            # дома кто то есть и нужно спросить че делать
+            - conditions:
+                - condition: state
+                  entity_id: group.person_id_1_id_2
+                  state: home
+                # нужны ли уведомления/запросы на уборку 
+                - condition: state
+                  entity_id: input_boolean.vacuum_notification_with_a_question
+                  state: 'on'
+              sequence:
+                - choose:
+                  - conditions: "{{states('input_select.notification_channel') == 'Telegram' }}"
+                    sequence: 
+                    - service: script.turn_on
+                      entity_id: script.telegram_when_to_start_cleaning
+                  - conditions: "{{states('input_select.notification_channel') == 'Android' }}"
+                    sequence: 
+                    - service: script.turn_on
+                      entity_id: script.android_when_to_start_cleaning
+                #- service: >
+                #     {% if is_state('person.id_1', 'home') %} notify.telegram_id_1
+                #     {% else %} notify.telegram_id_2
+                #     {% endif %}
+                #  data:
+                #    message: 'Настало время Хозяюшки. Когда ему начать уборку ?'
+                #    data:
+                #      inline_keyboard:
+                #        - 'сейчас:/start_cleaning, когда я уйду:/wait_and_then_start_cleaning'
+                #- delay: "02:00:00"
+                #- choose:
+                #  - conditions: >
+                #          {%- set last_triggered = state_attr('automation.komanda_iz_telegi_dlia_pylesosa', 'last_triggered') %}
+                #          {{(now().date() - last_triggered.date()).days > 0 if last_triggered else true }}
+                #    sequence:
+                #    - service: script.turn_on
+                #      entity_id: script.vacuum_clean_home
+            # дома кто то есть, но спрашивать "че делать" не надо
+            - conditions:
+                - condition: state
+                  entity_id: group.person_id_1_id_2
+                  state: home
+                - condition: state
+                  entity_id: input_boolean.vacuum_notification_with_a_question
+                  state: 'off'
+              sequence:
+                - wait_for_trigger:
+                    - platform: state
+                      entity_id: group.person_id_1_id_2
+                      from: 'home'
+                    #  to: 'not_home'
+                      for: "00:05:00"
+                  timeout: '04:00:00'
+                  continue_on_timeout: true
+                - service: script.turn_on
+                  entity_id: script.vacuum_clean_home
+            # дома никого нет
+            - conditions:
+                - condition: state
+                  entity_id: group.person_id_1_id_2
+                  state: not_home
+              sequence:
+                - service: script.turn_on
+                  entity_id: script.vacuum_clean_home
+
+    # действия в зависимости от команд из телеги
+    - alias: 'команда из телеги для пылесоса'
+      trigger:
+      - platform: event
+        event_type: telegram_callback       # если большая кнопка в запросе, то telegram_command
+        #event_data:
+        #  data: '/start_cleaning'            # если большая кнопка в запросе, то command
+      mode: restart
+      action:
+      - choose:
+          ####### запустить уборку сейчас
+          - conditions: "{{ trigger.event.data.data == '/start_cleaning' }}"
+            sequence:
+              - service: script.turn_on
+                entity_id: script.vacuum_clean_home
+              - service: >
+                   {% if is_state('person.id_1', 'home') %}
+                       notify.telegram_id_1
+                   {% else %}
+                       notify.telegram_id_2
+                   {% endif %}
+                data:
+                  message: 'Ок. Пылесос начинает уборку'
+          ####### подождать когда останется один
+          - conditions: "{{ trigger.event.data.data == '/wait_and_then_start_cleaning' }}"
+            sequence:
+              - service: >
+                   {% if is_state('person.id_1', 'home') %}
+                       notify.telegram_id_1
+                   {% else %}
+                       notify.telegram_id_2
+                   {% endif %}
+                data:
+                  message: 'Ок. Пылесос начнет уборку когда останется один'
+              - wait_for_trigger:
+                  - platform: state
+                    entity_id: group.person_id_1_id_2
+                    from: 'home'
+                  #  to: 'not_home'
+                    for: "00:05:00"
+                timeout: '06:00:00'
+                continue_on_timeout: false
+              - service: script.turn_on
+                entity_id: script.vacuum_clean_home
+
+
+  script:
+
+    telegram_when_to_start_cleaning:
+      alias: телега уведомление когда начать уборку
+      sequence:
+        - alias: телега уведомление когда начать уборку
+          service: >
+              {% if is_state('person.id_1', 'home') %} notify.telegram_id_1
+              {% else %} notify.telegram_id_2
+              {% endif %}
+          data:
+            message: 'Настало время уборки. Когда ему начать?'
+            data:
+              inline_keyboard:
+                - 'сейчас:/start_cleaning, когда я уйду:/wait_and_then_start_cleaning'
+        - delay: "02:00:00"
+        - choose:
+          - conditions: >
+                  {%- set last_triggered = state_attr('automation.komanda_iz_telegi_dlia_pylesosa', 'last_triggered') %}
+                  {{(now().date() - last_triggered.date()).days > 0 if last_triggered else true }}
+            sequence:
+            - service: script.turn_on
+              entity_id: script.vacuum_clean_home
+
+    android_when_to_start_cleaning:
+      alias: андроид уведомление когда начать уборку
+      sequence:
+        - alias: "переменные для событий"
+          variables:
+            action_now: "{{ 'NOW_' ~ context.id }}"
+            action_wait: "{{ 'WAIT_' ~ context.id }}"
+        - alias: "сам вопрос"
+          service: >
+              {% if is_state('person.id_1', 'home') %} notify.mobile_app_oleg_mob
+              {% else %} notify.mobile_app_ann_mob
+              {% endif %}
+          data:
+            message: "Настало время уборки. Когда ему начать?"
+            data:
+              channel: "vacuum"
+              notification_icon: "mdi:robot-vacuum"
+              actions:
+                - action: "{{ action_now }}"
+                  title: сейчас
+                - action: "{{ action_wait }}"
+                  title: когда я уйду
+        - alias: "ожидание ответа"
+          wait_for_trigger:
+            - platform: event
+              event_type: mobile_app_notification_action
+              event_data:
+                action: "{{ action_now }}"
+            - platform: event
+              event_type: mobile_app_notification_action
+              event_data:
+                action: "{{ action_wait }}"
+        - alias: "Выполнить действие"
+          choose:
+            - conditions: "{{ wait.trigger.event.data.action == action_now }}"
+              sequence:
+                - service: script.turn_on
+                  entity_id: script.vacuum_clean_home
+            - conditions: "{{ wait.trigger.event.data.action == action_wait}}"
+              sequence:
+                - wait_for_trigger:
+                    - platform: state
+                      entity_id: group.person_id_1_id_2
+                      from: 'home'
+                      for: "00:05:00"
+                  timeout: '06:00:00'
+                  continue_on_timeout: false
+                - service: script.turn_on
+                  entity_id: script.vacuum_clean_home
+
+
+
+    ################   Изменить озвучку
+    choose_a_voice_for_a_vacuum:
+      alias: Изменить озвучку пылесосу
+      sequence:
+
+    ################   Тестовый скрипт "очистки контейнера"
+    vacuum_container_cleaning:
+      alias: Направится к месту чистки контейнера
+      sequence:
+        - alias: едет к мусорному ведру
+          service: vacuum.send_command
+          data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            command: app_goto_target
+            params: [30500,21200]
+
+    # запустить пылесос или по дефолту или с уборкой определенных комнат
+    vacuum_clean_select:
+      alias: Запустить пылесос кнопкой
+      sequence:
+        - service: script.turn_on
+          data:
+            entity_id: >-
+              {% set livingroom = states.input_boolean.vacuum_livingroom.state %}
+              {% set bedroom = states.input_boolean.vacuum_bedroom.state %}
+              {% set hall = states.input_boolean.vacuum_hall.state %}
+              {% set kitchen = states.input_boolean.vacuum_kitchen.state %}
+              {% if livingroom == "on" or bedroom == "on" or hall == "on" or kitchen == "on" %}
+                script.vacuum_clean_home_zoned
+              {% else %}
+                script.vacuum_clean_home
+              {% endif %}
+
+    #  Убрать все что найдет
+    vacuum_clean_home:
+      alias: Запустить пылесос
+      sequence:
+        - service: vacuum.start
+          data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+
+    # убрать только определнные комнаты
+    vacuum_clean_home_zoned:
+      alias: Убрать выбранные
+      sequence:
+        - service: vacuum.send_command
+          data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            command: app_zoned_clean
+            params: >-
+              {% set livingroom = states.input_boolean.vacuum_livingroom.state %}
+              {% set bedroom = states.input_boolean.vacuum_bedroom.state %}
+              {% set hall = states.input_boolean.vacuum_hall.state %}
+              {% set kitchen = states.input_boolean.vacuum_kitchen.state %}
+              {{ '[' }}
+              {% if livingroom == "on" %}
+                 [20932,23012,26132,26012,1],
+              {% endif %}
+              {% if bedroom == "on" %}
+                 [30007,23841,31807,25441,1], [28335,23777,30035,25427,2],
+              {% endif %}
+              {% if hall == "on" %}
+                 [26799,19989,27699,24389,2],
+              {% endif %}
+              {% if kitchen == "on" %}
+                 [27687,20840,32337,22690,2],
+              {% endif %}
+              {{ ']' }}
+
+    # закончить уборку и вернуться на станцию
+    vacuum_finish_clean_home:
+      alias: закончить уборку и вернуться на базу
+      sequence:
+        - service: vacuum.stop
+          data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+        - delay: '00:00:02'
+        - service: vacuum.return_to_base
+          data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+
+    # уборка по зонам
+    vacuum_clean_living_room:
+      alias: Убрать гостиную
+      sequence:
+        - service: vacuum.send_command
+          data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            command: app_zoned_clean
+            params: [[20932,23012,26132,26012,1]]
+    vacuum_clean_hall:
+      alias: Убрать прихожую (2р)
+      sequence:
+        - service: vacuum.send_command
+          data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            command: app_zoned_clean
+            params: [[26799,19989,27699,24389,1],]
+    vacuum_clean_kitchen:
+      alias: Убрать кухню (2р)
+      sequence:
+        - service: vacuum.send_command
+          data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            command: app_zoned_clean
+            params: [[27687,20840,32337,22690,1]]
+    vacuum_clean_bedroom:
+      alias: Убрать спальню
+      sequence:
+        - service: vacuum.send_command
+          data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            command: app_zoned_clean
+            params: [[30007,23841,31807,25441,1], [28335,23777,30035,25427,2]]
+
+    ################   Сброс датчиков обслуживания
+    sensor_dirty_time:
+        alias: "Сброс счетчиков: Датчики"
+        sequence:
+          - service: vacuum.send_command
+            data:
+              entity_id: vacuum.rockrobo_vacuum_v1
+              command: reset_consumable
+              params: ['sensor_dirty_time']
+    reset_main_brush_left:
+      alias: "Сброс счетчиков: Основная щетка"
+      sequence:
+        - service: vacuum.send_command
+          data:
+            entity_id: vacuum.rockrobo_vacuum_v1
+            command: reset_consumable
+            params: ['main_brush_work_time']
+    side_brush_work_time:
+      alias: "Сброс счетчиков: Боковая щетка"
+      sequence:
+        - service: vacuum.send_command
+          data:
+            entity_id: vacuum.rockrobo_vacuum_v1
+            command: reset_consumable
+            params: ['side_brush_work_time']
+    filter_work_time:
+      alias: "Сброс счетчиков: Фильтр"
+      sequence:
+        - service: vacuum.send_command
+          data:
+            entity_id: vacuum.rockrobo_vacuum_v1
+            command: reset_consumable
+            params: ['filter_work_time']
+
+  input_boolean:
+    # нужны ли уведомления/запросы на уборку
+    vacuum_notification_with_a_question:
+    # выбор дня уборки в настройках пылесоса
+    vacuum_monday:
+      name: ПН
+    vacuum_tuesday:
+      name: ВТ
+    vacuum_wednesday:
+      name: СР
+    vacuum_thursday:
+      name: ЧТ
+    vacuum_friday:
+      name: ПТ
+    vacuum_saturday:
+      name: СБ
+    vacuum_sunday:
+      name: ВС
+
+    # выбор комнаты которую будем убирать
+    vacuum_livingroom:
+      name: Детская
+    vacuum_bedroom:
+      name: Спальня
+    vacuum_hall:
+      name: Коридор
+    vacuum_kitchen:
+      name: Кухня
+
+  input_datetime:
+    # input для выбора времени уборки в настройках пылесоса
+    choose_time_for_cleaning:
+      name: choose_time_for_cleaning
+      has_date: false
+      has_time: true
+
+  input_select:
+    notification_channel:
+      name: Отправлять уведомления через
+      options:
+        - Telegram
+        - Android
+      icon: mdi:microphone
+    
+    choose_a_voice_for_a_vacuum:
+      name: Выбрать голос для пылесоса
+      options:
+        - Мужской (с матами)
+        - Женский (Алиса)
+      initial: Женский (Алиса)
+      icon: mdi:microphone
+
+
+
+
+
+
+
+
+#

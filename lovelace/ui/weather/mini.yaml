@@ -1,0 +1,41 @@
+        type: 'custom:simple-weather-card'
+        backdrop: false
+        entity: weather.my_home
+        name: ' '
+        style: |
+          :host {
+            left: 11.19%;
+            top:  85.5%;
+            width: 16.5%;
+            height: 7% !important;
+            overflow: hidden;
+            height: 8.5vw;
+            background: none  !important;
+            box-shadow: none !important;
+            font-size: 1vw !important;
+          }
+          ha-card {
+            background: none  !important;
+            box-shadow: none !important;
+            flex-flow: row-reverse !important;
+            padding: 0 !important;
+          }
+          .weather__info--add{
+            display : none !important;
+          }
+          .weather__info{
+            flex-grow: 1;
+            min-height: 0 !important;
+            height: 3.4vw;
+            margin-left: 0.6vw;
+          }
+          .weather__icon{
+            margin-right:0.5% !important;
+            margin-top: -3%;
+            width: 2vw !important;
+            height: 2vw !important;
+            flex: 0 0 2vw !important;
+          }
+        tap_action: #!include weather_popup.yaml
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_weather

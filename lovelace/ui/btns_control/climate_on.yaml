@@ -1,0 +1,13 @@
+        type: custom:button-card
+        entity: input_boolean.navigation_buttons_on
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_control_rooms_climate
+        name: Климат
+        entity_picture: /local/ui/icon/thermometer.png
+        style:
+          top: 35%   #12
+          left: 29.2%  #60
+          width: 9%
+        template:
+          - menu_button_new

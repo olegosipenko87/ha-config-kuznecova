@@ -1,0 +1,38 @@
+conditioners_sensors:
+# unvailable
+  sensor:
+
+
+
+
+
+
+  binary_sensor:
+
+   - platform: template
+     sensors:
+
+       conditioner_status:
+         friendly_name: "Статус кондиционера"
+         value_template: >-
+            {{ states('sensor.universal_socket_power')|int > 5 }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

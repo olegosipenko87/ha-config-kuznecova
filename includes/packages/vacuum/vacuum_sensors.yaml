@@ -1,0 +1,156 @@
+vacuum_sensors:
+
+
+  sensor:
+
+   - platform: template
+     sensors:
+
+       vacuum_status:
+         value_template: >- 
+           {% if is_state('vacuum.rockrobo_vacuum_v1', 'docked') %}на станции
+           {% elif is_state('vacuum.rockrobo_vacuum_v1', 'paused') %}приостановил уборку
+           {% elif is_state('vacuum.rockrobo_vacuum_v1', 'cleaning') %}убирает
+           {% elif is_state('vacuum.rockrobo_vacuum_v1', 'returning') %}возвращается на станцию
+           {% elif is_state('vacuum.rockrobo_vacuum_v1', 'error') %}ошибка: {{state_attr('sensor.vacuum_status','vacuum_error')}}
+           {% elif is_state('vacuum.rockrobo_vacuum_v1', 'idle') %}ожидание ...
+           {% else %} failed
+           {% endif %}
+         attribute_templates:
+      #     vacuum_battery_level: "{{ state_attr('vacuum.rockrobo_vacuum_v1', 'battery_level')}}%"
+      #     vacuum_error: >-
+      #       {% set error = state_attr('vacuum.rockrobo_vacuum_v1', 'error') %}
+      #       {% if error == 'Clean main brush' %}основная щетка
+      #       {% elif error == 'Dust collector missing' %}мусорный контейнер или фильтр извлечен
+      #       {% elif error == 'Device stuck, clean area' %}застрял
+      #       {% elif error == 'Wheels on top of void, move robot' %}колеса на весу
+      #       {% elif error == 'Clean hovering sensors, move robot' %}очистить сенсор падения
+
+      #       {% else %}Все ок
+      #       {% endif %}
+           vacuum_last_cleaned_date:  >-
+              {% set cleaning_date = as_timestamp(states('sensor.rockrobo_vacuum_v1_last_clean_end'),default='0') | timestamp_custom('%d',default='n/a') |int %}
+              {% set cleaning_time = as_timestamp(states('sensor.rockrobo_vacuum_v1_last_clean_end'),default='n/a') | timestamp_custom('%H:%M',default='n/a') %}
+              {% set current_date = as_timestamp(now())| timestamp_custom('%d') | int %}
+              {% if (current_date - cleaning_date) == 0 %} сегодня в {{ cleaning_time }}
+              {% elif (current_date - cleaning_date) == 1 %} вчера в {{ cleaning_time }}
+              {% else %} {{cleaning_date}} {{states('sensor.month')}} {{cleaning_time}}
+              {% endif %}
+      #     vacuum_last_cleaned_area: "{{ state_attr('vacuum.rockrobo_vacuum_v1', 'cleaned_area')}} м²"
+      #     vacuum_duration_of_the_last_cleaning: >-
+      #        {% set entity_id = 'vacuum.rockrobo_vacuum_v1' %}
+      #        {% set clean_stop = as_timestamp(state_attr( entity_id, 'clean_stop')) %}
+      #        {% set clean_start = as_timestamp(state_attr( entity_id, 'clean_start')) %}
+      #        {% set duration_sec = clean_stop - clean_start %}
+      #        {% set minutes = (( duration_sec % 3600) / 60) | int %}
+      #        {% set hours = ((duration_sec % 86400) / 3600) | int %}
+      #        {% set vacuum_state = states( entity_id ) %}
+      #        {% if vacuum_state == 'unvailable' %}unknown
+      #        {% else %}
+      #        {% if duration_sec < 60 %}меньше минуты
+      #        {% else %}
+      #        {% if hours > 0 %}
+      #        {{ hours }} ч.
+      #        {% endif %}
+      #        {% if minutes > 0 %}
+      #        {% if hours > 0 %}
+      #        {{ ' ' }}
+      #        {% endif %}
+      #        {{ minutes }} мин.
+      #        {% endif %}
+      #        {% endif %}
+      #        {% endif %}
+           #  старый вариант. Показыввало в формате: 0:23:40
+           #vacuum_duration_of_the_last_cleaning: >-
+            # {% set clean_stop = state_attr('vacuum.rockrobo_vacuum_v1', 'clean_stop') %}
+            # {% set clean_start = state_attr('vacuum.rockrobo_vacuum_v1', 'clean_start') %}
+            # {% set vacuum_state = states('vacuum.rockrobo_vacuum_v1') %}
+            # {% if vacuum_state == 'unavailable' %} unknown
+            # {% else %}  {{clean_stop - clean_start}}
+            # {% endif %}
+
+
+
+
+  binary_sensor:
+
+   - platform: template
+     sensors:
+
+    #   vacuum_service:
+    #     device_class: problem
+    #     value_template: >-
+    #        {{
+    #           state_attr('vacuum.rockrobo_vacuum_v1', 'filter_left')|int < 2 or
+    #           state_attr('vacuum.rockrobo_vacuum_v1', 'side_brush_left')|int < 2 or
+    #           state_attr('vacuum.rockrobo_vacuum_v1', 'main_brush_left')|int < 2 or
+    #           state_attr('vacuum.rockrobo_vacuum_v1', 'sensor_dirty_left')|int < 2
+    #        }}
+    #     attribute_templates:
+    #       vacuum_filter_left: "{{ state_attr('vacuum.rockrobo_vacuum_v1', 'filter_left')}} ч."
+    #       vacuum_filter_left_percent: >-
+    #         {% if state_attr('vacuum.rockrobo_vacuum_v1', 'filter_left') > 0 %}
+    #         {{ (state_attr('vacuum.rockrobo_vacuum_v1', 'filter_left') / 150 * 100) | round}}
+    #         {% else %}0
+    #         {% endif %}
+    #       vacuum_side_brush_left: "{{ state_attr('vacuum.rockrobo_vacuum_v1', 'side_brush_left')}} ч."
+    #       vacuum_side_brush_left_percent: >-
+    #         {% if state_attr('vacuum.rockrobo_vacuum_v1', 'side_brush_left') > 0 %}
+    #         {{ (state_attr('vacuum.rockrobo_vacuum_v1', 'side_brush_left') / 200 * 100) | round}}
+    #         {% else %}0
+    #         {% endif %}
+    #       vacuum_main_brush_left: "{{ state_attr('vacuum.rockrobo_vacuum_v1', 'main_brush_left')}} ч."
+    #       vacuum_main_brush_left_percent: >-
+    #         {% if state_attr('vacuum.rockrobo_vacuum_v1', 'main_brush_left') > 0 %}
+    #         {{ (state_attr('vacuum.rockrobo_vacuum_v1', 'main_brush_left') / 300 * 100) | round}}
+    #         {% else %}0
+    #         {% endif %}
+    #       vacuum_sensor_dirty_left: "{{ state_attr('vacuum.rockrobo_vacuum_v1', 'sensor_dirty_left')}} ч."
+    #       vacuum_sensor_dirty_left_percent: >-
+    #         {% if state_attr('vacuum.rockrobo_vacuum_v1', 'sensor_dirty_left') > 0 %}
+    #         {{ (state_attr('vacuum.rockrobo_vacuum_v1', 'sensor_dirty_left') / 30 * 100) | round}}
+    #         {% else %}0
+    #         {% endif %}
+
+
+       vacuum_cleaning:
+         value_template: >-
+           {{ states('vacuum.rockrobo_vacuum_v1') == 'cleaning' or states('vacuum.rockrobo_vacuum_v1') == 'error' }}
+       vacuum_returning:
+         value_template: >-
+           {{ states('vacuum.rockrobo_vacuum_v1') == 'returning' or states('vacuum.rockrobo_vacuum_v1') == 'docked'}}
+       vacuum_paused:
+         value_template: >-
+           {{ states('vacuum.rockrobo_vacuum_v1') == 'paused' }}
+
+       vacuum_turbo:
+         value_template: >-
+           {{ state_attr('vacuum.rockrobo_vacuum_v1', 'fan_speed') == 'Turbo' }}
+       vacuum_medium:
+         value_template: >-
+           {{ state_attr('vacuum.rockrobo_vacuum_v1', 'fan_speed') == 'Medium' }}
+       vacuum_standart:
+         value_template: >-
+           {{ state_attr('vacuum.rockrobo_vacuum_v1', 'fan_speed') == 'Standard' }}
+       vacuum_silent:
+         value_template: >-
+           {{ state_attr('vacuum.rockrobo_vacuum_v1', 'fan_speed') == 'Silent' }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

@@ -1,0 +1,110 @@
+#   binary_sensor.hall_motion_occupancy
+#   light.hall_lamp
+#   binary_sensor.hall_door_contact
+
+hall_light:
+
+  binary_sensor:
+   - platform: template
+     sensors:
+
+       hall_light_problem:
+         device_class: problem
+         delay_on:
+           minutes: 10
+         value_template: >-
+           {{ states.light.hall_lamp.state == 'on'
+           and
+           states.binary_sensor.hall_motion_occupancy.state == 'off'}}
+
+
+
+  automation:
+
+    # Вкл/Выкл света автоматически (движение + дверь)
+    - alias: hall light (motion and door) ver1
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.hall_motion_occupancy
+          from: "off"
+          to: "on"
+        - platform: state
+          entity_id: binary_sensor.hall_door_contact
+          from: "off"
+          to: "on"
+        - platform: state
+          entity_id: light.hall_lamp
+          from: "off"
+          to: "on"
+      condition:
+      mode: restart
+      max_exceeded: silent
+      action:
+        - service: light.turn_on
+          entity_id: light.hall_lamp
+        - service: timer.start            ##############
+          entity_id: timer.hall_light     ##############
+        - wait_for_trigger:
+            platform: state
+            entity_id: binary_sensor.hall_motion_occupancy
+            from: "on"
+            to: "off"
+        - delay:
+            minutes: "{{ states('input_number.hall_light_minute_delay_ver1') | int }}"
+        - service: light.turn_off
+          entity_id: light.hall_lamp
+
+
+
+
+    # Аварийное выключение через 10 мин
+    - alias: hall light off emergency
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.hall_light_problem
+        - platform: homeassistant
+          event: start
+      mode: restart
+      max_exceeded: silent
+      condition: "{{ states.binary_sensor.hall_light_problem.state == 'on' }}"
+      action:
+        - service: light.turn_off
+          entity_id: light.hall_lamp
+
+  script:
+
+  scene:
+  group:
+
+  input_datetime:
+  input_text:
+
+  input_number:
+    hall_light_minute_delay_ver1:
+      initial: 2
+      min: 0
+      max: 30
+      step: 1
+      mode: box
+
+  input_select:
+  input_boolean:
+
+
+  timer:
+    hall_light:
+      duration: "00:20:00"
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

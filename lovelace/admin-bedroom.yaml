@@ -1,0 +1,89 @@
+
+title: Bedroom
+path: bedroom
+
+type: custom:layout-card
+column_num: 4
+#column_width: [300, 500] # 1300
+layout: horizontal
+cards:
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+
+      - type: entities
+        title: Устройства
+        show_header_toggle: false
+        entities:
+           - type: section
+             label: Свет диммер Lonsonho
+           - light.bedroom_lamp_dimmer
+           - sensor.bedroom_lamp_dimmer_linkquality
+           - type: section
+             label: Сенсор климата BLE MHO-C303
+           - sensor.ble_temperature_bedroom_climate
+           - sensor.ble_humidity_bedroom_climate
+           - sensor.ble_battery_bedroom_climate
+           - sensor.ble_rssi_bedroom_climate
+           - type: section
+             label: Выключатель из датч откр/закр Xiaomi
+           - binary_sensor.bedroom_lamp_switch_contact
+           - sensor.bedroom_lamp_switch_battery
+           - sensor.bedroom_lamp_switch_linkquality
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+    - type: custom:gap-card
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Автоматизации
+        show_header_toggle: false
+        entities:
+
+           - type: section
+             label: Свет
+           - entity: switch.universal_socket
+             tap_action:
+               action: more-info
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Автоматизации
+        show_header_toggle: false
+        entities:
+
+           - type: section
+             label: Коридор/Вход
+           - type: section
+             label: Туалет/Ванная
+           - type: section
+             label: Кухня
+           - type: section
+             label: Спальня
+           - type: section
+             label: Гостиная
+           - entity: switch.universal_socket
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

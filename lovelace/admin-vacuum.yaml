@@ -1,0 +1,71 @@
+
+title: Vacuum
+path: vacuum
+
+cards:
+  - type: entities
+    title: Сенсоры
+    entities:
+      - entity: sensor.vacuum_status
+      - entity: sensor.vacuum_battery_level
+      - entity: sensor.vacuum_last_clean
+      - entity: sensor.vacuum_duration_of_the_last_cleaning
+
+      - type: section
+        label: Обслуживание (оставшееся время)
+      - entity: sensor.vacuum_filter_left
+      - entity: sensor.vacuum_side_brush_left
+      - entity: sensor.vacuum_main_brush_left
+      - entity: sensor.vacuum_sensor_dirty_left
+
+
+  - type: entities
+    title: Скрипты
+    entities:
+      - type: section
+        label: Скрипты сброса датчиков обслуживания
+      - entity: script.sensor_dirty_time
+      - entity: script.reset_main_brush_left
+      - entity: script.side_brush_work_time
+      - entity: script.filter_work_time
+      - type: section
+        label: Скрипты зональной уборки
+      - entity: script.vacuum_clean_home
+      - entity: script.vacuum_clean_kitchen
+      - entity: script.vacuum_clean_bedroom
+      - entity: script.vacuum_clean_living_room
+      - entity: script.vacuum_clean_hall
+
+  - type: entities
+    title: Автоматизации
+    show_header_toggle: false
+    entities:
+      - type: section
+        label: Автоматизации
+      - entity: automation.nastalo_vremia_uborki
+      - entity: automation.komanda_iz_telegi_start_cleaning
+      - entity: automation.komanda_iz_telegi_wait_and_then_start_cleaning
+      - type: section
+        label: Настройки
+      - entity: input_datetime.choose_time_for_cleaning
+      - entity: input_boolean.vacuum_monday
+      - entity: input_boolean.vacuum_tuesday
+      - entity: input_boolean.vacuum_wednesday
+      - entity: input_boolean.vacuum_thursday
+      - entity: input_boolean.vacuum_friday
+      - entity: input_boolean.vacuum_saturday
+      - entity: input_boolean.vacuum_sunday
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

@@ -1,0 +1,32 @@
+title: test2 # страница
+# иконка вместо наименования страницы
+#    icon: mdi:home-assistant
+
+type: custom:layout-card
+column_num: 2
+#column_width: [300, 500] # 1300
+layout: horizontal
+
+cards:
+
+- type: 'custom:plex-meets-homeassistant'
+  token: ah8wMCvuwK4iWbrQQg2z
+  ip: 192.168.1.253
+  port: 32400
+  libraryName: Фильмы
+  protocol: http
+  maxCount: 6
+  sort: addedAt:desc
+  entity:
+    - media_player.plex_plex_for_samsung_tv_ue39f5500
+
+- type: 'custom:plex-meets-homeassistant'
+  token: ah8wMCvuwK4iWbrQQg2z
+  ip: 192.168.1.253
+  port: 32400
+  libraryName: Сериалы
+  protocol: http
+  maxCount: 10
+  sort: addedAt:desc
+  entity:
+    - media_player.plex_plex_for_samsung_tv_ue39f5500

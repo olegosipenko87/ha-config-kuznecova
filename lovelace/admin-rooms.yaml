@@ -1,0 +1,135 @@
+
+title: rooms
+path: rooms
+
+type: custom:layout-card
+column_num: 4
+#column_width: [300, 500] # 1300
+layout: horizontal
+cards:
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Коридор
+        show_header_toggle: false
+        entities:
+           - type: section
+             label: Свет sonoff
+           - light.hall_lamp
+           - sensor.hall_lamp_ip
+           - type: section
+             label: Сенсор движения Xiaomi
+           - binary_sensor.hall_motion_occupancy
+           - sensor.hall_motion_battery
+           - sensor.hall_motion_illuminance
+           - sensor.hall_motion_linkquality
+           - type: section
+             label: Сенсор откр двери Xiaomi
+           - binary_sensor.hall_door_contact
+           - sensor.hall_door_battery
+           - sensor.hall_door_linkquality
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Кухня
+        show_header_toggle: false
+        entities:
+           - type: section
+             label: Свет sonoff
+           - light.kitchen_lamp
+           - sensor.kitchen_lamp_ip
+           - type: section
+             label: Сенсор движения Xiaomi
+           - binary_sensor.kitchen_motion_occupancy
+           - sensor.kitchen_motion_battery
+           - sensor.kitchen_motion_illuminance
+           - sensor.kitchen_motion_linkquality
+           - type: section
+             label: Вытяжка sonoff
+           - switch.kitchen_fan
+           - sensor.kitchen_fan_ip
+           - type: section
+             label: Сенсор климата Xiaomi
+           - sensor.kitchen_temp_hum_temperature
+           - sensor.kitchen_temp_hum_pressure
+           - sensor.kitchen_temp_hum_humidity
+           - sensor.kitchen_temp_hum_battery
+           - sensor.kitchen_temp_hum_linkquality
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Ванная/туалет
+        show_header_toggle: false
+        entities:
+           - type: section
+             label: Свет Nue/3A HGZB-01A
+           - light.bathroom_lamp
+           - sensor.bathroom_lamp_linkquality
+           - type: section
+             label: Сенсор движения Xiaomi
+           - binary_sensor.bathroom_motion_occupancy
+           - sensor.bathroom_motion_battery
+           - sensor.bathroom_motion_illuminance
+           - sensor.bathroom_motion_linkquality
+           - type: section
+             label: Вентиляция sonoff
+           - switch.bathroom_fan
+           - sensor.bathroom_fan_ip
+           - type: section
+             label: Сенсор климата Xiaomi
+           - sensor.bathroom_temp_hum_temperature
+           - sensor.bathroom_temp_hum_pressure
+           - sensor.bathroom_temp_hum_humidity
+           - sensor.bathroom_temp_hum_battery
+           - sensor.bathroom_temp_hum_linkquality
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Спальня
+        show_header_toggle: false
+        entities:
+           - type: section
+             label: Свет диммер Lonsonho
+           - light.bedroom_lamp_dimmer
+           - sensor.bedroom_lamp_dimmer_linkquality
+           - type: section
+             label: Розетка TuYa TS0121
+           - entity: switch.universal_socket
+           - entity: sensor.universal_socket_power
+           - entity: input_select.socket_mode
+           - type: section
+             label: Сенсор климата BLE MHO-C303
+           - sensor.ble_temperature_bedroom_climate
+           - sensor.ble_humidity_bedroom_climate
+           - sensor.ble_battery_bedroom_climate
+           - sensor.ble_rssi_bedroom_climate
+           - type: section
+             label: Выключатель из датч откр/закр Xiaomi
+           - binary_sensor.bedroom_lamp_switch_contact
+           - sensor.bedroom_lamp_switch_battery
+           - sensor.bedroom_lamp_switch_linkquality
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

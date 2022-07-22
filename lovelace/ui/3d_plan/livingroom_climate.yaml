@@ -1,0 +1,17 @@
+        type: image
+        action: none
+        entity: input_boolean.livingroom_circle
+        image: /local/ui/floorplan_my_home/ipad/livingroom_circle.png
+        state_filter:
+          'off': opacity(0%)
+          'on': opacity(100%)
+          unknown: opacity(0%)
+        style:
+          left: 43.688359%
+          top: 55.96%
+          width: 35.888672%
+          mix-blend-mode: lighten
+        tap_action:
+          action: toggle
+        hold_action:
+          action: toggle

@@ -1,0 +1,17 @@
+        action: none
+        type: image
+        entity: input_boolean.vacuum_hall
+        image: /local/ui/floorplan_my_home/ipad/hall_circle.png
+        state_filter:
+          'off': opacity(0%)
+          'on': opacity(100%)
+          unknown: opacity(0%)
+        style:
+          left: 73.015234%
+          top: 75.493333%
+          width: 22.119141%
+          mix-blend-mode: lighten
+        tap_action:
+          action: toggle
+        hold_action:
+          action: toggle

@@ -1,0 +1,27 @@
+
+
+title: My Home Admin
+background: center / cover no-repeat url("/local/background/doski_1.jpg") fixed
+
+
+views:
+  - !include lovelace/admin-server.yaml
+  #- !include lovelace/admin-service.yaml
+  - !include lovelace/admin-rooms.yaml
+  - !include lovelace/admin-settings.yaml
+  - !include lovelace/admin-settings-bathroom.yaml
+
+  #- !include lovelace/admin-hall.yaml
+  #- !include lovelace/admin-bedroom.yaml
+  #- !include lovelace/admin-bathroom.yaml
+  #- !include lovelace/admin-kitchen.yaml
+
+  #- !include lovelace/admin-media.yaml
+  #- !include lovelace/admin-virtual_dev.yaml
+  #- !include lovelace/admin-vacuum.yaml
+  #- !include lovelace/admin-ir-remote.yaml
+
+  - !include lovelace/admin-test.yaml
+  - !include lovelace/admin-test2.yaml
+
+

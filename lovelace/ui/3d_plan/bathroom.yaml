@@ -1,0 +1,17 @@
+        action: none
+        entity: light.bathroom_lamp
+        image: /local/ui/floorplan_my_home/ipad/bathroom_light_on.png
+        state_filter:
+          'off': opacity(0%)
+          'on': opacity(55%)
+          unknown: opacity(0%)
+        style:
+          left: 76.413672%
+          top: 85.933333%
+          width: 13.671875%
+          mix-blend-mode: lighten
+        tap_action:
+          action: toggle
+        hold_action:
+          action: toggle
+        type: image

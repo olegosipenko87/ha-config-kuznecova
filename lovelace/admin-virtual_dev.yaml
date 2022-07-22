@@ -1,0 +1,98 @@
+title: virtual dev
+
+
+type: custom:layout-card
+column_num: 4
+#column_width: [300, 500, 500] # 1300
+layout: horizontal
+cards:
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+    - type: entities
+      show_header_toggle: false
+      title: Кухня input
+      entities:
+        - entity: input_boolean.vd_kitchen_window
+        - entity: input_boolean.vd_kitchen_fan
+        - entity: input_boolean.vd_kitchen_motion
+        - entity: input_boolean.vd_kitchen_light
+        - entity: input_boolean.vd_kitchen_leakage
+        - entity: input_boolean.vd_kitchen_airc
+        - entity: input_number.vd_kitchen_temp
+        - entity: input_number.vd_kitchen_hum
+
+    - type: entities
+      show_header_toggle: false
+      title: Кухня VD
+      entities:
+        - entity: binary_sensor.vd_kitchen_window
+        - entity: binary_sensor.vd_kitchen_fan
+        - entity: binary_sensor.vd_kitchen_motion
+        - entity: binary_sensor.vd_kitchen_light
+        - entity: binary_sensor.vd_kitchen_leakage
+        - entity: binary_sensor.vd_kitchen_airc
+        - entity: sensor.vd_kitchen_humidity
+        - entity: sensor.vd_kitchen_temperature
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+    - type: entities
+      show_header_toggle: false
+      title: Спальня input
+      entities:
+        - entity: input_boolean.vd_bedroom_window
+        - entity: input_boolean.vd_bedroom_tv_plug
+        - entity: input_boolean.vd_bedroom_tv_remote
+
+    - type: entities
+      show_header_toggle: false
+      title: Спальня VD
+      entities:
+        - entity: binary_sensor.vd_bedroom_window
+        - entity: binary_sensor.vd_bedroom_tv_plug
+        - entity: binary_sensor.vd_bedroom_tv_remote
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+    - type: entities
+      show_header_toggle: false
+      title: LivigRoom input
+      entities:
+        - entity: input_boolean.vd_livingroom_light
+        - entity: input_boolean.vd_livingroom_window
+        - entity: input_boolean.vd_livingroom_tv_plug
+        - entity: input_boolean.vd_livingroom_tv_remote
+        - entity: input_boolean.vd_livingroom_plug
+        - entity: input_boolean.vd_livingroom_radiator
+        - entity: input_number.vd_livingroom_temp
+        - entity: input_number.vd_livingroom_hum
+
+    - type: entities
+      show_header_toggle: false
+      title: LivigRoom VD
+      entities:
+        - entity: binary_sensor.vd_bedroom_light
+        - entity: binary_sensor.vd_bedroom_window
+        - entity: binary_sensor.vd_bedroom_tv_plug
+        - entity: binary_sensor.vd_bedroom_tv_remote
+        - entity: sensor.vd_livingroom_humidity
+        - entity: sensor.vd_livingroom_temperature
+
+
+- type: vertical-stack
+
+
+
+
+
+
+
+
+
+
+#

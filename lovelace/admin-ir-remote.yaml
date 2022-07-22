@@ -1,0 +1,78 @@
+title: ir_remote
+path: ir_remote
+
+cards:
+
+- type: vertical-stack                    # в отдельный столб
+  cards:
+
+
+  - type: entities
+    show_header_toggle: false
+    entities:
+      - entity: sensor.time
+        name: Текущее время
+        icon: mdi:clock-outline
+      - entity: sensor.date_string
+        name: Дата
+        icon: mdi:calendar-check-outline
+      - type: divider                     # добовляет разделительную полосу
+      - entity: sensor.last_boot
+        name: Последняя перезагрузка RPi
+      - entity: sensor.time_online
+        name: Последняя перезагрузка HA
+      - type: divider                     # добовляет разделительную полосу
+      - entity: sensor.installed_ver_ha
+      - entity: sensor.latest_ver_ha
+
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+
+  - type: custom:browser-player
+
+
+  - type: entities
+    entities:
+      - type: custom:bar-card
+        positions:
+          icon: outside
+          indicator: inside
+          name: outside
+        width: 60%
+        height: 15px
+        entities:
+          - entity: sensor.processor_use
+            name: Загрузка CPU
+          - entity: sensor.memory_use_percent
+            name: Загрузка ОЗУ
+          - entity: sensor.disk_use_percent
+            name: Диск заполнен
+          - entity: sensor.disk_free
+            name: Свободное место
+            min: 0
+            max: 492
+
+
+- type: vertical-stack                      # в отдельный столбец
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

@@ -1,0 +1,151 @@
+health_z2m_devices:
+
+
+  ###################################################
+  automation:
+
+
+
+      - alias: health z2m devices alert
+        trigger:
+          - platform: state
+            entity_id: binary_sensor.health_z2m_devices_ver2
+        mode: single
+        action:
+          - choose:
+              - conditions: "{{ states.binary_sensor.health_z2m_devices_ver2.state == 'on' }}"
+                sequence:
+                - service: notify.telegram_id_1
+                  data:
+                    message: |-
+                      Есть проблема с Zigbee устройствами:
+                      {{state_attr('binary_sensor.health_z2m_devices_ver2', 'data')}}
+            default:
+              - service: notify.telegram_id_1
+                data:
+                  message: |-
+                    C Zigbee устройствами все ОК
+
+
+
+  ###################################################
+  script:
+
+
+
+
+  scene:
+
+
+  input_datetime:
+  input_text:
+
+
+  input_number:
+  input_select:
+  input_boolean:
+
+
+  timer:
+
+
+  ###################################################
+  sensor:
+
+
+  ###################################################
+  binary_sensor:
+
+#  - platform: template
+#    sensors:
+#      health_z2m_devices:
+#        friendly_name: 'health z2m devices'
+#        device_class: problem
+#        value_template: >-
+#            {%- macro CheckDroppedZigbee() -%}
+#            {% for state in states -%}
+#              {%- if (state.attributes.last_seen and (state.name | regex_search('linkquality')) and not (state.name | regex_search('4481|bedroom_lamp_dimmer_linkquality')) ) %}
+#                {%- if (as_timestamp(now()) - as_timestamp(state.attributes.last_seen) > (60*60*6) ) %}
+#            {{ state.attributes.friendly_name }}
+#                {%- endif -%}
+#              {%- endif -%}
+#            {%- endfor %}
+#            {%- endmacro -%}
+#            {% set output = CheckDroppedZigbee() %}
+#            {% if output | trim == "" %}
+#            false
+#            {%- else -%}
+#            true
+#            {%- endif -%}
+#        attribute_templates:
+#          data: >-
+#            {%- macro GetDroppedZigbee() -%}
+#            {% for state in states -%}
+#              {%- if (state.attributes.last_seen and (state.name | regex_search('linkquality')) and not (state.name | regex_search('4481|bedroom_lamp_dimmer_linkquality')) ) %}
+#                {%- if (as_timestamp(now()) - as_timestamp(state.attributes.last_seen) > (60*60*6) ) %}
+#            {{ state.attributes.friendly_name | regex_replace(find='_linkquality|_', replace=' ', ignorecase=False) }} недоступен более 6ч.
+#                {%- endif -%}
+#              {%- endif -%}
+#            {%- endfor %}
+#            {%- endmacro -%}
+#            {{ GetDroppedZigbee() }}
+
+  ###################################################
+  switch:
+
+  ###################################################
+  light:
+
+  template:
+    - trigger:
+        - platform: time_pattern
+          hours: "/6"
+      binary_sensor:
+        - name: "health z2m devices ver2"
+          device_class: problem
+          state: >-
+              {%- macro CheckDroppedZigbee() -%}
+              {% for state in states -%}
+                {%- if (state.attributes.last_seen and (state.name | regex_search('linkquality')) and not (state.name | regex_search('4481|bedroom_lamp_dimmer_linkquality')) ) %}
+                  {%- if (as_timestamp(now()) - as_timestamp(state.attributes.last_seen) > (60*60*2) ) %}
+              {{ state.attributes.friendly_name }}
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor %}
+              {%- endmacro -%}
+              {% set output = CheckDroppedZigbee() %}
+              {% if output | trim == "" %}
+              false
+              {%- else -%}
+              true
+              {%- endif -%}
+          attributes:
+            data: >-
+              {%- macro GetDroppedZigbee() -%}
+              {% for state in states -%}
+                {%- if (state.attributes.last_seen and (state.name | regex_search('linkquality')) and not (state.name | regex_search('4481|bedroom_lamp_dimmer_linkquality')) ) %}
+                  {%- if (as_timestamp(now()) - as_timestamp(state.attributes.last_seen) > (60*60*2) ) %}
+              {{ state.attributes.friendly_name | regex_replace(find='_linkquality|_', replace=' ', ignorecase=False) }} недоступен более 2ч.
+                  {%- endif -%}
+                {%- endif -%}
+              {%- endfor %}
+              {%- endmacro -%}
+              {{ GetDroppedZigbee() }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

@@ -1,0 +1,12 @@
+        type: state-icon
+        entity: binary_sensor.conditioner_status
+        icon: 'mdi:air-conditioner'
+        hold_action:
+          action: more-info
+        tap_action:
+          action: toggle
+        style:
+          left: 97%
+          top: 73.5%
+          "--paper-item-icon-active-color": green
+          "--paper-item-icon-color": gray

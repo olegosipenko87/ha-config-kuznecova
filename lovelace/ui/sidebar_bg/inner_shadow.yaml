@@ -1,0 +1,9 @@
+  action: none
+  image: /local/ui/sidebar/sidebarInnerShadow.png
+  style:
+    left: 22.83% #22.83%
+    opacity: 0.7 #0.7
+    pointer-events: none
+    top: 50% #50%
+    width: 1.2109375% #1.2109375%
+  type: image

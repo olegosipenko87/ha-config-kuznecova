@@ -1,0 +1,29 @@
+
+
+title: ipad
+#background: center / cover no-repeat url("/local/background/doski_1.jpg") fixed
+#background: center / cover no-repeat url("/local/doski_1.jpg") fixed
+
+kiosk_mode:
+  kiosk: true
+
+button_card_templates: !include button_card_templates.yaml
+views:
+  - !include lovelace/ipad_control_rooms_light.yaml
+  - !include lovelace/ipad_control_rooms_devices.yaml
+  - !include lovelace/ipad_control_rooms_climate.yaml
+  - !include lovelace/ipad_control_rooms_security.yaml
+
+  - !include lovelace/ipad_vacuum_cleaner.yaml
+
+  - !include lovelace/ipad_multimedia.yaml
+
+  - !include lovelace/ipad_other.yaml
+
+  - !include lovelace/ipad_monitoring.yaml
+
+  - !include lovelace/ipad_customization.yaml
+
+  - !include lovelace/ipad_weather.yaml
+
+  - !include lovelace/ipad_test.yaml

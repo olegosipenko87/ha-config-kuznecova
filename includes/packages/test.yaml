@@ -1,0 +1,106 @@
+test:
+
+  template:
+
+
+
+  sensor:
+
+
+
+
+
+  binary_sensor:
+   - platform: template
+     sensors:
+       vacuum_service_test:
+         device_class: problem
+         value_template: >-
+            {{
+               states('input_number.vacuum_filter')|int < 2 or
+               states('input_number.vacuum_sensor')|int < 2
+            }}
+         attribute_templates:
+           vacuum_filter: "{{ states('input_number.vacuum_filter') }} ч."
+           vacuum_side_brush_left: "{{ states('input_number.vacuum_sensor') }} ч."
+           what_to_serve: >-
+             {% if states('input_number.vacuum_filter') | float < 0 %}фильтр{% endif %}
+             {% if states('input_number.vacuum_sensor') | float < 0 %}сенсор{% endif %}
+  switch:
+
+  light:
+
+  group:
+
+  automation:
+
+
+
+  script:
+
+
+
+
+
+  scene:
+
+  input_datetime:
+    test:
+      name: test
+      has_date: true
+      has_time: true
+
+
+  input_number:
+    vacuum_filter:
+      initial: 30
+      min: -20
+      max: 35
+      step: 1
+    vacuum_sensor:
+      initial: 30
+      min: -20
+      max: 35
+      step: 1
+
+  input_text:
+
+
+  input_select:
+
+
+
+
+
+
+
+  input_boolean:
+
+
+  timer:
+
+  recorder:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

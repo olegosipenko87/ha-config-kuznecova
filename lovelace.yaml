@@ -1,0 +1,20 @@
+
+mode: yaml
+resources: !include lovelace/resources.yaml
+dashboards:
+
+  lovelace-ipad:
+    mode: yaml
+    filename: ui-lovelace-ipad.yaml
+    title: iPad
+    icon: mdi:tablet-dashboard
+    show_in_sidebar: true
+    require_admin: true
+
+  lovelace-admin: 
+    mode: yaml
+    filename: ui-lovelace-admin.yaml
+    title: Admin
+    icon: mdi:atom
+    show_in_sidebar: true
+    require_admin: true

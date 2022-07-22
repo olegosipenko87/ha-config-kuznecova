@@ -1,0 +1,14 @@
+  type: state-icon
+  entity: binary_sensor.vd_bedroom_window
+  hold_action:
+    action: more-info
+  tap_action:
+    action: more-info
+  style:
+    left: 95%
+    top: 46%
+    "--paper-item-icon-active-color": red
+    "--paper-item-icon-color": green
+    border-radius: 0.73vw
+    box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+    background-color: rgba(43, 46, 48, 0.6)

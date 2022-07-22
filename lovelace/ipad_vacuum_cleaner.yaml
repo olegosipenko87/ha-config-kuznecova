@@ -1,0 +1,523 @@
+
+
+title: vacuum cleaner
+panel: true
+path: ipad_vacuum_cleaner
+theme: jarvis_themes
+
+cards:
+
+  - type: picture-elements
+    image: /local/ui/floorplan_my_home/ipad/floorplan_light_off.png  # для макбука эир 13 размер ыкартинки 2880*1640
+    style:
+    elements:
+
+
+      #################################################################
+      #################################################################
+      #                            БОКОВОЕ МЕНЮ                       #
+      #################################################################
+
+      #################################################################
+      # ПОДЛОЖКА БОКОВОЙ ПАНЕЛИ
+      - !include ui/sidebar_bg/bg.yaml
+
+      #################################################################
+      #  НАЛОЖЕНИЕ ТЕНЕЙ на боковое меню
+      - !include ui/sidebar_bg/shadow.yaml
+      - !include ui/sidebar_bg/inner_shadow.yaml
+
+      #################################################################
+      #  ДАТА И ВРЕМЯ
+      #- !include ui/time.yaml
+      - !include ui/simple_clock_card.yaml
+      - !include ui/date_string.yaml
+      #- !include ui/analog_clock.yaml
+
+
+      #################################################################
+      #  КНОПКИ МЕНЮ
+      # Дом  Двор Уборка  Мультимедиа  ***  Настройки Графики
+
+      #- !include ui/btns/1_on.yaml
+      - !include ui/btns/1_off.yaml
+
+      - !include ui/btns/2_on.yaml
+      #- !include ui/btns/2_off.yaml
+
+      #- !include ui/btns/3_on.yaml
+      - !include ui/btns/3_off.yaml
+
+      #- !include ui/btns/4_on.yaml
+      - !include ui/btns/4_off.yaml
+
+      #- !include ui/btns/5_on.yaml
+      - !include ui/btns/5_off.yaml
+
+      #- !include ui/btns/6_on.yaml
+      - !include ui/btns/6_off.yaml
+
+      #################################################################
+      #  КТО ДОМА
+      - !include ui/who_is_home/id_1.yaml
+      - !include ui/who_is_home/id_2.yaml
+
+      # пустые для других людей
+      - !include ui/who_is_home/id_3.yaml
+      - !include ui/who_is_home/id_4.yaml
+
+      #################################################################
+      #  МИНИ КАРТА ПОГОДЫ
+#      - !include ui/weather/mini.yaml
+
+      #################################################################
+      #  ГРАФИК ТЕМПЕРАТУРЫ В ДОМЕ И НА УЛИЦЕ
+      - !include ui/weather/graphs.yaml
+
+      #################################################################
+      #################################################################
+      #                         ВЕРХНИЕ КНОПКИ                        #
+      #################################################################
+
+      ################## Основные кнопки управления
+
+      - name: Уборка
+        type: custom:button-card
+        entity: binary_sensor.vacuum_cleaning
+        tap_action:
+          action: call-service
+          service: script.vacuum_clean_select
+        entity_picture: /local/ui/icon/play-button.png
+        style:
+          top: 22%   #12
+          left: 29.2%  #60
+          width: 9%
+        template:
+          - vacuum_button_new
+
+      - name: Пауза
+        type: custom:button-card
+        entity: binary_sensor.vacuum_paused
+        tap_action:
+          action: call-service
+          service: vacuum.pause
+          service_data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+        entity_picture: /local/ui/icon/pause.png
+        style:
+          top: 22%
+          left: 39%
+          width: 9%
+        template:
+          - vacuum_button_new
+
+      - name: База
+        type: custom:button-card
+        entity: binary_sensor.vacuum_returning
+        tap_action:
+          action: call-service
+          service: script.vacuum_finish_clean_home
+        entity_picture: /local/ui/icon/house.png
+        style:
+          top: 35%
+          left: 29.2%
+          width: 9%
+        template:
+          - vacuum_button_new
+
+      - name: Поиск
+        type: custom:button-card
+        entity: input_boolean.navigation_buttons_off
+        tap_action:
+          action: call-service
+          service: vacuum.locate
+          service_data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+        entity_picture: /local/ui/icon/search.png
+        style:
+          top: 35%
+          left: 39%
+          width: 9%
+        template:
+          - vacuum_button_new
+
+      ################## Дополнительное для пылесоса
+
+      # общая инфа
+      - name: "Статус:"
+        type: custom:button-card
+        entity: sensor.vacuum_status
+        icon: mdi:robot-vacuum
+        tap_action: 
+          action: fire-dom-event
+          browser_mod:
+            command: popup
+            title: Пылесос
+            hide_header: true
+            deviceID: this
+            style:
+            card:
+              type: picture-entity
+              entity: camera.xiaomi_cloud_map_extractor
+              camera_view: live
+              tap_action: none
+              name: Карта уборки
+              show_state: false
+              aspect_ratio: 16:9
+        style:
+          top: 28.5%   #12
+          left: 56.8%  #60
+          width: 18.47%
+        template:
+          - vacuum_big
+          - icon_for_vacuum_big_button
+        custom_fields:
+          vacuum_battery_level:
+            card:
+              type: markdown
+              style: |
+               ha-card {background: transparent; border-style: none; font-size: 1.34vw; border: 0px; box-shadow: none; color: rgba(255, 255, 255, 0.4); text-align: right;}
+              content: |
+               Батарея: {{state_attr('vacuum.rockrobo_vacuum_v1', 'battery_level')}} %
+               
+               Последняя уборка:
+               {{state_attr('sensor.vacuum_status', 'vacuum_last_cleaned_date')}}
+
+               Убрал {{states('sensor.rockrobo_vacuum_v1_last_clean_area') | int}} м² ({{(states.sensor.rockrobo_vacuum_v1_last_clean_duration.state | int / 60) | round()}} мин)
+        styles:
+          custom_fields:
+            vacuum_battery_level:
+              [top: 5%, left: 10%, width: 90%, position: absolute]
+
+  #             Уровень заряда:
+  #             {{state_attr('sensor.vacuum_status', 'vacuum_battery_level')}}
+  #             Последняя уборка:
+  #             {{state_attr('sensor.vacuum_status', 'vacuum_last_cleaned_date')}}
+  #             убрал {{state_attr('sensor.vacuum_status', 'vacuum_last_cleaned_area')}}
+  #             за {{state_attr('sensor.vacuum_status', 'vacuum_duration_of_the_last_cleaning')}}
+
+
+
+      # график уборки и сервис
+      - name: Настройки
+        type: custom:button-card
+        entity: input_boolean.navigation_buttons_off
+        entity_picture: /local/ui/icon/event.png
+        style:
+          top: 22%   #12
+          left: 71.4%  #60
+          width: 9%
+        template:
+          - vacuum_button_new
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
+            title: График уборки
+            style:
+               .: |
+                :host .content {
+                  height: 300px;
+                }
+            hide_header: true
+            card:
+              type: picture-elements
+              image: /local/ui/floorplan_my_home/ipad/clear.png  # для макбука эир 13 размер картинки 2880*1640
+              style:
+              elements:
+              - type: custom:text-element
+                text: "График уборок:"
+                style:
+                  top: 15%
+                  left: 20%
+                  font-size: 1.54vw
+                  color: rgba(255, 255, 255, 0.4)
+
+
+              - type: 'custom:time-picker-card'
+                entity: input_datetime.choose_time_for_cleaning
+                name: 'Время:'
+                hide:
+                  name: true
+                layout:
+                 name: inside
+                 align_controls: left
+                style:
+                  top: 50%   #12
+                  left: 50%  #60
+                  width: 100%
+                  font-size: 1.4vw
+                  background-color: rgba(255, 255, 255, 0)
+                  color: rgba(255, 255, 255, 0.4)
+
+
+              - type: custom:button-card
+                entity: input_boolean.vacuum_monday
+                hold_action: none
+                style:
+                  top: 41%   #92
+                  left: 44%  #10
+                  width: 11%
+                template:
+                  - day
+              - type: custom:button-card
+                entity: input_boolean.vacuum_tuesday
+                hold_action: none
+                style:
+                  top: 41%   #92
+                  left: 56%  #24
+                  width: 11%
+                template:
+                  - day
+              - type: custom:button-card
+                entity: input_boolean.vacuum_wednesday
+                hold_action: none
+                style:
+                  top: 41% #92
+                  left: 68%  #38
+                  width: 11%
+                template:
+                  - day
+              - type: custom:button-card
+                entity: input_boolean.vacuum_thursday
+                hold_action: none
+                style:
+                  top: 41%   #92
+                  left: 80%  #52
+                  width: 11%
+                template:
+                  - day
+              - type: custom:button-card
+                entity: input_boolean.vacuum_friday
+                hold_action: none
+                style:
+                  top: 41%   #92
+                  left: 92%  #66
+                  width: 11%
+                template:
+                   - day
+
+              - type: custom:button-card
+                entity: input_boolean.vacuum_saturday
+                hold_action: none
+                style:
+                  top: 58%   #111
+                  left: 80%  #10
+                  width: 11%
+                template:
+                  - day
+              - type: custom:button-card
+                entity: input_boolean.vacuum_sunday
+                hold_action: none
+                style:
+                  top: 58%   #111
+                  left: 92%  #24
+                  width: 11%
+                template:
+                  - day
+
+      - name: Сервис
+        type: custom:button-card
+        entity: input_boolean.navigation_buttons_off
+        entity_picture: /local/ui/icon/maintenance.png
+        style:
+          top: 35%   #12
+          left: 71.4%  #60
+          width: 9%
+        template:
+          - vacuum_button_new
+        tap_action:
+          action: fire-dom-event
+          browser_mod:
+            command: popup
+            title: Сервис
+            hide_header: true
+            card:
+              type: custom:stack-in-card
+              cards:
+              - type: entities
+                entities:
+                  - type: custom:hui-element
+                    card_type: markdown
+                    style: |
+                     ha-card {background: transparent; border-style: none; border: 0px; box-shadow: none; color: rgba(255, 255, 255, 0.4); font-size: 1.34vw;}
+                    content: |
+                     Обслуживание:
+              - type: custom:bar-card
+                positions:
+                  icon: outside
+                  indicator: inside
+                  name: outside
+                width: 60%
+                height: 15px
+                entities:
+                  - entity: binary_sensor.vacuum_service
+                    attribute: vacuum_filter_left_percent
+                    unit_of_measurement: '%'
+                    icon: 'mdi:air-filter'
+                    tap_action: none
+                    hold_action: none
+                    name: Фильтр
+                  - entity: binary_sensor.vacuum_service
+                    attribute: vacuum_side_brush_left_percent
+                    unit_of_measurement: '%'
+                    icon: 'mdi:axis'
+                    tap_action: none
+                    hold_action: none
+                    name: Боковая щетка
+                  - entity: binary_sensor.vacuum_service
+                    attribute: vacuum_main_brush_left_percent
+                    unit_of_measurement: '%'
+                    icon: 'mdi:atom-variant'
+                    name: Основная щетка
+                    tap_action: none
+                    hold_action: none
+                  - entity: binary_sensor.vacuum_service
+                    attribute: vacuum_sensor_dirty_left_percent
+                    unit_of_measurement: '%'
+                    icon: 'mdi:leak'
+                    name: Датчики
+                    tap_action: none
+                    hold_action: none
+
+              - type: entities
+                entities:
+                  - type: custom:hui-element
+                    card_type: markdown
+                    style: |
+                     ha-card {background: transparent; border-style: none; border: 0px; box-shadow: none; color: rgba(255, 255, 255, 0.4); font-size: 1.34vw;}
+                    content: |
+                     Изменить озвучку:
+                  - entity: input_select.choose_a_voice_for_a_vacuum
+
+                  - type: button
+                    name: Перепрошить
+                    show_state: false
+                    tap_action:
+                      action: call-service
+                      service: script.turn_on
+                      service_data:
+                        entity_id: script.choose_a_voice_for_a_vacuum
+
+              - type: entities
+                entities:
+                  - type: custom:hui-element
+                    card_type: markdown
+                    style: |
+                     ha-card {background: transparent; border-style: none; border: 0px; box-shadow: none; color: rgba(255, 255, 255, 0.4); font-size: 1.34vw;}
+                    content: |
+                     Изменить озвучку:
+
+
+      # мощность уборки
+      - name: Максимум
+        type: custom:button-card
+        entity: binary_sensor.vacuum_turbo
+        entity_picture: /local/ui/icon/rocket.png
+        tap_action:
+          action: call-service
+          service: vacuum.set_fan_speed
+          service_data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            fan_speed: Turbo
+        style:
+          top: 22%
+          left: 84.2%
+          width: 9%
+        template:
+          - vacuum_button_new
+
+      - name: Турбо
+        type: custom:button-card
+        entity: binary_sensor.vacuum_medium
+        entity_picture: /local/ui/icon/departures.png
+        tap_action:
+          action: call-service
+          service: vacuum.set_fan_speed
+          service_data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            fan_speed: Medium
+        style:
+          top: 22%
+          left: 94%
+          width: 9%
+        template:
+          - vacuum_button_new
+
+      - name: Средний
+        type: custom:button-card
+        entity: binary_sensor.vacuum_standart
+        entity_picture: /local/ui/icon/landing.png
+        tap_action:
+          action: call-service
+          service: vacuum.set_fan_speed
+          service_data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            fan_speed: Standard
+        style:
+          top: 35%
+          left: 84.2%
+          width: 9%
+        template:
+          - vacuum_button_new
+
+      - name: Тихо
+        type: custom:button-card
+        entity: binary_sensor.vacuum_silent
+        entity_picture: /local/ui/icon/night.png
+        tap_action:
+          action: call-service
+          service: vacuum.set_fan_speed
+          service_data:
+            entity_id: 'vacuum.rockrobo_vacuum_v1'
+            fan_speed: Silent
+        style:
+          top: 35%
+          left: 94%
+          width: 9%
+        template:
+          - vacuum_button_new
+
+      #################################################################
+      #################################################################
+      #                             3D ПЛАН                           #
+      #################################################################
+
+      #################################################################
+      #  IMAGE для освещения
+      #- !include ui/3d_plan/livingroom.yaml
+      #- !include ui/3d_plan/bedroom.yaml
+      #- !include ui/3d_plan/hall.yaml
+      #- !include ui/3d_plan/kitchen.yaml
+      #- !include ui/3d_plan/bathroom.yaml
+
+      #  IMAGE для вкладки пылесоса. Выбор комнаты для уборки
+      - !include ui/3d_plan/hall_vacuum_clean.yaml
+      - !include ui/3d_plan/livingroom_vacuum_clean.yaml
+      - !include ui/3d_plan/bedroom_vacuum_clean.yaml
+      - !include ui/3d_plan/kitchen_vacuum_clean.yaml
+
+
+      #################################################################
+      #  Дополнительная инфа на плане
+
+      # Кнопка reload
+      - !include ui/all_icons_on_the_plan/reload.yaml
+      # Кнопка в админ
+      - !include ui/all_icons_on_the_plan/admin.yaml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

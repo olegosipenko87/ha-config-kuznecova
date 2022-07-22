@@ -1,0 +1,11 @@
+  type: state-icon
+  entity: binary_sensor.vd_livingroom_window
+  hold_action:
+    action: more-info
+  tap_action:
+    action: more-info
+  style:
+    left: 28%
+    top: 45%
+    "--paper-item-icon-active-color": red
+    "--paper-item-icon-color": green

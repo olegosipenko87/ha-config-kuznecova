@@ -1,0 +1,69 @@
+# https://www.home-assistant.io/integrations/binary_sensor/
+# https://www.home-assistant.io/docs/configuration/customizing-devices/
+# https://www.home-assistant.io/integrations/sensor/
+
+kitchen_devices:
+
+  ###################################################
+  sensor:
+
+
+  ###################################################
+  binary_sensor:
+
+  ###################################################
+#  switch:
+#  - platform: mqtt
+#    name: "kitchen_lamp"
+#    state_topic: "stat/sonoffb3/POWER"
+#    command_topic: "cmnd/sonoffb3/POWER"
+#    availability_topic: "tele/sonoffb3/LWT"
+#    payload_on: "ON"
+#    payload_off: "OFF"
+#    payload_available: "Online"
+#    payload_not_available: "Offline"
+#    optimistic: false
+#    qos: 1
+#    retain: true
+#
+#  - platform: mqtt
+#    name: "kitchen_fan"
+#    state_topic: "stat/sonoffb5/POWER" 
+#    command_topic: "cmnd/sonoffb5/POWER"
+#    availability_topic: "tele/sonoffb5/LWT"
+#    payload_on: "ON"
+#    payload_off: "OFF"
+#    payload_available: "Online"
+#    payload_not_available: "Offline"
+#    optimistic: false
+#    qos: 1
+#    retain: true
+  ###################################################
+  light:
+    #### Из свитчей в light
+    #  реле света в коридоре
+    - platform: switch
+      name: kitchen_lamp
+      entity_id: switch.kitchen_lamp
+
+
+
+
+
+
+
+
+
+
+
+
+
+#
+
+
+
+
+
+
+
+#

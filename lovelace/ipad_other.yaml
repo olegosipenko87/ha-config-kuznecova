@@ -1,0 +1,145 @@
+
+
+title: other
+panel: true
+path: ipad_other
+theme: jarvis_themes
+
+cards:
+
+  - type: picture-elements
+    image: /local/ui/floorplan_my_home/ipad/clear.png  # для макбука эир 13 размер ыкартинки 2880*1640
+    style:
+    #  ha-card {
+    #    background: center / cover no-repeat url("/local/doski_1.jpg") fixed
+    #  }
+    elements:
+
+
+
+      #########################    DAY BASE FLOORPLAN OVERLAY    #########################
+      #- action: none
+      #  entity: sun.sun
+      #  hold_action:
+      #    action: none
+      #  state_image:
+      #    above_horizon: /local/ui/floorplan_my_home/laptop/floorplan_day.png
+      #    below_horizon: /local/transparent.png
+      #  style:
+      #    height: 100%
+      #    left: 50%
+      #    top: 50%
+      #    width: 100%
+      #    opacity: '${ states[''sensor.sunlight_opacity''].state }'
+      #  tap_action:
+      #    action: none
+      #  type: image
+
+      #################################################################
+      #################################################################
+      #                            БОКОВОЕ МЕНЮ                       #
+      #################################################################
+
+      #################################################################
+      # ПОДЛОЖКА БОКОВОЙ ПАНЕЛИ
+      - !include ui/sidebar_bg/bg.yaml
+
+      #################################################################
+      #  НАЛОЖЕНИЕ ТЕНЕЙ на боковое меню
+      - !include ui/sidebar_bg/shadow.yaml
+      - !include ui/sidebar_bg/inner_shadow.yaml
+
+      #################################################################
+      #  ДАТА И ВРЕМЯ
+      #- !include ui/time.yaml
+      - !include ui/simple_clock_card.yaml
+      - !include ui/date_string.yaml
+      #- !include ui/analog_clock.yaml
+
+
+      #################################################################
+      #  КНОПКИ МЕНЮ
+      # Дом  Двор Уборка  Мультимедиа  ***  Настройки Графики
+
+      #- !include ui/btns/1_on.yaml
+      - !include ui/btns/1_off.yaml
+
+      #- !include ui/btns/2_on.yaml
+      - !include ui/btns/2_off.yaml
+
+      #- !include ui/btns/3_on.yaml
+      - !include ui/btns/3_off.yaml
+
+      - !include ui/btns/4_on.yaml
+      #- !include ui/btns/4_off.yaml
+
+      #- !include ui/btns/5_on.yaml
+      - !include ui/btns/5_off.yaml
+
+      #- !include ui/btns/6_on.yaml
+      - !include ui/btns/6_off.yaml
+
+      #################################################################
+      #  КТО ДОМА
+      - !include ui/who_is_home/id_1.yaml
+      - !include ui/who_is_home/id_2.yaml
+
+      # пустые для других людей
+      - !include ui/who_is_home/id_3.yaml
+      - !include ui/who_is_home/id_4.yaml
+
+      #################################################################
+      #  МИНИ КАРТА ПОГОДЫ
+#      - !include ui/weather/mini.yaml
+
+      #################################################################
+      #  ГРАФИК ТЕМПЕРАТУРЫ В ДОМЕ И НА УЛИЦЕ
+      - !include ui/weather/weather_card.yaml
+      - !include ui/weather/graphs.yaml
+
+      #################################################################
+      #################################################################
+      #                         ВЕРХНИЕ КНОПКИ                        #
+      #################################################################
+
+
+
+
+
+      #################################################################
+      #################################################################
+      #                             3D ПЛАН                           #
+      #################################################################
+
+      #################################################################
+      #  IMAGE
+      #- !include ui/3d_plan/livingroom.yaml
+      #- !include ui/3d_plan/bedroom.yaml
+      #- !include ui/3d_plan/hall.yaml
+      #- !include ui/3d_plan/kitchen.yaml
+      #- !include ui/3d_plan/bathroom.yaml
+
+
+      #################################################################
+      #  Дополнительная инфа на плане
+
+      # Кнопка reload
+      - !include ui/all_icons_on_the_plan/reload.yaml
+      # Кнопка в админ
+      - !include ui/all_icons_on_the_plan/admin.yaml
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

@@ -1,0 +1,93 @@
+
+
+
+- platform: template
+  sensors:
+
+    ########################## Тек состояние погоды
+    # текущее состояние на рус
+    gismeteo_condition:
+      value_template: >-
+          {% set state = states('weather.gismeteo') %}
+          {% if state == 'cloudy' %} облачно
+          {% elif state == 'clear-night' %} ясная ночь
+          {% elif state == 'fog' %} туман
+          {% elif state == 'hail' %} град
+          {% elif state == 'lightning' %} гроза
+          {% elif state == 'lightning-rainy' %} гроза
+          {% elif state == 'partlycloudy' %} переменная облачность
+          {% elif state == 'pouring' %} ливень
+          {% elif state == 'rainy' %} дождь
+          {% elif state == 'snowy' %} снег
+          {% elif state == 'snowy-rainy' %} снег с дождем
+          {% elif state == 'sunny' %} солнечно
+          {% elif state == 'windy' %} ветреный день
+          {% elif state == 'windy-variant' %} ветреный день
+          {% elif state == 'exceptional' %} исключительный
+          {% else %} нет данных
+          {% endif %}
+    # сенсор текущей температуры
+    gismeteo_temperature:
+      value_template: "{{state_attr('weather.gismeteo', 'temperature')}}"
+    # сенсор текущей влажности
+    gismeteo_humidity:
+      value_template: "{{state_attr('weather.gismeteo', 'humidity')}}"
+      unit_of_measurement: '%'
+
+    ########################## Прогнозы
+    # прогноз температуры на день
+    gismeteo_temperature_forecast:
+      value_template: "{{state_attr('weather.gismeteo', 'forecast')[0]['temperature']}}"
+    # прогноз влажности на день
+    gismeteo_humidity_forecast:
+      value_template: "{{state_attr('weather.gismeteo', 'forecast')[0]['humidity']}}"
+      unit_of_measurement: '%'
+    # прогноз погоды на день
+    gismeteo_condition_forecast:
+      value_template: >-
+          {% set state = state_attr('weather.gismeteo', 'forecast')[0]['condition'] %}
+          {% if state == 'cloudy' %} облачно
+          {% elif state == 'clear-night' %} ясная ночь
+          {% elif state == 'fog' %} туман
+          {% elif state == 'hail' %} град
+          {% elif state == 'lightning' %} гроза
+          {% elif state == 'lightning-rainy' %} гроза
+          {% elif state == 'partlycloudy' %} переменная облачность
+          {% elif state == 'pouring' %} ливень
+          {% elif state == 'rainy' %} дождь
+          {% elif state == 'snowy' %} снег
+          {% elif state == 'snowy-rainy' %} снег с дождем
+          {% elif state == 'sunny' %} солнечно
+          {% elif state == 'windy' %} ветреный день
+          {% elif state == 'windy-variant' %} ветреный день
+          {% elif state == 'exceptional' %} исключительный
+          {% else %} нет данных
+          {% endif %}
+
+
+
+
+
+
+          {%- set result = namespace(sensors=[]) %}
+              {%- for state in states.sensor %}
+                {%- if state.name | regex_search('почвы') %}
+                  {%- if 0 <= state.state | int(-1) < 90 | int and state.entity_id == 'sensor.hhccjcy01_04_moisture' %}
+                  {%- set result.sensors = result.sensors + [states.input_text.miflora_name_d4.state ~ ' (' ~ state.state ~ ' %)'] %}
+                  {%- endif %}
+                {%- endif %}
+              {%- endfor %}
+              Необходимо полить цветок под названием: {{result.sensors|join(', ')}}
+      trigger:
+
+
+
+
+
+
+
+
+
+
+
+#

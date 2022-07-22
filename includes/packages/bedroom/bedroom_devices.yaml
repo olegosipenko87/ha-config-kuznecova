@@ -1,0 +1,28 @@
+# https://www.home-assistant.io/integrations/binary_sensor/
+# https://www.home-assistant.io/docs/configuration/customizing-devices/
+# https://www.home-assistant.io/integrations/sensor/
+
+bedroom_devices:
+
+  ###################################################
+  sensor:
+
+  ###################################################
+  binary_sensor:
+
+  ###################################################
+  switch:
+
+  ###################################################
+  light:
+
+
+
+
+
+
+
+
+
+
+#

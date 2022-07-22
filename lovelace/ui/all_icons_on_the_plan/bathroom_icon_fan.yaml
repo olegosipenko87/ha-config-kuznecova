@@ -1,0 +1,14 @@
+        type: state-icon
+        entity: switch.bathroom_fan
+        icon: 'mdi:fan'
+        hold_action:
+          action: more-info
+        tap_action:
+          action: toggle
+        style:
+          left: 78.5%
+          top: 92%
+          "--paper-item-icon-active-color": green
+          "--paper-item-icon-color": gray
+
+          

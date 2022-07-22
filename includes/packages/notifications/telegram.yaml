@@ -1,0 +1,244 @@
+telegram_bot_support:
+
+  sensor:
+  binary_sensor:
+  switch:
+  light:
+
+  group:
+
+  automation:
+
+    - alias: 'начать разговор + основное меню с bot_support'
+      trigger:
+      # вызвать базовое меню можно любым сообщением в чат
+      - platform: event
+        event_type: telegram_text
+      condition:
+          - condition: template
+            value_template: >-
+              {{ trigger.event.data.text in ["Привет", "привет", "ghbdtn", "Ghbdtn", "Jarvis", "jarvis", "Джарвис", "джарвис", "ау"] }}
+      action:
+        - service: telegram_bot.send_message
+          data:
+            target: "{{ trigger.event.data.user_id }}"
+            message: >
+                        {{ [
+                        "Да да. Выбери что хочешь",
+                        "Это то, что я сейчас умею:",
+                        "Выбирай:",
+                        "Жми и я все сделаю:",
+                        "Да, Босс",
+                        "Я внимательно слушаю:",
+                         ] | random }}
+            inline_keyboard:
+              - 'Статуc сервера:/jarvis_server_status, Пылесос:/jarvis_menu_vacuum'
+              - 'Погода на сегодня:/jarvis_weather_for_today'
+            #  - 'Основное меню:/jarvis_main_menu'
+            #  - 'Скачать фильм/сериал:/jarvis_start_search_media, Погода на сегодня:/jarvis_weather_for_today'
+            #  - 'Пылесос:/jarvis_menu_vacuum, Безопасность:/wait_and_then_start_cleanin'
+            #  - 'Фильм/Сериал:/start_cleanin, Музыка:/wait_and_then_start_cleanin'
+            #  - 'Список покупок:/start_cleanin, Климат:/hui'
+
+
+    - alias: 'команды из телеги все'
+      trigger:
+        - platform: event
+          event_type: telegram_callback
+      mode: restart
+      action:
+      - choose:
+          ####### статус сервера
+          - conditions: "{{ trigger.event.data.data == '/jarvis_server_status' }}"
+            sequence:
+            - service: telegram_bot.send_message 
+              data:
+                target: "{{ trigger.event.data.chat_id }}"
+                message: |
+                        *В онлайне:*
+                        Сервер / HA - *{{states('sensor.rpi_online_custom')}} / {{states('sensor.ha_online_custom')}}*
+
+                        *Версия HA:*
+                        Установлена / Последняя - *{{states('sensor.installed_ver_ha')}} / {{states('sensor.latest_ver_ha')}}*
+                inline_keyboard:
+                  - 'Основное меню:/jarvis_main_menu' 
+          ####### основное меню
+          - conditions: "{{ trigger.event.data.data == '/jarvis_main_menu' }}"
+            sequence:
+              - service: telegram_bot.send_message 
+                data:
+                  target: "{{ trigger.event.data.chat_id }}"
+                  message: >
+                        {{ [ "Да да. Выбери что хочешь", "Это то, что я сейчас умею:", "Выбирай:", "Жми и я все сделаю:", "Да, Босс", "Я внимательно слушаю:",
+                         ] | random }}
+                  inline_keyboard:
+                    - 'Статуc сервера:/jarvis_server_status, Пылесос:/jarvis_menu_vacuum'
+                    - 'Погода на сегодня:/jarvis_weather_for_today'         
+          
+          ####### запуск поиска фильмов/сериалов
+          - conditions: "{{ trigger.event.data.data == '/jarvis_start_search_media' }}"
+            sequence:
+              - service: script.turn_on
+                entity_id: script.docker_start_media # скрипт в multimedia.yaml
+              - service: telegram_bot.send_message
+                data:
+                  target: "{{ trigger.event.data.user_id }}"
+                  message: |
+                    Ок, запускаю сервис по поиску фильмов и сериалов.
+                    Это займет где-то 4 мин. Я сообщу когда можно будет начать поиск.
+              - delay: "00:04:00"
+              - service: notify.telegram_media
+                data:
+                  message: |
+                    Сервис запустил. Для экономии ресурсов, я его выключу через 20 мин.
+                    Чтобы начать поиск напишите:
+                    Films
+                    Для лучшего поиска, к названию фильма добавь год выпуска.
+              - delay: "00:30:00"
+              - service: script.turn_on
+                entity_id: script.docker_stop_media # скрипт в multimedia.yaml
+              - delay: "00:02:00"
+              - service: notify.telegram_media
+                data:
+                  message: |
+                    Сервис  выключил.
+          ####### погода
+          - conditions: "{{ trigger.event.data.data == '/jarvis_weather_for_today' }}"
+            sequence:
+              #- service: script.turn_on
+              #  entity_id: script.jarvis_weather_for_today # скрипт в weather.yaml
+              - service: telegram_bot.send_message #notify.telegram_group
+                data:
+                  target: "{{ trigger.event.data.chat_id }}"
+                  message: |
+                    {% if now().hour < 12 %}
+                      Сейчас на улице {{ state_attr('weather.gismeteo', 'temperature')}}°C
+                      Прогноз на сегодня -  {{ states('sensor.gismeteo_condition_forecast')}}, {{ states('sensor.gismeteo_temperature_forecast')}}°C, влажность {{ states('sensor.gismeteo_humidity_forecast')}}%
+                    {% else %}
+                      Сейчас на улице - {{ state_attr('weather.gismeteo', 'temperature')}}°C, {{ states('sensor.gismeteo_condition')}}
+                    {% endif %}
+          
+          ####### блок по управлению пылесосом
+          # меню
+          - conditions: "{{ trigger.event.data.data == '/jarvis_menu_vacuum' }}"
+            sequence:
+              - service: telegram_bot.send_message
+                data:
+                  target: "{{ trigger.event.data.chat_id }}"
+                  message: |
+                    Пылесос сейчас {{ states('sensor.vacuum_status') }}.
+                    Уровень заряда {{ state_attr('vacuum.rockrobo_vacuum_v1', 'battery_level')}}%
+
+                    Последняя уборка - {{state_attr('sensor.vacuum_status', 'vacuum_last_cleaned_date')}}
+                    Убрал {{states('sensor.rockrobo_vacuum_v1_last_clean_area') | int}} м² ({{(states.sensor.rockrobo_vacuum_v1_last_clean_duration.state | int / 60) | round()}} мин)
+                  inline_keyboard:
+                      - 'Начать уборку:/jarvis_vacuum_start, Закончить:/jarvis_vacuum_stop'
+                      - 'Очистить:/jarvis_vacuum_trash, Обслуживание:/jarvis_vacuum_service'
+                      - 'Основное меню:/jarvis_main_menu' 
+                      #- 'Последняя уборка:/jarvis_vacuum_last_clean, Статус:/jarvis_vacuum_state'
+          # начать уборку
+          - conditions: "{{ trigger.event.data.data == '/jarvis_vacuum_start' }}"
+            sequence:
+              - service: script.turn_on
+                entity_id: script.vacuum_clean_home # скрипт в vacuum_control.yaml
+              - service: telegram_bot.send_message
+                data:
+                  target: "{{ trigger.event.data.user_id }}"
+                  message: |
+                    Пылесос начинает уборку.
+          # остановить уборку
+          - conditions: "{{ trigger.event.data.data == '/jarvis_vacuum_stop' }}"
+            sequence:
+              - service: script.turn_on
+                entity_id: script.vacuum_finish_clean_home # скрипт в vacuum_control.yaml
+              - service: telegram_bot.send_message
+                data:
+                  target: "{{ trigger.event.data.chat_id }}"
+                  message: |
+                    Я остановил уборку и возвращаю пылесос на базу.
+          # очистить. Отправить пылесос к мусорному ведру
+          - conditions: "{{ trigger.event.data.data == '/jarvis_vacuum_trash' }}"
+            sequence:
+              - service: script.turn_on
+                entity_id: script.vacuum_container_cleaning # скрипт в vacuum_control.yaml
+              - service: telegram_bot.send_message
+                data:
+                  target: "{{ trigger.event.data.chat_id }}"
+                  message: |
+                    Пылесос направляется к ведру чтоб его очистили.
+          # обслуживание
+          - conditions: "{{ trigger.event.data.data == '/jarvis_vacuum_service' }}"
+            sequence:
+              - service: telegram_bot.send_message
+                data:
+                  target: "{{ trigger.event.data.chat_id }}"
+                  message: |
+                    Обслуживание (остаток ресурса):
+
+                      Фильтр нужно будет заменить через  {{ state_attr('binary_sensor.vacuum_service', 'vacuum_filter_left')}} работы;
+                      Боковую щетку через {{ state_attr('binary_sensor.vacuum_service', 'vacuum_side_brush_left')}};
+                      Основную щетку через {{ state_attr('binary_sensor.vacuum_service', 'vacuum_main_brush_left')}};
+                      Датчики нужно будет очистить через {{ state_attr('binary_sensor.vacuum_service', 'vacuum_sensor_dirty_left')}}
+          
+          # последняя уборка
+          - conditions: "{{ trigger.event.data.data == '/jarvis_vacuum_last_clean' }}"
+            sequence:
+              - service: telegram_bot.send_message
+                data:
+                  target: "{{ trigger.event.data.chat_id }}"
+                  message: |
+                    Информация о последней уборке:
+
+                      Последний раз пылесос убирал {{ state_attr('sensor.vacuum_status', 'vacuum_last_cleaned_date')}}
+                      Ему понадобилось {{ state_attr('sensor.vacuum_status', 'vacuum_duration_of_the_last_cleaning')}} времени и он убрал {{ state_attr('sensor.vacuum_status', 'vacuum_last_cleaned_area')}} квартиры.
+          # статус пылесоса
+          - conditions: "{{ trigger.event.data.data == '/jarvis_vacuum_state' }}"
+            sequence:
+              - service: telegram_bot.send_message
+                data:
+                  target: "{{ trigger.event.data.chat_id }}"
+                  message: |
+                    Пылесос сейчас {{ states('sensor.vacuum_status') }}.
+                    Уровень заряда {{ state_attr('sensor.vacuum_status', 'vacuum_battery_level')}}
+
+
+
+
+
+
+
+
+  script:
+
+
+  scene:
+
+  input_datetime:
+
+  input_text:
+  input_number:
+  input_select:
+  input_boolean:
+
+
+  timer:
+
+  recorder:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

@@ -1,0 +1,20 @@
+import requests, bs4, json
+import sqlite3
+import re
+import time
+import sys
+
+s=requests.get('https://multiplex.ua/ru/cinema/odesa/riviera')
+b=bs4.BeautifulSoup(s.text, "lxml")
+films = b.find('div', class_='cinema_inside sch_date').findAll('div', class_='film')
+res = []
+        
+for film in films:
+    film_name = film.find('div', class_='info').find('a', 'title').get('title')
+    film_session= film.find('div', class_='info').find('div', class_='sessions').text.strip().replace("\n\n\n", "")
+    film_session = re.sub('[\n]+', ', ', film_session) # Replacing one or more consecutive newlines
+    data_js = {"film_name": film_name, "film_session": film_session}
+    res.append(data_js)
+    
+res = {"data": res}
+print(json.dumps(res, indent=4 ,ensure_ascii=False))

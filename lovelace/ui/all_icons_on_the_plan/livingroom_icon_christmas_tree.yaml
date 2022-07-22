@@ -1,0 +1,11 @@
+        type: state-icon
+        entity: switch.plug_for_christmas_tree
+        icon: 'mdi:pine-tree'
+        hold_action:
+          action: more-info
+        tap_action:
+          action: toggle
+        style:
+          left: 50%
+          top: 47%
+          "--paper-item-icon-active-color": green

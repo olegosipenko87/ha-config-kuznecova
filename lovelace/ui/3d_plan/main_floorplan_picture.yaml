@@ -1,0 +1,4 @@
+    type: picture-elements
+    image: /local/ui/floorplan_my_home/ipad/floorplan_light_off.png  # для макбука эир 13 размер ыкартинки 2880*1640
+    style:
+    elements:

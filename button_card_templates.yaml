@@ -1,0 +1,876 @@
+  #################################################
+  # Новые кнопки rgba(15, 196, 225, 0.9)-голубой hex #0fc4e1
+  #################################################
+
+  # кнопки меню основной страницы.
+  # оснонвая кнопка + иконка + название
+  menu_button_new:
+    aspect_ratio: 1/1
+    show_state: false
+    show_icon: false
+    show_entity_picture: true
+    tap_action:
+      action: none
+    styles:
+      img_cell:
+        - top: -5%
+        - left: 0%
+        - position: absolute
+        - opacity: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? '100%' : '60%'; ]]]
+        - -webkit-filter: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? 'grayscale(0%)' : 'grayscale(100%)'; ]]]
+      name:
+        - top: 57.7%
+        - left: 6%
+        - line-height: 3vw
+        - position: centre
+      card:
+        - box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+        - font-family: Bookman # Sf Display
+        - letter-spacing: 0.05vw
+        - font-weight: 400
+        - font-size: 1.4vw   #1.34
+        - border-radius: 0.8vw
+        - transition: none
+        - color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.4)'; ]]]
+        - background-color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(43, 46, 48, 0.8)' : 'rgba(30, 32, 34, 0.7)'; ]]]
+
+
+  #################################################
+  # Кнопка с погодой
+  #################################################
+  menu_button_weather:
+    aspect_ratio: 2/1
+    show_state: false
+    show_icon: false
+    show_entity_picture: false
+    show_name: false
+    tap_action:
+      action: none
+    custom_fields:
+      weather:
+        card:
+          type: weather-forecast
+          entity: weather.my_home
+          show_forecast: false
+          card_mod:
+            style: |
+              ha-card {
+              --ha-card-background: transparent;
+              color: var(--secondary-text-color);
+              width: 100%;
+              border-radius: 0px;
+              font-size: 0.6vw;
+              }
+    styles:
+      card:
+        - box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+        - font-family: Bookman
+        - letter-spacing: 0.05vw
+        - font-weight: 400
+        - font-size: 1.4vw
+        - border-radius: 0.8vw
+        - transition: none
+        - color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.4)'; ]]]
+        - background-color: rgba(30, 32, 34, 0.7)
+      custom_fields:
+        weather:
+          - position: absolute
+          - left: 0%
+          - top: 0%
+          - width: 100%
+
+
+  #################################################
+  # Вкладка свет
+  #################################################
+
+  ################## кнопки для света
+  # основная кнопка + иконка + название
+  light_button_new:
+    aspect_ratio: 1/1
+    show_state: false
+    show_icon: false
+    show_entity_picture: true
+    tap_action:
+      action: toggle
+      haptic: light
+    styles:
+      img_cell:
+        - top: -5%
+        - left: 0%
+        - position: absolute
+        - opacity: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? '100%' : '60%'; ]]]
+        - -webkit-filter: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? 'grayscale(0%)' : 'grayscale(100%)'; ]]]
+      name:
+        - top: 57.7%
+        - left: 6%
+        - line-height: 3vw
+        - position: centre
+      card:
+        - box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+        - font-family: Bookman # Sf Display
+        - letter-spacing: 0.05vw
+        - font-weight: 400
+        - font-size: 1.4vw   #1.34
+        - border-radius: 0.8vw
+        - transition: none
+        - color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.4)'; ]]]
+        - background-color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(43, 46, 48, 0.8)' : 'rgba(30, 32, 34, 0.7)'; ]]]
+
+  light_timer:
+    custom_fields:
+      timer:
+        card:
+          type: 'entities'
+          card_mod:
+            style: |
+              ha-card {
+              --ha-card-background: transparent;
+              color: var(--secondary-text-color);
+              box-shadow: none;
+              font-size: 12px;
+              }
+              :host {
+              --card-mod-icon: none;
+              }
+          entities:
+            - entity: timer.hall_light
+              name: ' '
+              icon: ' '
+    styles:
+      custom_fields:
+        timer:
+          - top: -15%
+          - left: 10%
+          - position: absolute
+          - opacity: >
+              [[[ return ( states["timer.hall_light"].state === 'idle' )  ? '0%' : '80%'; ]]]
+
+
+  ################## осн параметры иконки слева
+  light_icon_base:
+    styles:
+      custom_fields:
+        icon:
+          - top: 5%
+          - left: 5%
+          - width: 1.7vw
+          - position: absolute
+          - color: >
+              [[[ return entity.state === 'on' ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.4)'; ]]]
+  # иконка слева Дом rgba(15, 196, 225, 0.9)-голубой
+  light_icon_left_home:
+    template:
+      - light_icon_base
+    custom_fields:
+      icon: >
+        [[[
+          return `<ha-icon
+            icon="mdi:home-outline">
+            </ha-icon>`
+        ]]]
+  # иконка слева Кухня
+  light_icon_left_kitchen:
+    template:
+      - light_icon_base
+    custom_fields:
+      icon: >
+        [[[
+          return `<ha-icon
+            icon="mdi:fridge-outline">
+            </ha-icon>`
+        ]]]
+  # иконка слева Спальня
+  light_icon_left_bedroom:
+    template:
+      - light_icon_base
+    custom_fields:
+      icon: >
+        [[[
+          return `<ha-icon
+            icon="mdi:bed">
+            </ha-icon>`
+        ]]]
+  # иконка слева Спальня
+  light_icon_left_bathroom:
+    template:
+      - light_icon_base
+    custom_fields:
+      icon: >
+        [[[
+          return `<ha-icon
+            icon="mdi:toilet">
+            </ha-icon>`
+        ]]]
+  # иконка слева Коридор
+  light_icon_left_hall:
+    template:
+      - light_icon_base
+    custom_fields:
+      icon: >
+        [[[
+          return `<ha-icon
+            icon="mdi:door">
+            </ha-icon>`
+        ]]]
+
+  ################## круг с % освещенности для лампы
+  circle:
+    variables:
+      circle_input: >
+        [[[ return Math.round(entity.attributes.brightness / 2.54); ]]]
+    custom_fields:
+      circle: >
+        [[[
+          if (entity.state === 'on') {
+            const input = variables.circle_input;
+            const radius = 18;
+            const circumference = radius * 2 * Math.PI;
+            return `
+              <svg viewBox="0 0 50 50">
+                <style>
+                  circle {
+                    transform: rotate(-90deg);
+                    transform-origin: 50% 50%;
+                    stroke-dasharray: ${circumference};
+                    stroke-dashoffset: ${circumference - input / 100 * circumference};
+                  }
+                  tspan {
+                    font-size: 10px;
+                  }
+                </style>
+                <circle cx="25" cy="25" r="${radius}" stroke="#b2b2b2" stroke-width="1.5" fill="none" />
+                <text x="50%" y="54%" fill="#8d8e90" font-size="13" text-anchor="middle" alignment-baseline="middle" dominant-baseline="middle">${input}<tspan font-size="10">%</tspan></text>
+              </svg>
+            `;
+          }
+        ]]]
+    styles:
+      custom_fields:
+        circle: &person
+          - top: 1%
+          - left: 60%
+          - width: 3.5vw
+          - position: absolute
+          - letter-spacing: 0.03vw
+
+
+  ################## popup для света с плавной решулировкой
+  light_popup:
+    hold_action:
+      action: fire-dom-event
+      browser_mod:
+        command: popup
+        style:
+         .: |
+          :host .content {
+            width: 100%;
+          }
+        hide_header: true
+        #title: >
+        #  [[[ return entity.attributes.friendly_name ]]]
+        card:
+          type: entities
+          entities:
+            - type: custom:light-popup-card
+              entity: >
+                [[[ return entity.entity_id ]]]
+              icon: none
+              fullscreen: false
+              brightnessWidth: 130px
+              brightnessHeight: 360px
+              borderRadius: 1.7em
+              sliderColor: '#c7c7c7'
+              sliderTrackColor: rgba(25, 25, 25, 0.9)
+
+
+  #################################################
+  # Пылесос
+  #################################################
+
+  ################## кнопки управления пылесосом
+  vacuum_button_new:
+    aspect_ratio: 1/1
+    show_state: false
+    show_icon: false
+    show_entity_picture: true
+    tap_action:
+      action: none
+    styles:
+      img_cell:
+        - top: -5%
+        - left: 0%
+        - position: absolute
+        - opacity: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? '100%' : '60%'; ]]]
+        - -webkit-filter: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? 'grayscale(0%)' : 'grayscale(100%)'; ]]]
+      name:
+        - top: 57.7%
+        - left: 6%
+        - line-height: 3vw
+        - position: centre
+      card:
+        - box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+        - font-family: Bookman # Sf Display
+        - letter-spacing: 0.05vw
+        - font-weight: 400
+        - font-size: 1.4vw   #1.34
+        - border-radius: 0.8vw
+        - transition: none
+        - color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.4)'; ]]]
+        - background-color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(43, 46, 48, 0.8)' : 'rgba(30, 32, 34, 0.7)'; ]]]
+
+  ################## большая информатиная кнопка со статусом пылесоса
+  vacuum_big:
+    aspect_ratio: 1/1
+    show_state: true
+    show_icon: false
+    #tap_action: 
+    #  action: none
+    styles:
+      name:
+        - top: 73%
+        - left: 6%
+        - line-height: 2vw
+        - position: absolute
+      state:
+        - top: 82%
+        - left: 6%
+        - line-height: 2vw
+        - position: absolute
+      card:
+        - box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+        - font-family: Bookman # Sf Display
+        - letter-spacing: 0.05vw
+        - font-weight: 400
+        - font-size: 1.34vw                    # размер шрифта
+        - border-radius: 0.8vw
+        - transition: none
+        - color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.3)'; ]]]
+        - background-color: >
+            [[[ return (entity.state === 'Убирает' || entity.state === 'home') ? 'rgba(43, 46, 48, 0.9)' : 'rgba(30, 32, 34, 0.7)'; ]]]
+  icon_for_vacuum_big_button:
+    show_icon: true
+    styles:
+      icon:
+      - top: -35%
+      - left: 5%
+      - width: 35px
+      - position: absolute
+      - color: >
+            [[[
+              if (entity.state === "приостановил уборку"
+              || entity.state === "убирает"
+              || entity.state === "возвращается на станцию"
+              || entity.state === "ожидание ...")
+              {
+                return `
+                  rgba(15, 196, 225, 0.9)
+                `;
+              }
+              else if (entity.state === "на станции")
+              {
+                return `
+                  rgba(255, 255, 255, 0.4)
+                `;
+              }
+              else
+              {
+                return `
+                  rgba(255, 0, 0, 0.8)
+                `;
+              }
+            ]]]
+
+
+      #    [[[ return entity.state === 'on' ? 'rgba(85, 209, 36, 0.9)' : 'rgba(255, 255, 255, 0.8)'; ]]]
+
+  ################## Для графика уборки
+  day:
+    aspect_ratio: 1/1
+    show_state: false
+    show_icon: false
+    show_entity_picture: true
+    tap_action:
+      action: toggle
+    styles:
+      img_cell:
+        - top: -5%
+        - left: 0%
+        - position: absolute
+        - opacity: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? '100%' : '60%'; ]]]
+        - -webkit-filter: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? 'grayscale(0%)' : 'grayscale(100%)'; ]]]
+      name:
+        - top: 57.7%
+        - left: 6%
+        - line-height: 3vw
+        - position: centre
+      card:
+        - box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+        - font-family: Bookman # Sf Display
+        - letter-spacing: 0.05vw
+        - font-weight: 400
+        - font-size: 1.4vw   #1.34
+        - border-radius: 0.8vw
+        - transition: none
+        - color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(15, 196, 225, 0.9)' : 'rgba(255, 255, 255, 0.4)'; ]]]
+        - background-color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(43, 46, 48, 0.8)' : 'rgba(30, 32, 34, 0.7)'; ]]]
+
+  #################################################
+  # Климат
+  #################################################
+
+  # основная кнопка + иконка + название
+  # Смена сезонов
+  climate_mode_button:
+    aspect_ratio: 1/1
+    show_state: false
+    show_icon: false
+    show_entity_picture: true
+    tap_action:
+      action: toggle
+      haptic: light
+    styles:
+      img_cell:
+        - top: -5%
+        - left: 0%
+        - position: absolute
+        - opacity: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? '100%' : '60%'; ]]]
+        - -webkit-filter: >
+            [[[ return (entity.state === 'on' || entity.state === 'home')  ? 'grayscale(0%)' : 'grayscale(100%)'; ]]]
+      name:
+        - top: 57.7%
+        - left: 6%
+        - line-height: 3vw
+        - position: centre
+      card:
+        - box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+        - font-family: Bookman # Sf Display
+        - letter-spacing: 0.05vw
+        - font-weight: 400
+        - font-size: 1.4vw   #1.34
+        - border-radius: 0.8vw
+        - transition: none
+        - color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.4)'; ]]]
+        - background-color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(43, 46, 48, 0.8)' : 'rgba(30, 32, 34, 0.7)'; ]]]
+        - opacity: 100%
+
+  # карта с графиком температуры/влажности
+  # вся статика: Название, температура, иконка темп и влажности, график
+  climate_graph_big:
+    aspect_ratio: 2/1
+    show_state: true
+    show_icon: false
+    tap_action:
+      action: none
+    custom_fields:
+      graph:
+        card:
+          type: 'custom:mini-graph-card'
+          card_mod:
+            style: |
+              ha-card {
+              --ha-card-background: transparent;
+              color: var(--secondary-text-color);
+              width: 100%;
+              border-radius: 0px;
+              }
+          entities:
+            - entity: >
+                [[[ return entity.entity_id ]]]
+          show:
+            icon: false
+            name: false
+            points: false
+            state: false
+          font_size: 40
+          color_thresholds:
+            - value: 19
+              color: '#0fc4e1'
+            - value: 21
+              color: '#0fc4e1'
+            - value: 23
+              color: '#0fc4e1'
+      therm: >
+        [[[
+          return `<ha-icon
+            icon="mdi:thermometer">
+            </ha-icon>`
+        ]]]
+      hum: >
+        [[[
+          return `<ha-icon
+            icon="mdi:water-percent">
+            </ha-icon>`
+        ]]]
+    styles:
+      name:
+        - top: 5% #73
+        - left: 15% #6
+        - line-height: 2vw
+        - position: absolute
+        - color: rgba(255, 255, 255, 0.9)
+      state:
+        - top: 33%
+        - left: 15%
+        - line-height: 2vw
+        - position: absolute
+        - font-size: 1.34vw
+      card:
+        - box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+        - font-family: Bookman # Sf Display
+        - letter-spacing: 0.05vw
+        - font-weight: 400
+        - font-size: 1.4vw                    # размер шрифта
+        - border-radius: 0.8vw
+        - transition: none
+        - color: >
+            [[[ return (entity.state === 'on' || entity.state === 'home') ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.6)'; ]]]
+        - background-color: >
+            [[[ return (entity.state === 'Убирает' || entity.state === 'home') ? 'rgba(43, 46, 48, 0.9)' : 'rgba(30, 32, 34, 0.7)'; ]]]
+      custom_fields:
+        graph:
+          - position: absolute
+          - left: 0%
+          - top: 47%
+        therm:
+          - top: 33%
+          - left: 2%
+          - width: 1.7vw
+          - position: absolute
+          - color: rgba(255, 255, 255, 0.4)
+        hum:
+          - top: 50%
+          - left: 2%
+          - width: 1.7vw
+          - position: absolute
+          - color: rgba(255, 255, 255, 0.4)
+
+
+  ################## осн параметры иконки слева
+  climate_icon_base:
+    styles:
+      custom_fields:
+        icon:
+          - top: 5%
+          - left: 2%
+          - width: 1.7vw
+          - position: absolute
+          - color: rgba(255, 255, 255, 0.9)
+  # иконки комнат
+  climate_icon_left_room_bedroom:
+    template:
+      - climate_icon_base
+    custom_fields:
+      icon: >
+        [[[
+          return `<ha-icon
+            icon="mdi:bed">
+            </ha-icon>`
+        ]]]
+  climate_icon_left_room_kitchen:
+    template:
+      - climate_icon_base
+    custom_fields:
+      icon: >
+        [[[
+          return `<ha-icon
+            icon="mdi:fridge-outline">
+            </ha-icon>`
+        ]]]
+  climate_icon_left_room_bathroom:
+    template:
+      - climate_icon_base
+    custom_fields:
+      icon: >
+        [[[
+          return `<ha-icon
+            icon="mdi:toilet">
+            </ha-icon>`
+        ]]]
+
+
+  # Индивидуальные данные и иконки
+  # для каждого помещения
+
+  # значения влажности
+  climate_childrens_room_left_hum_text:
+    custom_fields:
+      hum_text: >
+        [[[
+          return `<span>${entity.state} %</span>`
+        ]]]
+    styles:
+      custom_fields:
+        hum_text:
+          - top: 50%
+          - left: 15%
+          - line-height: 2vw
+          - position: absolute
+          - font-size: 1.34vw
+  climate_bedroom_left_hum_text:
+    custom_fields:
+      hum_text: >
+        [[[
+          return `<span>${states["sensor.ble_humidity_bedroom_climate"].state} %</span>`
+        ]]]
+    styles:
+      custom_fields:
+        hum_text:
+          - top: 50%
+          - left: 15%
+          - line-height: 2vw
+          - position: absolute
+          - font-size: 1.34vw
+  climate_bathroom_left_hum_text:
+    custom_fields:
+      hum_text: >
+        [[[
+          return `<span>${states["sensor.bathroom_temp_hum_humidity"].state} %</span>`
+        ]]]
+    styles:
+      custom_fields:
+        hum_text:
+          - top: 50%
+          - left: 15%
+          - line-height: 2vw
+          - position: absolute
+          - font-size: 1.34vw
+  climate_kitchen_left_hum_text:
+    custom_fields:
+      hum_text: >
+        [[[
+          return `<span>${states["sensor.kitchen_temp_hum_humidity"].state} %</span>`
+        ]]]
+    styles:
+      custom_fields:
+        hum_text:
+          - top: 50%
+          - left: 15%
+          - line-height: 2vw
+          - position: absolute
+          - font-size: 1.34vw
+
+  # индивидуальные иконки для каждого помещения
+  # Туалет
+  climate_bathroom_icon_fan:
+    custom_fields:
+      bathroom_fan: >
+        [[[
+          return `<ha-icon
+            icon="mdi:hvac">
+            </ha-icon>`
+        ]]]
+      bathroom_wind: >
+        [[[
+          return `<ha-icon
+            icon="mdi:weather-windy">
+            </ha-icon>`
+        ]]]
+    styles:
+      custom_fields:
+        bathroom_fan:
+          - top: 5%
+          - left: 89%
+          - width: 1.7vw
+          - position: absolute
+          - color: >
+              [[[
+                if (states["switch.bathroom_fan"].state == 'on') return 'green';
+                else return 'rgba(255, 255, 255, 0.1)';
+              ]]]
+        bathroom_wind:
+          - top: 25%
+          - left: 88%
+          - width: 1.7vw
+          - position: absolute
+          - color: rgba(255, 255, 255, 0.4)'
+          - transform: rotate(270deg)
+          - opacity: >
+              [[[
+                if (states["switch.bathroom_fan"].state == 'on') return '40%';
+                else return '0%';
+              ]]]
+  # Кухня
+  climate_kitchen_icon_ac:
+    custom_fields:
+      kitchen_ac: >
+        [[[
+          return `<ha-icon
+            icon="mdi:air-conditioner">
+            </ha-icon>`
+        ]]]
+    styles:
+      custom_fields:
+        kitchen_ac:
+          - top: 5%
+          - left: 89%
+          - width: 1.7vw
+          - position: absolute
+          - color: >
+              [[[
+                if (states["switch.kitchen_fan"].state == 'on') return 'green';
+                else return 'rgba(255, 255, 255, 0.4)';
+              ]]]
+  climate_kitchen_icon_radiator:
+    custom_fields:
+      kitchen_radiator: >
+        [[[
+          return `<ha-icon
+            icon="mdi:radiator">
+            </ha-icon>`
+        ]]]
+    styles:
+      custom_fields:
+        kitchen_radiator:
+          - top: 5%
+          - left: 79%
+          - width: 1.7vw
+          - position: absolute
+          - color: >
+              [[[
+                if (states["switch.kitchen_fan"].state == 'on') return 'green';
+                else return 'rgba(255, 255, 255, 0.4)';
+              ]]]
+  climate_kitchen_icon_humidifier:
+    custom_fields:
+      kitchen_humidifier: >
+        [[[
+          return `<ha-icon
+            icon="mdi:air-humidifier">
+            </ha-icon>`
+        ]]]
+    styles:
+      custom_fields:
+        kitchen_humidifier:
+          - top: 5%
+          - left: 69%
+          - width: 1.7vw
+          - position: absolute
+          - color: >
+              [[[
+                if (states["switch.kitchen_fan"].state == 'on') return 'green';
+                else return 'rgba(255, 255, 255, 0.4)';
+              ]]]
+  climate_kitchen_icon_fan:
+    custom_fields:
+      kitchen_fan: >
+        [[[
+          return `<ha-icon
+            icon="mdi:hvac">
+            </ha-icon>`
+        ]]]
+      kitchen_fan_wind: >
+        [[[
+          return `<ha-icon
+            icon="mdi:weather-windy">
+            </ha-icon>`
+        ]]]
+    styles:
+      custom_fields:
+        kitchen_fan:
+          - top: 5%
+          - left: 59%
+          - width: 1.7vw
+          - position: absolute
+          - color: >
+              [[[
+                if (states["switch.kitchen_fan"].state == 'on') return 'green';
+                else return 'rgba(255, 255, 255, 0.4)';
+              ]]]
+        kitchen_fan_wind:
+          - top: 25%
+          - left: 78%
+          - width: 1.7vw
+          - position: absolute
+          - color: rgba(255, 255, 255, 0.4)'
+          - transform: rotate(270deg)
+          - opacity: >
+              [[[
+                if (states["switch.kitchen_fan"].state == 'on') return '40%';
+                else return '0%';
+              ]]]
+  climate_kitchen_icon_window:
+    custom_fields:
+      kitchen_window: >
+        [[[
+          return `<ha-icon
+            icon="mdi:window-closed">
+            </ha-icon>`
+        ]]]
+      kitchen_window_wind: >
+        [[[
+          return `<ha-icon
+            icon="mdi:weather-windy">
+            </ha-icon>`
+        ]]]
+    styles:
+      custom_fields:
+        kitchen_window:
+          - top: 5%
+          - left: 49%
+          - width: 1.7vw
+          - position: absolute
+          - color: >
+              [[[
+                if (states["switch.bathroom_fan"].state == 'on') return 'red';
+                else return 'rgba(255, 255, 255, 0.4)';
+              ]]]
+        kitchen_window_wind:
+          - top: 25%
+          - left: 70%
+          - width: 1.7vw
+          - position: absolute
+          - color: rgba(255, 255, 255, 0.4)'
+          - transform: rotate(90deg)
+          - opacity: >
+              [[[
+                if (states["switch.bathroom_fan"].state == 'on') return '40%';
+                else return '0%';
+              ]]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

@@ -1,0 +1,71 @@
+kitchen_fan:
+
+  automation:
+    - alias: kitchen_fan_on_off
+      id: kitchen_fan_on_off
+      #initial_state: true
+      trigger:
+        platform: state
+        entity_id: sensor.kitchen_temp_hum_temperature
+      mode: restart
+      action:
+        choose:
+          conditions:
+            condition: template
+            value_template: >
+              {% set kitchen_temp = states('sensor.kitchen_temp_hum_temperature') | int %}
+              {% set kitchen_hum = states('sensor.kitchen_temp_hum_humidity') | int %}
+              {% set home_temp = states('sensor.ble_temperature_bedroom_climate') | int %}
+              {% set home_hum = states('sensor.ble_humidity_bedroom_climate') | int %}
+              {% set threshold_temp = states('input_number.kitchen_fan_temp_above') | int %}
+              {% set threshold_hum = states('input_number.kitchen_fan_hum_above') | int %}
+
+              {{ (kitchen_temp - home_temp) >= threshold_temp or (kitchen_hum - home_hum) > threshold_hum}}
+          sequence:
+          - service: switch.turn_on
+            entity_id: switch.kitchen_fan
+        default:
+        - service: switch.turn_off
+          entity_id: switch.kitchen_fan
+
+
+
+  script:
+
+  scene:
+  group:
+
+  input_datetime:
+  input_text:
+
+  input_number:
+    kitchen_fan_temp_above:
+      name: above fan for kitchen
+      #initial: 4
+      min: 1
+      max: 10
+      step: 1
+    kitchen_fan_hum_above:
+      name: above fan for kitchen hum
+      #initial: 10
+      min: 5
+      max: 30
+      step: 1
+
+
+  input_select:
+  input_boolean:
+
+
+  timer:
+
+
+
+
+
+
+
+
+
+
+  #

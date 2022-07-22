@@ -1,0 +1,13 @@
+  type: image
+  action: none
+  hold_action:
+    action: none
+  image: /local/ui/sidebar/sidebarBG3.png
+  style:
+    height: 100%
+    left: 11.73828125%
+    opacity: 80%
+    top: 50%
+    width: 23.4765625%
+  tap_action:
+    action: none

@@ -1,0 +1,17 @@
+        action: none
+        entity: input_boolean.vacuum_kitchen
+        image: /local/ui/floorplan_my_home/ipad/kitchen_circle.png
+        state_filter:
+          'off': opacity(0%)
+          'on': opacity(100%)
+          unknown: opacity(0%)
+        style:
+          left: 90.937031%
+          top: 82.66%
+          width: 14.550781%
+          mix-blend-mode: lighten
+        tap_action:
+          action: toggle
+        hold_action:
+          action: toggle
+        type: image

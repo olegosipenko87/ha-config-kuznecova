@@ -1,0 +1,245 @@
+
+
+title: test
+panel: true
+path: ipad_test
+theme: jarvis_themes
+
+cards:
+
+  - type: picture-elements
+    image: /local/ui/floorplan_my_home/test/laptop_bg.png
+    style:
+    elements:
+
+
+      #########################    DAY BASE FLOORPLAN OVERLAY    #########################
+      #- action: none
+      #  entity: sun.sun
+      #  hold_action:
+      #    action: none
+      #  state_image:
+      #    above_horizon: /local/ui/floorplan_my_home/laptop/floorplan_day.png
+      #    below_horizon: /local/transparent.png
+      #  style:
+      #    height: 100%
+      #    left: 50%
+      #    top: 50%
+      #    width: 100%
+      #    opacity: '${ states[''sensor.sunlight_opacity''].state }'
+      #  tap_action:
+      #    action: none
+      #  type: image
+
+      #################################################################
+      #################################################################
+      #                            БОКОВОЕ МЕНЮ                       #
+      #################################################################
+
+      #################################################################
+      # ПОДЛОЖКА БОКОВОЙ ПАНЕЛИ
+      - type: image
+        action: none
+        hold_action:
+          action: none
+        image: /local/ui/sidebar/sidebarBG3.png
+        style:
+          font-size: 100vh
+          left: 11.73828125%
+          opacity: 80%
+          top: 50%
+          width: 23.4765625%
+        tap_action:
+          action: none
+
+
+      #################################################################
+      #  НАЛОЖЕНИЕ ТЕНЕЙ на боковое меню
+      - !include ui/sidebar_bg/shadow.yaml
+      - !include ui/sidebar_bg/inner_shadow.yaml
+
+      #################################################################
+      #  ДАТА И ВРЕМЯ
+      - !include ui/time.yaml
+      - !include ui/date_string.yaml
+
+      #################################################################
+      #  КТО ДОМА
+      - !include ui/who_is_home/id_1.yaml
+      - !include ui/who_is_home/id_2.yaml
+
+      # пустые для других людей
+      - !include ui/who_is_home/id_3.yaml
+      - !include ui/who_is_home/id_4.yaml
+
+      #################################################################
+      #  МИНИ КАРТА ПОГОДЫ
+#      - !include ui/weather/mini.yaml
+
+      #################################################################
+      #  ГРАФИК ТЕМПЕРАТУРЫ В ДОМЕ И НА УЛИЦЕ
+      - !include ui/weather/graphs.yaml
+
+      #################################################################
+      #  КНОПКИ МЕНЮ
+      - type: image
+        action: none
+        image: /local/ui/sidebar/btns1.png
+        style:
+          border-radius: 0.73vw # степень закругления как у кнопок homekit style расчет: (12px/ширину экрана)*100
+          box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)' #rgba(243,214,88,0.4)'
+          background-color: rgba(43, 46, 48, 0.8)
+          left: 11.7%
+          top: 27%
+          width: 20.5078125%
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_control_rooms_light
+
+      - type: image
+        action: none
+        image: /local/ui/sidebar/btns2.png
+        style:
+          border-radius: 0.73vw
+          box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+          left: 11.7%
+          top: 35.5%
+          width: 20.5078125%
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_vacuum_cleaner
+
+      - type: image
+        action: none
+        image: /local/ui/sidebar/btns3.png
+        style:
+          border-radius: 0.73vw
+          box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+          left: 11.7%
+          top: 44%
+          width: 20.5078125%
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_control_rooms
+
+      - type: image
+        action: none
+        image: /local/ui/sidebar/btns4.png
+        style:
+          border-radius: 0.73vw
+          box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+          left: 11.7%
+          top: 52.5%
+          width: 20.5078125%
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_control_rooms
+
+      - type: image
+        action: none
+        image: /local/ui/sidebar/btns5.png
+        style:
+          border-radius: 0.73vw
+          box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+          left: 11.7%
+          top: 61%
+          width: 20.5078125%
+        tap_action:
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_control_rooms
+
+
+
+
+
+      #################################################################
+      #################################################################
+      #                         ВЕРХНИЕ КНОПКИ                        #
+      #################################################################
+
+
+
+
+      #################################################################
+      #################################################################
+      #                             3D ПЛАН                           #
+      #################################################################
+
+      #################################################################
+      #  IMAGE
+      - !include ui/3d_plan/livingroom.yaml
+      - !include ui/3d_plan/hall.yaml
+      - !include ui/3d_plan/bedroom.yaml
+      - !include ui/3d_plan/kitchen.yaml
+      - !include ui/3d_plan/bathroom.yaml
+
+
+
+      #################################################################
+      #  Дополнительная инфа на плане
+
+      # Кнопка reload
+
+      - type: state-icon
+        entity: switch.bathroom_fan
+        icon: 'mdi:reload'
+        hold_action:
+          action: call-service
+          service: browser_mod.lovelace_reload
+        tap_action:
+          action: call-service
+          service: browser_mod.lovelace_reload
+        style:
+          left: 98%
+          top: 4%
+
+
+
+
+      #Living Room
+      - !include ui/all_icons_on_the_plan/livingroom_badge_temp.yaml            # температура
+      - !include ui/all_icons_on_the_plan/livingroom_badge_hum.yaml             # влажность
+      - !include ui/all_icons_on_the_plan/livingroom_icon_window.yaml           # окно
+      - !include ui/all_icons_on_the_plan/livingroom_icon_light.yaml            # свет
+      - !include ui/all_icons_on_the_plan/livingroom_icon_christmas_tree.yaml   # елка
+      - !include ui/all_icons_on_the_plan/livingroom_icon_tv.yaml               # ТВ
+      - !include ui/all_icons_on_the_plan/livingroom_icon_plug.yaml             # розетка
+      - !include ui/all_icons_on_the_plan/livingroom_icon_radiator.yaml         # радиатор
+
+      # Bedroom
+      - !include ui/all_icons_on_the_plan/bedroom_badge_temp.yaml               # температура
+      - !include ui/all_icons_on_the_plan/bedroom_badge_hum.yaml                # влажность
+      - !include ui/all_icons_on_the_plan/bedroom_icon_window.yaml              # окно
+      - !include ui/all_icons_on_the_plan/bedroom_icon_light.yaml               # сввет
+
+      # Hall
+      - !include ui/all_icons_on_the_plan/hall_icon_motion.yaml                 # движение
+      - !include ui/all_icons_on_the_plan/hall_icon_door.yaml                   # дверь
+      - !include ui/all_icons_on_the_plan/hall_icon_light.yaml                  # свет
+
+      # Kitchen
+      - !include ui/all_icons_on_the_plan/kitchen_badge_temp.yaml               # температура
+      - !include ui/all_icons_on_the_plan/kitchen_badge_hum.yaml                # влажность
+      - !include ui/all_icons_on_the_plan/kitchen_icon_window.yaml              # окно
+      - !include ui/all_icons_on_the_plan/kitchen_icon_fan.yaml                 # вентиляция
+      - !include ui/all_icons_on_the_plan/kitchen_icon_airc.yaml                # кондиционер
+      - !include ui/all_icons_on_the_plan/kitchen_icon_motion.yaml              # движение
+      - !include ui/all_icons_on_the_plan/kitchen_icon_leakage.yaml             # протечка
+      - !include ui/all_icons_on_the_plan/kitchen_icon_light.yaml               # свет
+
+      # Bathroom
+      - !include ui/all_icons_on_the_plan/bathroom_badge_temp.yaml              # температура
+      - !include ui/all_icons_on_the_plan/bathroom_badge_hum.yaml               # влажность
+      - !include ui/all_icons_on_the_plan/bathroom_icon_fan.yaml                # вентиляция
+      - !include ui/all_icons_on_the_plan/bathroom_icon_motion.yaml             # движение
+      - !include ui/all_icons_on_the_plan/bathroom_icon_light.yaml              # свет
+      - !include ui/all_icons_on_the_plan/bathroom_icon_leakage.yaml            # протечка
+
+
+
+
+
+
+
+
+#

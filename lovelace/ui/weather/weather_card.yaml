@@ -1,0 +1,34 @@
+        type: 'custom:weather-card'
+        current: true
+        details: false
+        entity: weather.my_home
+        forecast: false
+        tap_action: #!include weather_popup.yaml
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_weather
+        hold_action: none
+        name: ' '
+        style: |
+          :host {
+            left: 12%;
+            top:  89%;
+            width: 18%;
+            overflow: hidden;
+            height: 10%;
+            background: none !important;
+            box-shadow: none !important;
+          }
+          .current {
+            margin-bottom: 1vw;
+          }
+          .variations {
+            margin-bottom: 1vw;
+            font-size: 0.5vw !important;
+          }
+          ha-card {
+            height: 100%;
+            background: none  !important;
+            box-shadow: none !important;
+            border-radius: 1vw;
+            font-size: 0.3vw !important;
+          }

@@ -1,0 +1,35 @@
+virtual_dev_livingroom:
+
+  sensor:
+  binary_sensor:
+  switch:
+  light:
+
+  group:
+
+  automation:
+
+  script:
+
+  scene:
+
+  input_datetime:
+  input_text:
+  input_number:
+
+
+  input_select:
+  input_boolean:
+
+
+
+
+  timer:
+
+  recorder:
+
+
+
+
+
+#

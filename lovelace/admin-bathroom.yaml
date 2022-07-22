@@ -1,0 +1,108 @@
+
+title: Bathroom
+path: bathroom
+
+type: custom:layout-card
+column_num: 4
+#column_width: [300, 500] # 1300
+layout: horizontal
+cards:
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+
+      - type: entities
+        title: Устройства
+        show_header_toggle: false
+        entities:
+           - type: section
+             label: Тем-ра/Вл-сть Xiaomi (0x00158d0005408822)
+           - sensor.bathroom_temp_hum_temperature
+           - sensor.bathroom_temp_hum_pressure
+           - sensor.bathroom_temp_hum_humidity
+           - sensor.bathroom_temp_hum_battery
+           - sensor.bathroom_temp_hum_linkquality
+           - type: section
+             label: Движение Xiaomi (0x00158d0004664d44)
+           - binary_sensor.bathroom_motion_occupancy
+           - sensor.bathroom_motion_battery
+           - sensor.bathroom_motion_illuminance
+           - sensor.bathroom_motion_linkquality
+           - sensor.bathroom_motion_temperature
+
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+      - type: entities
+        title: Устройства
+        show_header_toggle: false
+        entities:
+           - type: section
+             label: Вентиляция sonoffb1 (192.168.1.235)
+           - switch.bathroom_fan
+           - type: section
+             label: Свет Nue/3A HGZB-01A (0x00158d0004768ac3)
+           - switch.bathroom_lamp
+           - sensor.bathroom_lamp_linkquality
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Автоматизации
+        show_header_toggle: false
+        entities:
+
+           - type: section
+             label: Вентиляция вкл/выкл вер1 (фикс значение)
+           - automation.bathroom_fan_on_off_ver1_1
+           - input_number.bathroom_fan_on_humidity_above_ver1
+           - type: divider
+           - timer.emergency_timer_bathroom_fan
+           - type: section
+             label: Вентиляция вкл/выкл вер2 (сравнение с другим сенсором %)
+           - automation.bathroom_fan_on_off_ver2_1
+           - input_number.bathroom_fan_on_humidity_above_ver2
+           - type: section
+             label: Свет вкл/выкл вер1 (от датчика движения)
+           - automation.bathroom_light_motion_ver1
+           - input_number.bathroom_light_minute_delay_ver1
+           - automation.bathroom_light_emergency_shutdown
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Автоматизации
+        show_header_toggle: false
+        entities:
+
+           - type: section
+             label: Коридор/Вход
+           - type: section
+             label: Туалет/Ванная
+           - type: section
+             label: Кухня
+           - type: section
+             label: Спальня
+           - type: section
+             label: Гостиная
+           - entity: switch.universal_socket
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

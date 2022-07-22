@@ -1,0 +1,195 @@
+title: test # страница
+# иконка вместо наименования страницы
+#    icon: mdi:home-assistant
+
+
+type: custom:layout-card
+column_num: 3
+#column_width: [300, 500, 500] # 1300
+layout: horizontal
+cards:
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+  - type: 'custom:mini-graph-card'
+    entities:
+      - entity: light.bathroom_lamp
+        name: Lamp
+      - entity: switch.bathroom_fan
+        name: Fan
+      - entity: binary_sensor.bathroom_motion_occupancy
+        name: Motion
+    icon: 'mdi:home-thermometer-outline'
+    hours_to_show: 1
+    points_per_hour: 60
+    aggregate_func: max
+    smoothing: false
+    line_width: 2
+    state_map:
+      - value: "off"
+        label: off
+      - value: "on"
+        label: on
+
+
+  - type: custom:xiaomi-vacuum-map-card
+    entity: vacuum.rockrobo_vacuum_v1
+    map_source:
+      camera: camera.xiaomi_cloud_map_extractor
+    calibration_source:
+      camera: true
+
+  - type: picture-entity
+    entity: camera.xiaomi_cloud_map_extractor
+    camera_view: live
+
+
+
+
+
+
+
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+    # 3
+    - type: weather-forecast
+      entity: weather.my_home_2
+      show_forecast: true
+
+    - type: entities
+      entities:
+      - type: attribute
+        entity: binary_sensor.hall_motion_occupancy
+        attribute: temperature
+
+    - type: iframe
+      aspect_ratio: 100%
+      url: >-
+        https://embed.windy.com/embed2.html?lat=46.411&lon=31.135&zoom=7&level=surface&overlay=rain&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&detailLat=59.898&detailLon=30.262&metricWind=m/s&metricTemp=°C&radarRange=-1"
+        frameborder="0"></iframe>
+
+    - type: shopping-list
+      title: Список покупок
+
+    - type: logbook
+      entities:
+      - binary_sensor.hall_door_contact
+      - binary_sensor.hall_motion_occupancy
+      hours_to_show: 24
+
+
+    # 4
+
+- type: custom:stack-in-card
+  cards:
+  - type: custom:scheduler-card
+    #title: График
+    include:
+      - vacuum.xiaomi_vacuum_cleaner
+      - light.hall_lamp
+
+  - type: 'custom:apexcharts-card'
+    header:
+      show: true
+      show_states: true
+      colorize_states: true
+      title: Кухня
+    #span:
+    #  start: day
+    graph_span: 48h
+    all_series_config:
+      stroke_width: 2
+      extend_to_end: false
+    series:
+      - entity: sensor.ble_temperature_bedroom_climate
+        group_by:
+          func: raw
+          duration: 30min
+        stroke_width: 2
+        name: Температура
+        color_threshold:
+          - value: 25
+            color: blue
+            opacity: 1
+          - value: 26
+            color: green
+          - value: 27
+            color: red
+      - entity: sensor.kitchen_temp_hum_temperature
+        group_by:
+          func: raw
+          duration: 30min
+        stroke_width: 2
+        name: Влажность
+    y_axis_precision: 0
+    apex_config:
+      annotations:
+        xaxis:
+          - x: '${new Date(states[''sensor.sunrise''].state).getTime()}'
+            label:
+              text: ☼
+              borderWidth: 0
+              style:
+                background: '#0000'
+          - x: '${new Date(states[''sensor.sunset''].state).getTime()}'
+            label:
+              text: ☾
+              borderWidth: 0
+              style:
+                background: '#0000'
+      tooltip:
+        x:
+          format: 'dddd dd MMM - HH:mm'
+      xaxis:
+        tooltip:
+          enabled: false
+      legend:
+        show: false
+      grid:
+        borderColor: '#7B7B7B'
+      chart:
+        foreColor: white
+        zoom:
+          type: x
+          enabled: true
+          autoScaleYaxis: true
+        toolbar:
+          show: true
+          autoSelected: zoom
+          tools:
+            zoom: true
+            zoomin: false
+            zoomout: false
+            pan: true
+            reset: true
+
+
+
+
+
+- type: picture-elements
+  elements:
+    - entity: sensor.time
+      style:
+        color: var(--secondary-text-color)
+        font-size: 500%
+        left: 50%
+        top: 40%
+      type: state-label
+    - entity: sensor.date
+      style:
+        color: var(--primary-text-color)
+        font-size: 100%
+        left: 50%
+        top: 80%
+      type: state-label
+  image: >-
+    data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==
+  card_mod:
+    style: |
+      div {
+        height: 100px;
+          }

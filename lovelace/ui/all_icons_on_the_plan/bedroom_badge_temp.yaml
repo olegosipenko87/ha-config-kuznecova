@@ -1,0 +1,12 @@
+  type: state-badge
+  entity: sensor.ble_temperature_bedroom_climate
+  hold_action:
+    action: more-info
+  tap_action:
+    action: more-info
+  style:
+    font-size: 12px
+    left: 81%
+    top: 58%
+    color: transparent  # скрывает подпись
+    "--label-badge-red": rgba(15, 196, 225, 1)

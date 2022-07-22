@@ -1,0 +1,133 @@
+bathroom_fan:
+
+  template:
+    - binary_sensor:
+        - name: "bathroom_climate_problem"
+          device_class: problem
+          state: >-
+            {% set br_hum = states('sensor.bathroom_temp_hum_humidity') | int %}
+            {% set home_hum = states('sensor.ble_humidity_bedroom_climate') | int %}
+            {% set threshold = states('input_number.bathroom_fan_on_humidity_above') | int %}
+            
+            {{ (br_hum - home_hum) > threshold and br_hum > 80 }}
+
+        - name: "bathroom_fan_problem"
+          device_class: problem
+          state: >-
+            {{ 
+              states('switch.bathroom_fan') == 'on'
+              and
+              states('binary_sensor.bathroom_climate_problem') == 'off'
+              and
+              states('light.bathroom_lamp') == 'off'
+            }}
+
+  automation:
+
+    # включение вентиляция если свет ON
+    - alias: bathroom_fan_on
+      id: 'ванная - включение вентиляции если свет ON'
+      variables: 
+        dnd_start: "{{ states('input_number.bathroom_fan_dnd_start') }}"
+        dnd_end: "{{ states('input_number.bathroom_fan_dnd_end') }}"
+      initial_state: true
+      trigger:
+        platform: state
+        entity_id: light.bathroom_lamp
+        to: 'on'
+        for: '00:04:00'
+      condition: "{{ now().hour >= dnd_start and now().hour <= dnd_end  }}"
+      mode: restart
+      action:
+        - service: switch.turn_on
+          entity_id: switch.bathroom_fan
+
+    # выключение вентиляция если свет OFF и климат OK
+    - alias: bathroom_fan_off
+      id: "ванная - выключение вентиляция если свет OFF и климат OK"
+      initial_state: true
+      trigger:
+        platform: state
+        entity_id: light.bathroom_lamp
+        to: 'off'
+        for: '00:00:30'
+      mode: restart
+      action:
+      - choose:
+          - alias: "выключить вентиляцию если с климатом OK и свет OFF"
+            conditions: >
+              {{ states('binary_sensor.bathroom_climate_problem')  == 'off' 
+                 and
+                 states('light.bathroom_lamp') == 'off'
+              }}
+            sequence:
+              - service: switch.turn_off
+                entity_id: switch.bathroom_fan
+          - alias: "выключить вентиляцию после того как с климатом будет OK"
+            conditions: "{{ states('binary_sensor.bathroom_climate_problem')  == 'on' }}"
+            sequence:
+              - wait_for_trigger:
+                  platform: state
+                  entity_id: binary_sensor.bathroom_climate_problem
+                  from: "on"
+                  to: "off"
+              - service: switch.turn_off
+                entity_id: switch.bathroom_fan
+
+    # Аварийное выключение через 10 мин
+    - alias: bathroom_fan_off_emergency
+      id: 'аварийное выключение вентиляции'
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.bathroom_fan_problem
+          to: 'on'
+          for: '00:01:00'
+      mode: restart
+      max_exceeded: silent
+      condition: []
+      action:
+        - service: switch.turn_off
+          entity_id: switch.bathroom_fan
+
+
+  input_number:
+
+    bathroom_fan_dnd_start:
+      name: bathroom_fan_dnd_start
+      min: 0
+      max: 23
+      mode: box
+
+    bathroom_fan_dnd_end:
+      name: bathroom_fan_dnd_end
+      min: 0
+      max: 23
+      mode: box
+
+    # на сколько влажность в ванной должна быть больше чем
+    bathroom_fan_on_humidity_above:
+      name: bathroom_fan_on_humidity_above
+      #initial: 15
+      min: 5
+      max: 40
+      step: 1
+      unit_of_measurement: '%'
+
+
+  timer:
+
+  binary_sensor:
+
+
+
+
+
+
+
+
+
+
+
+
+
+  #

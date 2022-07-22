@@ -1,0 +1,12 @@
+  type: state-badge
+  entity: input_number.vd_kitchen_temp
+  hold_action:
+    action: more-info
+  tap_action:
+    action: more-info
+  style:
+    font-size: 12px
+    left: 41%
+    top: 58%
+    color: transparent
+    "--label-badge-red": rgba(15, 196, 225, 1)

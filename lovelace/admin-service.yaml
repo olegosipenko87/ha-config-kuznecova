@@ -1,0 +1,185 @@
+title: service
+path: service
+
+
+type: custom:layout-card
+column_num: 2
+#column_width: [300, 500] # 1300
+layout: horizontal
+cards:
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+
+      - type: entities
+        show_header_toggle: false
+        entities:
+          - entity: sensor.zigbee2mqtt_bridge_state
+          - entity: sensor.zigbee2mqtt_version_2
+          - entity: sensor.coordinator_version
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Устройства ZigBee
+        show_header_toggle: false
+        entities:
+
+           - type: divider
+           - entity: binary_sensor.hall_motion_occupancy
+             type: custom:multiple-entity-row
+             show_state: false
+             name: hall_motion_occupancy
+             secondary_info: last-changed
+             entities:
+               - type: attribute
+                 entity: binary_sensor.hall_motion_occupancy
+                 attribute: last_seen
+                 format: total
+                 name: false
+               - entity: sensor.hall_motion_linkquality
+                 name: false
+               - entity: sensor.hall_motion_battery
+                 name: false
+
+
+           - entity: binary_sensor.hall_door_contact
+             type: custom:multiple-entity-row
+             show_state: false
+             name: hall_door_contact
+             secondary_info: last-changed
+             entities:
+               - type: attribute
+                 entity: binary_sensor.hall_door_contact
+                 attribute: last_seen
+                 format: total
+                 name: false
+               - entity: sensor.hall_door_linkquality
+                 name: false
+               - entity: sensor.hall_door_battery
+                 name: false
+
+
+           - type: divider
+           - entity: sensor.bathroom_temp_hum_temperature
+             type: custom:multiple-entity-row
+             show_state: false
+             name: bathroom_temp_hum
+             secondary_info: last-changed
+             entities:
+               - type: attribute
+                 entity: sensor.bathroom_temp_hum_temperature
+                 attribute: last_seen
+                 format: total
+                 name: false
+               - entity: sensor.bathroom_temp_hum_linkquality
+                 name: false
+               - entity: sensor.bathroom_temp_hum_battery
+                 name: false
+
+
+           - entity: binary_sensor.bathroom_motion_occupancy
+             type: custom:multiple-entity-row
+             show_state: false
+             name: bathroom_motion_occupancy
+             secondary_info: last-changed
+             entities:
+               - type: attribute
+                 entity: binary_sensor.bathroom_motion_occupancy
+                 attribute: last_seen
+                 format: total
+                 name: false
+               - entity: sensor.bathroom_motion_linkquality
+                 name: false
+               - entity: sensor.bathroom_motion_battery
+                 name: false
+
+
+           - entity: light.bathroom_lamp
+             type: custom:multiple-entity-row
+             show_state: false
+             name: bathroom_lamp
+             secondary_info: last-changed
+             entities:
+               - type: attribute
+                 entity: sensor.bathroom_lamp_linkquality
+                 attribute: last_seen
+                 format: total
+                 name: false
+               - entity: sensor.bathroom_lamp_linkquality
+                 name: false
+               - entity: light.bathroom_lamp
+                 name: false
+
+
+           - type: divider
+
+           - entity: binary_sensor.kitchen_motion_occupancy
+             type: custom:multiple-entity-row
+             show_state: false
+             name: kitchen_motion_occupancy
+             secondary_info: last-changed
+             entities:
+               - type: attribute
+                 entity: binary_sensor.kitchen_motion_occupancy
+                 attribute: last_seen
+                 format: total
+                 name: false
+               - entity: sensor.kitchen_motion_linkquality
+                 name: false
+               - entity: sensor.kitchen_motion_battery
+                 name: false
+
+
+
+           - type: divider
+           - sensor.bedroom_lamp_dimmer_linkquality
+           - sensor.bedroom_temp_hum_linkquality
+           - sensor.bedroom_lamp_switch_linkquality
+           - type: divider
+           - entity: sensor.universal_socket_linkquality
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+      - type: entities
+        title: Уровень заряда
+        show_header_toggle: false
+        entities:
+
+           - type: divider
+           - sensor.hall_motion_battery
+           - sensor.hall_door_battery
+           - type: divider
+           - sensor.bathroom_temp_hum_battery
+           - sensor.bathroom_motion_battery
+           - switch.bathroom_lamp
+           - type: divider
+           - sensor.kitchen_motion_battery
+           - type: divider
+           - light.bedroom_lamp_dimmer
+           - sensor.bedroom_temp_hum_battery
+           - sensor.bedroom_lamp_switch_battery
+           - type: divider
+           - switch.universal_socket
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

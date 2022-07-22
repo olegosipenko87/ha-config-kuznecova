@@ -1,0 +1,16 @@
+        type: "custom:analog-clock"
+        hide_SecondHand: true
+        locale: ua
+        diameter: 180
+        color_HourHand: "#CCCCCC"
+        color_MinuteHand: "#CCCCCC"
+        color_DigitalTime: "#CCCCCC"
+        color_FaceDigits: "#CCCCCC"
+        color_Ticks: 'rgba(43, 46, 48 )'
+        hide_minorticks: true
+        style_hourhand: 3
+        style_minutehand: 3
+        color_background: 'rgba(30, 32, 34)'
+        style:
+          left: 11.5%
+          top: 13%

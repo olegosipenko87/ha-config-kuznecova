@@ -1,0 +1,334 @@
+weather:
+  input_datetime:
+    # Для точной настройки автоматизации уведомления погоды по графику на андроид
+    weather_choose_time_for_workday_morning:
+      has_date: false
+      has_time: true
+    weather_choose_time_for_workday_evening:
+      has_date: false
+      has_time: true
+    weather_choose_time_for_weekend_morning:
+      has_date: false
+      has_time: true
+    weather_choose_time_for_weekend_evening:
+      has_date: false
+      has_time: true
+
+  input_boolean:
+    # Для точной настройки автоматизации уведомления погоды по графику на андроид
+    scheduled_weather_notification:
+    scheduled_weather_notification_on_workday_morning:
+    scheduled_weather_notification_on_workday_evening:
+    scheduled_weather_notification_on_weekend_morning:
+    scheduled_weather_notification_on_weekend_evening:
+
+  sensor:
+    - name: weather_conditions_for_tomorrow_2
+      platform: mqtt
+      state_topic: "homeassistant/custom/weather"
+      value_template: "{{ value_json.state }}"
+      json_attributes_topic: "homeassistant/custom/weather"
+
+  template:
+    - sensor:
+        - name: "weather_temperature"
+          unit_of_measurement: "°C"
+          state: >
+            {{state_attr('weather.my_home', 'temperature')}}
+
+    # для теста. По итогу не использовал из-за того что
+    # сенсор сбрасывался при рестарте HA
+    - trigger:
+        - platform: time
+          at: "23:30:00"
+      sensor:
+        - name: weather_conditions_for_tomorrow
+          state: >-
+            {% set state = state_attr('weather.my_home', 'forecast')[0]['condition'] %}
+            {% if state == 'cloudy' %} Облачно
+            {% elif state == 'clear-night' %} Ясная ночь
+            {% elif state == 'fog' %} Туман
+            {% elif state == 'hail' %} Град
+            {% elif state == 'lightning' %} Гроза
+            {% elif state == 'lightning-rainy' %} Гроза
+            {% elif state == 'partlycloudy' %} Переменная облачность
+            {% elif state == 'pouring' %} Ливень
+            {% elif state == 'rainy' %} Дождь
+            {% elif state == 'snowy' %} Снег
+            {% elif state == 'snowy-rainy' %} Снег с дождем
+            {% elif state == 'sunny' %} Солнечно
+            {% elif state == 'windy' %} Ветреный день
+            {% elif state == 'windy-variant' %} Ветреный день
+            {% elif state == 'exceptional' %} Исключительный
+            {% elif state == 'unvailable' %} нет данных
+            {% else %} неизвестно
+            {% endif %}
+          attributes:
+            temperature: >
+              {{ state_attr('weather.my_home', 'forecast')[0]['temperature'] | int }}
+            precipitation: >
+              {{ state_attr('weather.my_home', 'forecast')[0]['precipitation'] | int }}
+            templow: >
+              {{ state_attr('weather.my_home', 'forecast')[0]['templow'] | int }}
+            wind_speed: >
+              {% set wind_speed = state_attr('weather.my_home', 'wind_speed') | float %}
+              {{ (wind_speed / 3.6) | round() }}
+
+  script:
+    # вывод сообщения в Телегу
+    jarvis_weather_for_today:
+      sequence:
+        - service: telegram_bot.send_message #notify.telegram_group
+          data:
+            target: "{{ trigger.event.data.user_id }}"
+            message: |
+              Сейчас на улице - {{ state_attr('weather.gismeteo', 'temperature')}} °C
+              Прогноз на сегодня -  {{ states('sensor.gismeteo_condition_forecast')}}, {{ states('sensor.gismeteo_temperature_forecast')}} °C, влажность {{ states('sensor.gismeteo_humidity_forecast')}}%
+
+    # вывод сообщения на Андроид
+    scheduled_weather_notification_android_morning:
+      sequence:
+        - service: notify.mobile_app_oleg_mob
+          data:
+            title: "Прогноз погоды на сегодня · Одесса"
+            message: |
+              {% set temp = state_attr('sensor.weather_conditions_for_tomorrow_2','temperature') | int %}
+              {% set templow = state_attr('sensor.weather_conditions_for_tomorrow_2','templow') | int %}
+              {% set wind = state_attr('sensor.weather_conditions_for_tomorrow_2','wind_speed')| int %}
+              {% set condition = states('sensor.weather_conditions_for_tomorrow_2') %}
+              {% set precipitation = state_attr('sensor.weather_conditions_for_tomorrow_2','precipitation')| int %}
+
+              {{temp}}°/{{templow}}° · {{condition}} ·
+              {% if wind == 0 %}
+              Ветра нет
+              {% elif 4 >= wind > 0 %}
+              Легкий ветер ({{wind}}м/с) · 
+              {% elif 9 >= wind > 4 %}
+              Умеренный ветер ({{wind}}м/с) · 
+              {% elif wind > 9 %}
+              Сильный ветер ({{wind}}м/с) · 
+              {% endif %}
+              {% if precipitation > 0 %}
+              Осадки {{precipitation}} мм
+              {% else %}
+              Без осадков
+              {% endif %}
+            data:
+              notification_icon: mdi:weather-partly-cloudy
+              clickAction: "https://www.gismeteo.ua/weather-odessa-4982/10-days/"
+              actions:
+                - action: "URI"
+                  title: "Подробнее"
+                  uri: "https://rp5.ua/Погода_в_Одессе,_Украина"
+
+    scheduled_weather_notification_android_evening:
+      sequence:
+        - service: notify.mobile_app_oleg_mob
+          data:
+            title: "Завтра {{state_attr('sensor.weather_conditions_for_tomorrow_2','temperature')}}° · Одесса"
+            message: |
+              {% set todays_temp = state_attr('sensor.weather_conditions_for_tomorrow_2','temperature') | int %}
+              {% set tomorrows_temp = state_attr('weather.my_home', 'forecast')[0]['temperature'] | int %}
+              {% set difference = (tomorrows_temp - todays_temp) | abs %}
+
+              {% if tomorrows_temp > todays_temp %} · На {{difference}}° выше, чем сегодня
+              {% elif tomorrows_temp < todays_temp %} · На {{difference}}° ниже, чем сегодня
+              {% elif tomorrows_temp == todays_temp %} · Такая же t° как и сегодня
+              {% endif %}
+            data:
+              notification_icon: mdi:weather-partly-cloudy
+              clickAction: "https://rp5.ua/Погода_в_Одессе,_Украина"
+              actions:
+                - action: "URI"
+                  title: "Подробнее"
+                  uri: "https://rp5.ua/Погода_в_Одессе,_Украина"
+
+  automation:
+    ####################################################
+    ########  Андроид
+    ####################################################
+
+    - alias: "mqtt publish weather"
+      #initial_state: false
+      mode: restart
+      trigger:
+        - platform: time
+          at: "23:30:00"
+      condition: []
+      action:
+        - service: mqtt.publish
+          data:
+            topic: homeassistant/custom/weather
+            payload: >
+              {
+              "state":"{%- set state = state_attr('weather.my_home', 'forecast')[0]['condition'] -%}
+                        {%- if state == 'cloudy' -%}Облачно
+                        {%- elif state == 'clear-night' -%}Ясная ночь
+                        {%- elif state == 'fog' -%}Туман
+                        {%- elif state == 'hail' -%}Град
+                        {%- elif state == 'lightning' -%}Гроза
+                        {%- elif state == 'lightning-rainy' -%}Гроза
+                        {%- elif state == 'partlycloudy' -%}Переменная облачность
+                        {%- elif state == 'pouring' -%}Ливень
+                        {%- elif state == 'rainy' -%}Дождь
+                        {%- elif state == 'snowy' -%}Снег
+                        {%- elif state == 'snowy-rainy' -%}Снег с дождем
+                        {%- elif state == 'sunny' -%}Солнечно
+                        {%- elif state == 'windy' -%}Ветреный день
+                        {%- elif state == 'windy-variant' -%}Ветреный день
+                        {%- elif state == 'exceptional' -%}Исключительный
+                        {%- elif state == 'unvailable' -%}нет данных
+                        {%- else -%}неизвестно
+                        {%- endif -%}",
+              "temperature":"{{ state_attr('weather.my_home', 'forecast')[0]['temperature'] | int }}",
+              "precipitation":"{{ state_attr('weather.my_home', 'forecast')[0]['precipitation'] | int }}",
+              "templow":"{{ state_attr('weather.my_home', 'forecast')[0]['templow'] | int }}",
+              "wind_speed":"{% set wind_speed = state_attr('weather.my_home', 'wind_speed') | float %}{{ (wind_speed / 3.6) | round() }}"
+              }
+            retain: true
+
+    - alias: "scheduled_weather_notification_android"
+      id: "scheduled_weather_notification_android"
+      #initial_state: false
+      mode: restart
+      trigger:
+        - platform: time
+          at: input_datetime.weather_choose_time_for_workday_morning
+          id: "workday_morning"
+        - platform: time
+          at: input_datetime.weather_choose_time_for_workday_evening
+          id: "workday_evening"
+        - platform: time
+          at: input_datetime.weather_choose_time_for_weekend_morning
+          id: "weekend_morning"
+        - platform: time
+          at: input_datetime.weather_choose_time_for_weekend_evening
+          id: "weekend_evening"
+      condition: "{{ states('input_boolean.scheduled_weather_notification') == 'on' }}"
+      action:
+        - choose:
+            - conditions:
+                - condition: trigger
+                  id: workday_morning
+                - condition: template
+                  value_template: "{{ states('input_boolean.scheduled_weather_notification_on_workday_morning') == 'on' }}"
+                - condition: template
+                  value_template: "{{ states('binary_sensor.workday_sensor') == 'on' }}"
+              sequence:
+                - service: script.scheduled_weather_notification_android_morning
+            - conditions:
+                - condition: trigger
+                  id: workday_evening
+                - condition: template
+                  value_template: "{{ states('input_boolean.scheduled_weather_notification_on_workday_evening') == 'on' }}"
+                - condition: template
+                  value_template: "{{ states('binary_sensor.workday_sensor') == 'on' }}"
+              sequence:
+                - service: script.scheduled_weather_notification_android_evening
+            - conditions:
+                - condition: trigger
+                  id: weekend_morning
+                - condition: template
+                  value_template: "{{ states('input_boolean.scheduled_weather_notification_on_weekend_morning') == 'on' }}"
+                - condition: template
+                  value_template: "{{ states('binary_sensor.workday_sensor') == 'off' }}"
+              sequence:
+                - service: script.scheduled_weather_notification_android_morning
+            - conditions:
+                - condition: trigger
+                  id: weekend_evening
+                - condition: template
+                  value_template: "{{ states('input_boolean.scheduled_weather_notification_on_weekend_evening') == 'on' }}"
+                - condition: template
+                  value_template: "{{ states('binary_sensor.workday_sensor') == 'off' }}"
+              sequence:
+                - service: script.scheduled_weather_notification_android_evening
+
+    ####################################################
+    ########  Телеграм
+    ####################################################
+
+    #  уведомление погоды в группу по графику в будни и выходные в Телеграм
+    - alias: "weather notification for group in working day telegram"
+      initial_state: false
+      mode: restart
+      trigger:
+        - platform: time
+          at: "07:45:00"
+      condition: "{{ states('binary_sensor.workday_sensor') == 'on' }}"
+      action:
+        - service: notify.telegram_group
+          data:
+            message: |
+              Сейчас на улице - {{ state_attr('weather.gismeteo', 'temperature')}} °C
+              Прогноз на сегодня -  {{ states('sensor.gismeteo_forecast_condition_ru')}}, {{ states('sensor.gismeteo_forecast_temperature')}} °C, влажность {{ states('sensor.gismeteo_forecast_humidity')}}%
+
+    - alias: "weather notification for group in weekend telegram"
+      initial_state: false
+      mode: restart
+      trigger:
+        - platform: time
+          at: "09:00:00"
+      condition: "{{ states('binary_sensor.workday_sensor') == 'off' }}"
+      action:
+        - service: notify.telegram_group
+          data:
+            message: |
+              Сейчас на улице - {{ state_attr('weather.gismeteo', 'temperature')}} °C
+              Прогноз на сегодня -  {{ states('sensor.gismeteo_condition_forecast')}}, {{ states('sensor.gismeteo_temperature_forecast')}} °C, влажность {{ states('sensor.gismeteo_humidity_forecast')}}%
+
+    # отправлять погоду,1 раз в день, лично, при выходе из дома в телеграм
+    - alias: "weather notification for id_1 when leaves home"
+      initial_state: false
+      mode: restart
+      trigger:
+        - platform: state
+          entity_id: person.id_1
+          from: "home"
+          to: "not_home"
+      condition: >-
+        {%- set last_triggered = state_attr('automation.weather_notification_for_id_1_when_leaves_home', 'last_triggered') %}
+        {{(now().date() - last_triggered.date()).days > 0 if last_triggered else true }}
+      action:
+        - service: notify.telegram_id_1
+          data:
+            message: |
+              Олег, сейчас на улице - {{ state_attr('weather.gismeteo', 'temperature')}} °C
+              Прогноз на сегодня -  {{ states('sensor.gismeteo_condition_forecast')}}, {{ states('sensor.gismeteo_temperature_forecast')}} °C, влажность {{ states('sensor.gismeteo_humidity_forecast')}}%
+
+    - alias: "weather notification for id_2 when leaves home"
+      initial_state: false
+      mode: restart
+      trigger:
+        - platform: state
+          entity_id: person.id_2
+          from: "home"
+          to: "not_home"
+      condition: >-
+        {%- set last_triggered = state_attr('automation.weather_notification_for_id_2_when_leaves_home', 'last_triggered') %}
+        {{(now().date() - last_triggered.date()).days > 0 if last_triggered else true }}
+      action:
+        - service: notify.telegram_id_2
+          data:
+            message: |
+              Аня, сейчас на улице - {{ state_attr('weather.gismeteo', 'temperature')}} °C
+              Прогноз на сегодня -  {{ states('sensor.gismeteo_condition_forecast')}}, {{ states('sensor.gismeteo_temperature_forecast')}} °C, влажность {{ states('sensor.gismeteo_humidity_forecast')}}%
+
+        ####################################################
+        ########  Запрос из телеги о погоде
+        ####################################################
+
+    - alias: "команда из телеги /weather_for_today"
+      trigger:
+        - platform: event
+          event_type: telegram_callback
+          event_data:
+            data: "/weather_for_today"
+      action:
+        - service: notify.telegram_group
+          data:
+            message: |
+              Сейчас на улице - {{ state_attr('weather.gismeteo', 'temperature')}} °C
+              Прогноз на сегодня -  {{ states('sensor.gismeteo_condition_forecast')}}, {{ states('sensor.gismeteo_temperature_forecast')}} °C, влажность {{ states('sensor.gismeteo_humidity_forecast')}}%
+
+#

@@ -1,0 +1,14 @@
+        type: state-icon
+        entity: binary_sensor.vd_livingroom_tv_plug
+        hold_action:
+          action: more-info
+        tap_action:
+          action: toggle
+        style:
+          left: 33.5%
+          top: 38%
+          border-radius: 0.73vw
+          box-shadow: '0px 0.2vw 0.8vw 0px rgba(0,0,0,0.4)'
+          background-color: rgba(43, 46, 48, 0.6)
+          "--paper-item-icon-active-color": green
+          "--paper-item-icon-color": red

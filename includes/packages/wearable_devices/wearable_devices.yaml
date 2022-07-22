@@ -1,0 +1,103 @@
+wearable_devices:
+
+  sensor:
+   - platform: template
+     sensors:
+       ##################################### Телефон Олега S7
+       #####################################
+       ## Из гугл мапса
+       id_1_mob_gm_battery:
+         device_class: battery
+         value_template: "{{ state_attr('device_tracker.google_maps_104273437963751507648', 'battery_level') }}"
+         unit_of_measurement: '%'
+       id_1_mob_gm_last_seen:
+         value_template: "{{ (as_timestamp(state_attr('device_tracker.google_maps_104273437963751507648', 'last_seen'))) | timestamp_custom('%d.%m %H:%M') }}"
+       id_1_mob_gm_address:
+         value_template: "{{ state_attr('device_tracker.google_maps_104273437963751507648', 'address') }}"
+       ## Из HA APP
+       id_1_mob_ha_app_battery:
+         device_class: battery
+         value_template: "{{ states('sensor.sm_g935f_battery_level') }}"
+         unit_of_measurement: '%'
+       id_1_mob_ha_app_address:
+         value_template: "{{ states('sensor.sm_g935f_geocoded_location') }}"
+
+       ## Логика в том чтоб сделать сенсор из нескольких источников
+       ## Универсальный
+
+
+
+       ##################################### Телефон Ани Samsung
+       #####################################
+       ## Из гугл мапса
+       id_2_mob_gm_battery:
+         device_class: battery
+         value_template: "{{ state_attr('device_tracker.google_maps_112009635254071922708', 'battery_level') }}"
+         unit_of_measurement: '%'
+       id_2_mob_gm_last_seen:
+         value_template: "{{ (as_timestamp(state_attr('device_tracker.google_maps_112009635254071922708', 'last_seen'))) | timestamp_custom('%d.%m %H:%M') }}"
+       id_2_mob_gm_address:
+         value_template: "{{ state_attr('device_tracker.google_maps_112009635254071922708', 'address') }}"
+       ## Из HA APP
+       id_2_mob_ha_app_battery:
+         device_class: battery
+         value_template: "{{ states('sensor.sm_a515f_battery_level') }}"
+         unit_of_measurement: '%'
+       id_2_mob_ha_app_address:
+         value_template: "{{ states('sensor.sm_a515f_geocoded_location') }}"
+
+       ## Логика в том чтоб сделать сенсор из нескольких источников
+       ## Универсальный
+
+
+
+
+
+
+
+
+
+
+
+      ##################################### Расстояние к дому
+       id_1_distance_to_home:
+         value_template: "{{ ((distance(states.person.id_1))*1000) | int }}"
+       id_2_distance_to_home:
+         value_template: "{{ ((distance(states.person.id_2))*1000) | int }}"
+      ##################################### Кто ближе к дому
+       id_1_id_2_who_is_closer_to_home:
+         value_template: >
+           {% if (distance(states.person.id_1)-distance(states.person.id_2))>0 %} id_2
+           {% else %} id_1
+           {% endif %}
+         attribute_templates:
+           distance to home id_1: "{{ ((distance(states.person.id_1))*1000) | int }} м."
+           distance to home id_2: "{{ ((distance(states.person.id_2))*1000) | int }} м."
+
+  binary_sensor:
+  switch:
+  light:
+
+  group:
+
+  automation:
+
+  script:
+
+  scene:
+
+  input_datetime:
+  input_text:
+  input_number:
+  input_select:
+  input_boolean:
+
+  timer:
+
+  recorder:
+
+
+
+
+
+#

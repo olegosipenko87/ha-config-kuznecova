@@ -1,0 +1,359 @@
+
+
+title: climate
+panel: true
+path: ipad_control_rooms_climate
+theme: jarvis_themes
+
+cards:
+
+  - type: picture-elements
+    image: /local/ui/floorplan_my_home/ipad/floorplan_light_off.png  # floorplan_night.png  для макбука эир 13 размер ыкартинки 2880*1640
+    style:
+    elements:
+
+
+      #################################################################
+      #################################################################
+      #                            БОКОВОЕ МЕНЮ                       #
+      #################################################################
+
+      #################################################################
+      # ПОДЛОЖКА БОКОВОЙ ПАНЕЛИ
+      - !include ui/sidebar_bg/bg.yaml
+
+      #################################################################
+      #  НАЛОЖЕНИЕ ТЕНЕЙ на боковое меню
+      - !include ui/sidebar_bg/shadow.yaml
+      - !include ui/sidebar_bg/inner_shadow.yaml
+
+      #################################################################
+      #  ДАТА И ВРЕМЯ
+      #- !include ui/time.yaml
+      - !include ui/simple_clock_card.yaml
+      - !include ui/date_string.yaml
+      #- !include ui/analog_clock.yaml
+      - !include ui/simple_clock_card.yaml
+
+      #################################################################
+      #  КНОПКИ МЕНЮ
+      # Дом  Двор Уборка  Мультимедиа  ***  Настройки Графики
+
+      - !include ui/btns/1_on.yaml
+      #- !include ui/btns/1_off.yaml
+
+      #- !include ui/btns/2_on.yaml
+      - !include ui/btns/2_off.yaml
+
+      #- !include ui/btns/3_on.yaml
+      - !include ui/btns/3_off.yaml
+
+      #- !include ui/btns/4_on.yaml
+      - !include ui/btns/4_off.yaml
+
+      #- !include ui/btns/5_on.yaml
+      - !include ui/btns/5_off.yaml
+
+      #- !include ui/btns/6_on.yaml
+      - !include ui/btns/6_off.yaml
+
+      #################################################################
+      #  КТО ДОМА
+      - !include ui/who_is_home/id_1.yaml
+      - !include ui/who_is_home/id_2.yaml
+
+      # пустые для других людей
+      - !include ui/who_is_home/id_3.yaml
+      - !include ui/who_is_home/id_4.yaml
+
+      #################################################################
+      #  МИНИ КАРТА ПОГОДЫ
+#      - !include ui/weather/mini.yaml
+
+      #################################################################
+      #  ГРАФИК ТЕМПЕРАТУРЫ В ДОМЕ И НА УЛИЦЕ
+      - !include ui/weather/weather_card.yaml
+      - !include ui/weather/graphs.yaml
+
+      #################################################################
+      #################################################################
+      #                         ВЕРХНИЕ КНОПКИ                        #
+      #################################################################
+
+      ################## Кнопки доп меню
+      #- !include ui/btns_control/lights_on.yaml
+      - !include ui/btns_control/lights_off.yaml
+
+      #- !include ui/btns_control/devices_on.yaml
+      - !include ui/btns_control/devices_off.yaml
+
+      - !include ui/btns_control/climate_on.yaml
+      #- !include ui/btns_control/climate_off.yaml
+
+      #- !include ui/btns_control/security_on.yaml
+      - !include ui/btns_control/security_off.yaml
+
+      #################################################################
+      #################################################################
+      #                       УПРАВЛЕНИЕ КЛИМАТОМ                     #
+      #################################################################
+
+
+      - name: Лето
+        type: custom:button-card
+        entity: input_boolean.summer_mode
+        tap_action:
+          action: toggle
+          confirmation:
+            text: >
+              Вы уверены, что сменился сезон ?
+              Это повлияет на автоматизации управления климатом
+        hold_action: none
+        entity_picture: /local/ui/icon/sun.png
+        style:
+          top: 22%
+          left: 57.1%
+          width: 9%
+        template:
+          - climate_mode_button
+      - name: Зима
+        type: custom:button-card
+        entity: input_boolean.winter_mode
+        tap_action:
+          action: toggle
+          confirmation:
+            text: >
+              Вы уверены, что сменился сезон ?
+              Это повлияет на автоматизации управления климатом
+        hold_action: none
+        entity_picture: /local/ui/icon/snowflake.png
+        style:
+          top: 35%
+          left: 57.1%
+          width: 9%
+        template:
+          - climate_mode_button
+
+  #    - name: Детская
+  #      type: custom:button-card
+  #    entity: input_number.vd_kitchen_temp
+  #      style:
+  #        top: 22%   #12
+  #        left: 71.3%  #88.6
+  #        width: 18%
+  #      template:
+  #        - climate_graph_big
+  #        - climate_icon_left_room_bedroom
+  #        - climate_childrens_room_left_hum_text
+
+  #    - name: Спальня
+  #      type: custom:button-card
+  #      entity: sensor.ble_temperature_bedroom_climate
+  #      style:
+  #        top: 22%   #12
+  #        left: 90%  #88.6
+  #        width: 18%
+  #      template:
+  #        - climate_graph_big
+  #        - climate_icon_left_room_bedroom
+  #        - climate_bedroom_left_hum_text
+
+  #    - name: Туалет
+  #      type: custom:button-card
+  #      entity: sensor.bathroom_temp_hum_temperature
+  #      style:
+  #        top: 35%   #12
+  #        left: 71.3%  #71.3
+  #        width: 18%
+  #      template:
+  #        - climate_graph_big
+  #        - climate_icon_left_room_bathroom
+  #        - climate_bathroom_left_hum_text
+  #        - climate_bathroom_icon_fan
+
+      - name: Кухня
+        type: custom:button-card
+        entity: sensor.kitchen_temp_hum_temperature
+        tap_action: !include ui/who_is_home/popup/popup_id_1.yaml
+        style:
+          top: 35%   #12
+          left: 90%  #87.7
+          width: 18%
+        template:
+          - climate_graph_big
+          - climate_icon_left_room_kitchen
+          - climate_kitchen_left_hum_text
+          - climate_kitchen_icon_ac
+          - climate_kitchen_icon_radiator
+          - climate_kitchen_icon_humidifier
+          - climate_kitchen_icon_fan
+          - climate_kitchen_icon_window
+
+
+
+
+      ##### Старая схема. При нажатии на комнату - появляется кнопка с графиком
+      # СПАЛЬНЯ
+    #  - name: Температура
+    #    type: custom:button-card
+    #    entity: sensor.ble_temperature_bedroom_climate
+    #    style:
+    #      top: 22%   #12
+    #      left: 87.7%  #88.6
+    #      width: 18%
+    #    template:
+    #      - climate_graph_big
+    #      - climate_icon_left_thermometer
+    #    styles:
+    #      card:
+    #        - opacity: |
+    #            [[[ return (states['input_boolean.bedroom_circle'].state == "on" ) ? '100%' : '0%'; ]]]
+      #- name: Влажность
+      #  type: custom:button-card
+      #  entity: sensor.ble_humidity_bedroom_climate
+      #  style:
+      #    top: 35%   #12
+      #    left: 88.6%  #60
+      #    width: 18%
+      #  template:
+      #    - climate_graph_big
+      #    - climate_icon_left_water
+      #  styles:
+      #    card:
+      #      - opacity: |
+      #          [[[ return (states['input_boolean.bedroom_circle'].state == "on" ) ? '100%' : '0%'; ]]]
+      # КУХНЯ
+      #- name: Температура
+      #  type: custom:button-card
+      #  entity: sensor.kitchen_temp_hum_temperature
+      #  style:
+      #    top: 22%   #12
+      #    left: 88.6%  #60
+      #    width: 18%
+      #  template:
+      #    - climate_graph_big
+      #    - climate_icon_left_thermometer
+      #  styles:
+      #    card:
+      #      - opacity: |
+      #          [[[ return (states['input_boolean.kitchen_circle'].state == "on" ) ? '100%' : '0%'; ]]]
+      #- name: Влажность
+      #  type: custom:button-card
+      #  entity: sensor.kitchen_temp_hum_humidity
+      #  style:
+      #    top: 35%   #12
+      #    left: 88.6%  #60
+      #    width: 18%
+      #  template:
+      #    - climate_graph_big
+      #    - climate_icon_left_water
+      #  styles:
+      #    card:
+      #      - opacity: |
+      #          [[[ return (states['input_boolean.kitchen_circle'].state == "on" ) ? '100%' : '0%'; ]]]
+      # ТУАЛЕТ
+      #- name: Температура
+      #  type: custom:button-card
+      #  entity: sensor.bathroom_temp_hum_temperature
+      #  style:
+      #    top: 22%   #12
+      #    left: 88.6%  #60
+      #    width: 18%
+      #  template:
+      #    - climate_graph_big
+      #    - climate_icon_left_thermometer
+      #  styles:
+      #    card:
+      #      - opacity: |
+      #          [[[ return (states['input_boolean.bathroom_circle'].state == "on" ) ? '100%' : '0%'; ]]]
+      #- name: Влажность
+      #  type: custom:button-card
+      #  entity: sensor.bathroom_temp_hum_humidity
+      #  style:
+      #    top: 35%   #12
+      #    left: 88.6%  #60
+      #    width: 18%
+      #  template:
+      #    - climate_graph_big
+      #    - climate_icon_left_water
+      #  styles:
+      #    card:
+      #      - opacity: |
+      #          [[[ return (states['input_boolean.bathroom_circle'].state == "on" ) ? '100%' : '0%'; ]]]
+
+
+
+      #################################################################
+      #################################################################
+      #                             3D ПЛАН                           #
+      #################################################################
+
+      #################################################################
+      #  IMAGE с вкл светом
+    #  - !include ui/3d_plan/livingroom.yaml
+    #  - !include ui/3d_plan/hall.yaml
+    #  - !include ui/3d_plan/bedroom.yaml
+    #  - !include ui/3d_plan/kitchen.yaml
+    #  - !include ui/3d_plan/bathroom.yaml
+
+      #  IMAGE для вкладки климат
+      - !include ui/3d_plan/livingroom_climate.yaml
+      - !include ui/3d_plan/bedroom_climate.yaml
+      - !include ui/3d_plan/kitchen_climate.yaml
+      - !include ui/3d_plan/bathroom_climate.yaml
+
+      #################################################################
+      #  Дополнительная инфа на плане
+
+      # Кнопка reload
+      - !include ui/all_icons_on_the_plan/reload.yaml
+      # Кнопка в админ
+      - !include ui/all_icons_on_the_plan/admin.yaml
+
+      #Living Room
+      - !include ui/all_icons_on_the_plan/livingroom_badge_temp.yaml            # температура
+      - !include ui/all_icons_on_the_plan/livingroom_badge_hum.yaml             # влажность
+    #  - !include ui/all_icons_on_the_plan/livingroom_icon_window.yaml           # окно
+    #  - !include ui/all_icons_on_the_plan/livingroom_icon_light.yaml            # свет
+    #  - !include ui/all_icons_on_the_plan/livingroom_icon_christmas_tree.yaml   # елка
+    #  - !include ui/all_icons_on_the_plan/livingroom_icon_tv.yaml               # ТВ
+    #  - !include ui/all_icons_on_the_plan/livingroom_icon_plug.yaml             # розетка
+    #  - !include ui/all_icons_on_the_plan/livingroom_icon_radiator.yaml         # радиатор
+
+      # Bedroom
+      - !include ui/all_icons_on_the_plan/bedroom_badge_temp.yaml               # температура
+      - !include ui/all_icons_on_the_plan/bedroom_badge_hum.yaml                # влажность
+    #  - !include ui/all_icons_on_the_plan/bedroom_icon_window.yaml              # окно
+    #  - !include ui/all_icons_on_the_plan/bedroom_icon_light.yaml               # свет
+
+      # Hall
+    #  - !include ui/all_icons_on_the_plan/hall_icon_motion.yaml                 # движение
+    #  - !include ui/all_icons_on_the_plan/hall_icon_door.yaml                   # дверь
+    #  - !include ui/all_icons_on_the_plan/hall_icon_light.yaml                  # свет
+
+      # Kitchen
+      - !include ui/all_icons_on_the_plan/kitchen_badge_temp.yaml               # температура
+      - !include ui/all_icons_on_the_plan/kitchen_badge_hum.yaml                # влажность
+    #  - !include ui/all_icons_on_the_plan/kitchen_icon_window.yaml              # окно
+      - !include ui/all_icons_on_the_plan/kitchen_icon_fan.yaml                 # вентиляция
+      - !include ui/all_icons_on_the_plan/kitchen_icon_airc.yaml                # кондиционер
+    #  - !include ui/all_icons_on_the_plan/kitchen_icon_motion.yaml              # движение
+    #  - !include ui/all_icons_on_the_plan/kitchen_icon_leakage.yaml             # протечка
+    #  - !include ui/all_icons_on_the_plan/kitchen_icon_light.yaml               # свет
+
+      # Bathroom
+      - !include ui/all_icons_on_the_plan/bathroom_badge_temp.yaml              # температура
+      - !include ui/all_icons_on_the_plan/bathroom_badge_hum.yaml               # влажность
+      - !include ui/all_icons_on_the_plan/bathroom_icon_fan.yaml                # вентиляция
+    #  - !include ui/all_icons_on_the_plan/bathroom_icon_motion.yaml             # движение
+    #  - !include ui/all_icons_on_the_plan/bathroom_icon_light.yaml              # свет
+    #  - !include ui/all_icons_on_the_plan/bathroom_icon_leakage.yaml            # протечка
+
+
+
+
+
+
+
+
+#

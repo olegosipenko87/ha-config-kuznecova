@@ -1,0 +1,33 @@
+
+################## Новые устройства, которые еще не привязал к месту
+
+
+
+
+#- platform: mqtt
+#  name: "sonoff_new3"
+#  state_topic: "stat/sonoffb5/POWER"
+#  command_topic: "cmnd/sonoffb5/POWER"
+#  availability_topic: "tele/sonoffb5/LWT"
+#  payload_on: "ON"
+#  payload_off: "OFF"
+#  payload_available: "Online"
+#  payload_not_available: "Offline"
+#  optimistic: false
+#  qos: 1
+#  retain: true
+
+########################## Если нужно скопировать свитч
+#- platform: template
+#  switches:
+#    copy_hall_light:
+#      value_template: >-
+#        {{states('switch.hall_light')}}
+#      turn_on:
+#        service: switch.turn_on
+#        data:
+#          entity_id: switch.hall_light
+#      turn_off:
+#        service: switch.turn_off
+#        data:
+#          entity_id: switch.hall_light

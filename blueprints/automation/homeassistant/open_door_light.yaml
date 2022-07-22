@@ -1,0 +1,32 @@
+blueprint:
+  name: open door light on
+  description: вкл свет при открытии двери. Используется для входной двери
+  domain: automation
+  input:
+    door_contact:
+      name: датчик откр/закр
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: opening
+    light:
+      name: свет
+      selector:
+        target:
+          entity:
+            domain: light
+
+
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  platform: state
+  entity_id: !input door_contact
+  from: "off"
+  to: "on"
+
+action:
+  - service: light.turn_on
+    target: !input light

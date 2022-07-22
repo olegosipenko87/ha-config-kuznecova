@@ -1,0 +1,182 @@
+boiler:
+
+  utility_meter:
+
+    plug_pow_day:
+      source: sensor.universal_socket_energy
+      cycle: daily
+    plug_pow_week:
+      source: sensor.universal_socket_energy
+      cycle: weekly
+    plug_pow_month:
+      source: sensor.universal_socket_energy
+      cycle: monthly
+
+
+
+  automation:
+
+    # Будни
+    - alias: workday_plug_on_1
+      trigger:
+        platform: time
+        at: input_datetime.time_workday_plug_on_1
+      condition:
+      - condition: state
+        entity_id: 'binary_sensor.workday_sensor'
+        state: 'on'
+      action:
+      - service: switch.turn_on
+        entity_id: switch.universal_socket
+
+    - alias: workday_plug_off_1
+      trigger:
+        platform: time
+        at: input_datetime.time_workday_plug_off_1
+      condition:
+      - condition: state
+        entity_id: 'binary_sensor.workday_sensor'
+        state: 'on'
+      action:
+      - service: switch.turn_off
+        entity_id: switch.universal_socket
+
+    - alias: workday_plug_on_2
+      trigger:
+        platform: time
+        at: input_datetime.time_workday_plug_on_2
+      condition:
+      - condition: state
+        entity_id: 'binary_sensor.workday_sensor'
+        state: 'on'
+      action:
+      - service: switch.turn_on
+        entity_id: switch.universal_socket
+
+    - alias: workday_plug_off_2
+      trigger:
+        platform: time
+        at: input_datetime.time_workday_plug_off_2
+      condition:
+      - condition: state
+        entity_id: 'binary_sensor.workday_sensor'
+        state: 'on'
+      action:
+      - service: switch.turn_off
+        entity_id: switch.universal_socket
+
+
+    # Выходные
+    - alias: weekends_plug_on_1
+      trigger:
+        platform: time
+        at: input_datetime.time_weekends_plug_on_1
+      condition:
+      - condition: state
+        entity_id: 'binary_sensor.workday_sensor'
+        state: 'off'
+      action:
+      - service: switch.turn_on
+        entity_id: switch.universal_socket
+
+    - alias: weekends_plug_off_1
+      trigger:
+        platform: time
+        at: input_datetime.time_weekends_plug_off_1
+      condition:
+      - condition: state
+        entity_id: 'binary_sensor.workday_sensor'
+        state: 'off'
+      action:
+      - service: switch.turn_off
+        entity_id: switch.universal_socket
+
+
+
+
+
+
+    - alias: reset_plug
+      trigger:
+        platform: time
+        at: "00:00:00"
+      action:
+        - service: utility_meter.calibrate
+          data:
+            entity_id: sensor.plug_pow_day
+            value: 0
+        - service: utility_meter.calibrate
+          data:
+            entity_id: sensor.plug_pow_month
+            value: 0
+        - service: utility_meter.calibrate
+          data:
+            entity_id: sensor.plug_pow_week
+            value: 0
+
+
+  script:
+
+    reset_plug:
+        alias: "Сброс данных"
+        sequence:
+          - service: utility_meter.calibrate
+            data:
+              entity_id: sensor.plug_pow_day
+              value: 0
+          - service: utility_meter.calibrate
+            data:
+              entity_id: sensor.plug_pow_month
+              value: 0
+          - service: utility_meter.calibrate
+            data:
+              entity_id: sensor.plug_pow_week
+              value: 0
+
+
+  input_datetime:
+
+    time_workday_plug_on_1:
+      name: time_workday_plug_on_1
+      has_date: false
+      has_time: true
+
+    time_workday_plug_off_1:
+      name: time_workday_plug_off_1
+      has_date: false
+      has_time: true
+
+    time_workday_plug_on_2:
+      name: time_workday_plug_on_2
+      has_date: false
+      has_time: true
+
+    time_workday_plug_off_2:
+      name: time_workday_plug_off_2
+      has_date: false
+      has_time: true
+
+    time_weekends_plug_on_1:
+      name: time_weekends_plug_on_1
+      has_date: false
+      has_time: true
+
+    time_weekends_plug_off_1:
+      name: time_weekends_plug_off_1
+      has_date: false
+      has_time: true
+
+
+
+
+  input_text:
+
+    history_of_the_previous_week:
+      name: Данные пред недели
+
+
+
+
+
+
+#

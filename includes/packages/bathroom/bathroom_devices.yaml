@@ -1,0 +1,40 @@
+# https://www.home-assistant.io/integrations/binary_sensor/
+# https://www.home-assistant.io/docs/configuration/customizing-devices/
+# https://www.home-assistant.io/integrations/sensor/
+
+bathroom_devices:
+
+  light:
+    # из свитча в лайт
+    - platform: switch
+      name: bathroom_lamp
+      entity_id: switch.bathroom_lamp
+
+  sensor:
+
+  binary_sensor:
+ # switch:
+ #   # реле вентиляции
+ #   - platform: mqtt
+ #     name: "bathroom_fan"
+ #     icon: mdi:fan
+ #     state_topic: "stat/sonoffb1/POWER"
+ #     command_topic: "cmnd/sonoffb1/POWER"
+ #     availability_topic: "tele/sonoffb1/LWT"
+ #     payload_on: "ON"
+ #     payload_off: "OFF"
+ #     payload_available: "Online"
+ #     payload_not_available: "Offline"
+ #     optimistic: false
+ #     qos: 1
+ #     retain: true
+
+
+
+
+
+
+
+
+
+#

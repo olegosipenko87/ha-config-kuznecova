@@ -1,0 +1,9 @@
+        type: state-icon
+        entity: binary_sensor.hall_door_contact
+        hold_action:
+          action: none
+        style:
+          left: 65.5%
+          top: 93%
+          "--paper-item-icon-active-color": red
+          "--paper-item-icon-color": green

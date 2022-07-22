@@ -1,0 +1,10 @@
+        type: state-icon
+        entity: binary_sensor.vd_livingroom_light
+        icon: 'mdi:ceiling-light'
+        hold_action:
+          action: more-info
+        tap_action:
+          action: toggle
+        style:
+          left: 44.003472%
+          top: 51.402439%

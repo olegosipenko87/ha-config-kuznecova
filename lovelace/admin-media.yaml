@@ -1,0 +1,128 @@
+
+title: Media
+path: media
+
+type: custom:layout-card
+column_num: 4
+#column_width: [300, 500] # 1300
+layout: horizontal
+cards:
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+
+
+      - type: entities
+        title: Docker
+        show_header_toggle: false
+        entities:
+          - entity: sensor.docker_version
+          - entity: sensor.docker_cpu
+          - entity: sensor.docker_containers_total
+          - entity: sensor.docker_containers_running
+          - entity: sensor.docker_containers_stopped
+          - entity: sensor.docker_containers_paused
+          - entity: switch.docker_plex
+          - entity: switch.docker_transmission
+          - entity: switch.docker_qbittorrent
+          - entity: switch.docker_jackett
+          - entity: switch.docker_sonarr
+          - entity: switch.docker_radarr
+
+
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+      - type: entities
+        title: Containers
+        show_header_toggle: false
+        entities:
+
+           - sensor.docker_plex
+           - type: attribute
+             entity: sensor.docker_plex
+             attribute: status
+           - type: attribute
+             entity: sensor.docker_plex
+             attribute: cpu_percentage
+
+           - type: section
+           - sensor.docker_transmission
+           - type: attribute
+             entity: sensor.docker_transmission
+             attribute: status
+           - type: attribute
+             entity: sensor.docker_transmission
+             attribute: cpu_percentage
+
+           - type: section
+           - sensor.docker_qbittorrent
+           - type: attribute
+             entity: sensor.docker_qbittorrent
+             attribute: status
+           - type: attribute
+             entity: sensor.docker_qbittorrent
+             attribute: cpu_percentage
+
+
+
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+      - type: entities
+        title: Containers
+        show_header_toggle: false
+        entities:
+
+           - sensor.docker_jackett
+           - type: attribute
+             entity: sensor.docker_jackett
+             attribute: status
+           - type: attribute
+             entity: sensor.docker_jackett
+             attribute: cpu_percentage
+
+           - type: section
+           - sensor.docker_sonarr
+           - type: attribute
+             entity: sensor.docker_sonarr
+             attribute: status
+           - type: attribute
+             entity: sensor.docker_sonarr
+             attribute: cpu_percentage
+
+           - type: section
+           - sensor.docker_radarr
+           - type: attribute
+             entity: sensor.docker_radarr
+             attribute: status
+           - type: attribute
+             entity: sensor.docker_radarr
+             attribute: cpu_percentage
+
+
+- type: vertical-stack                    # в отдельный столбец
+  cards:
+    - type: entities
+      title: TV bedroom
+      entities:
+      - entity: switch.universal_socket
+      - entity: sensor.universal_socket_power
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#

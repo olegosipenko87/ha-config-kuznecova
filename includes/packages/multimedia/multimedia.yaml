@@ -1,0 +1,91 @@
+multimedia:
+
+  sensor:
+    - platform: qbittorrent
+      url: "http://192.168.1.253:8080"
+      username: admin
+      password: adminadmin
+  binary_sensor:
+  switch:
+  light:
+
+  group:
+
+  automation:
+
+#    - alias: 'вкл/выкл ночную закачку'
+#      initial_state: true
+#      trigger:
+#        - platform: time
+#          at:
+#            - '00:00:00'
+#            - '05:30:00'
+#      mode: restart
+#      action:
+#        - choose:
+#            - conditions:
+#                - condition: time
+#                  after: '00:00:00'
+#                  before: '05:29:00'
+#              sequence:
+#                - service: script.turn_on
+#                  entity_id: script.docker_start_media
+#          default:
+#            - service: script.turn_on
+#              entity_id: script.docker_stop_media
+#            # рестарт plex
+#            - delay: "00:05:00"
+#            - service: script.turn_on
+#              entity_id: script.docker_restart_plex
+
+  script:
+    docker_start_media:
+      sequence:
+          #- service: shell_command.docker_start_qbittorrent
+          - service: shell_command.docker_start_jackett
+          - delay: '00:00:40'
+          - service: shell_command.docker_start_sonarr
+          - service: shell_command.docker_start_radarr
+          - delay: '00:25:00'
+          - service: shell_command.sonarr_search_missing_episode
+          #- delay: '00:10:00'
+          #- service: shell_command.radarr_delete_unmonitored
+
+    docker_stop_media:
+      sequence:
+          - service: shell_command.radarr_delete_unmonitored
+          - delay: '00:00:30'
+          #- service: shell_command.docker_stop_qbittorrent
+          - service: shell_command.docker_stop_sonarr
+          - service: shell_command.docker_stop_radarr
+          - service: shell_command.docker_stop_jackett
+          - delay: '00:03:00'
+          #- service: shell_command.docker_stop_qbittorrent
+          - service: shell_command.docker_stop_sonarr
+          - service: shell_command.docker_stop_radarr
+          - service: shell_command.docker_stop_jackett
+
+    docker_restart_plex:
+      sequence:
+          - service: shell_command.docker_stop_plex
+          - delay: "00:05:00"
+          - service: shell_command.docker_start_plex
+
+  scene:
+
+  input_datetime:
+  input_text:
+  input_number:
+  input_select:
+  input_boolean:
+
+
+  timer:
+
+  recorder:
+
+
+
+
+
+#

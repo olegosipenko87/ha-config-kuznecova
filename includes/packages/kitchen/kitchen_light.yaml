@@ -1,0 +1,92 @@
+kitchen_light:
+
+  binary_sensor:
+
+   - platform: template
+     sensors:
+
+       kitchen_light_problem:
+         device_class: problem
+         delay_on:
+           minutes: 10
+         value_template: >-
+           {{ states.light.kitchen_lamp.state == 'on'
+           and
+           states.binary_sensor.kitchen_motion_occupancy.state == 'off'}}
+
+  automation:
+
+    # Вкл/Выкл света автоматически (движение + солнце + ур яркости)
+    - alias: kitchen light (motion) ver1
+      id: 'свет на кухне'
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.kitchen_motion_occupancy
+          from: "off"
+          to: "on"
+      condition: "{{state_attr('sun.sun','elevation') <= 12 or
+       states('sensor.kitchen_motion_illuminance_lux') | int <= 67 or
+       states('light.kitchen_lamp') == 'on' }}"
+      mode: restart
+      max_exceeded: silent
+      action:
+        - service: light.turn_on
+          entity_id: light.kitchen_lamp
+        - wait_for_trigger:
+            platform: state
+            entity_id: binary_sensor.kitchen_motion_occupancy
+            from: "on"
+            to: "off"
+        - delay:
+            minutes: "{{ states('input_number.kitchen_light_minute_delay_ver1') | int }}"
+        - service: light.turn_off
+          entity_id: light.kitchen_lamp
+
+    # Аварийное выключение через 10 мин
+    - alias: kitchen light off emergency
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.kitchen_light_problem
+        - platform: homeassistant
+          event: start
+      mode: restart
+      max_exceeded: silent
+      condition: "{{ states.binary_sensor.kitchen_light_problem.state == 'on' }}"
+      action:
+        - service: light.turn_off
+          entity_id: light.kitchen_lamp
+
+
+
+  script:
+
+  scene:
+  group:
+
+  input_datetime:
+  input_text:
+
+  input_number:
+    kitchen_light_minute_delay_ver1:
+      #initial: 7
+      min: 0
+      max: 30
+      step: 1
+      mode: box
+
+  input_select:
+  input_boolean:
+
+
+  timer:
+
+
+
+
+
+
+
+
+
+
+  #

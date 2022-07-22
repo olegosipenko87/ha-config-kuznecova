@@ -1,0 +1,12 @@
+        type: state-icon
+        entity: switch.bathroom_fan
+        icon: 'mdi:reload'
+        hold_action:
+          action: call-service
+          service: browser_mod.lovelace_reload
+        tap_action:
+          action: call-service
+          service: browser_mod.lovelace_reload
+        style:
+          left: 98%
+          top: 4%

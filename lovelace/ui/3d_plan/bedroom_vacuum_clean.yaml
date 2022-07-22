@@ -1,0 +1,17 @@
+        action: none
+        type: image
+        entity: input_boolean.vacuum_bedroom
+        image: /local/ui/floorplan_my_home/ipad/bedroom_circle.png
+        state_filter:
+          'off': opacity(0%)
+          'on': opacity(100%)
+          unknown: opacity(0%)
+        style:
+          left: 84.445898%
+          top: 57.066667%
+          width: 27.294922%
+          mix-blend-mode: lighten
+        tap_action:
+          action: toggle
+        hold_action:
+          action: toggle

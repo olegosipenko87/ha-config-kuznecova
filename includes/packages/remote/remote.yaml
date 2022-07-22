@@ -1,0 +1,54 @@
+remote:
+# записаные команды смотреть в .storage/broadlink_remote_a043b01480bf_codes
+
+  sensor:
+  binary_sensor:
+  switch:
+  light:
+
+  group:
+
+  automation:
+
+  script:
+
+    # обучать командам
+    remote_learn:
+      sequence:
+        - service: remote.learn_command
+          target:
+            entity_id: remote.rm4_remote
+          data:
+            device: bedroom_tv
+            command:
+               - exit
+
+    # удалять команды
+    remote_delete_command:
+      sequence:
+        - service: remote.delete_command
+          target:
+            entity_id: remote.rm4_remote
+          data:
+            device: bedroom_tv
+            #command: power
+
+
+  scene:
+
+  input_datetime:
+  input_text:
+  input_number:
+  input_select:
+  input_boolean:
+
+
+  timer:
+
+  recorder:
+
+
+
+
+
+#

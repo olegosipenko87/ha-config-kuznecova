@@ -1,0 +1,15 @@
+entity: sensor.date_string
+type: state-label 
+hold_action:
+  action: none
+style:
+  color: 'rgba(255, 255, 255, 0.3)'
+  font-size: 1.3vw
+  font-weight: 300
+  left: 11.5% #18.1%
+  letter-spacing: '-0.05vw'
+  text-align: center #left
+  top: 18%
+  width: 30%
+tap_action:
+  action: none

@@ -1,0 +1,60 @@
+        type: 'custom:mini-graph-card'
+        color_thresholds:
+          - color: '#4dd2ff' #'#4dd2ff'
+            value: 10
+          - color: '#55d124' #'#55d124'
+            value: 24
+          - color: '#ff1a1a' #'#ff1a1a'
+            value: 30
+        entities:
+          - sensor.ble_temperature_bedroom_climate
+          - sensor.weather_temperature
+        icon: 'mdi:home-thermometer-outline'
+        hours_to_show: 72
+        show:
+          icon: false #true
+          legend: false
+          name: false
+        style: |
+          :host {
+            left: 11.6%;
+            top:  93.0%;
+            width: 23.5%;
+            overflow: hidden;
+            height: 14%;
+            background: none  !important;
+            box-shadow: none !important;
+          }
+          .header {
+            font-size: 1vw;
+            position: absolute !important;
+            width: 5% !important;
+            padding: 0 !important;
+            right: 20% !important;
+            top: 15% !important;
+          }
+          ha-card {
+            background: none  !important;
+            padding: 0 !important;
+          }
+          .icon > ha-icon {
+            width:1.8vw !important;
+            height:1.8vw !important;
+            float: left;
+          }
+          .state__time{
+            font-size:0.9vw !important;
+            margin-top: 0.2vw;
+            font-weight: 300 !important;
+            opacity: 0.4 !important;
+          }
+          .states {
+            font-size: 0.0vw !important; #0.5vw
+            padding: 1vw 0vw 0vw 0vw  !important;
+            margin: auto !important;
+            width: 68%;
+
+          }
+        tap_action: #!include weather_popup.yaml
+          action: navigate
+          navigation_path: /lovelace-ipad/ipad_weather

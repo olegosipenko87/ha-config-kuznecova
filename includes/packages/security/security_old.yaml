@@ -1,0 +1,37 @@
+security_old:
+
+  automation:
+
+
+
+####################################################
+########  Скрипт мигания света
+####################################################
+  script:
+    flash_light:
+      alias: Flash light On
+      sequence:
+        - alias: Light On
+          service: light.turn_on
+          data:
+            entity_id: light.all_lights
+        - delay:
+            seconds: 0.5
+        - alias: Light Off
+          service: light.turn_off
+          data:
+            entity_id: light.all_lights
+        - alias: loop_flashing
+          service: script.turn_on
+          data:
+            entity_id: script.flash_loop
+
+    flash_loop:
+      alias: Flash loop
+      sequence:
+        - delay:
+            seconds: 0.5
+        - alias: loop_flashing
+          service: script.turn_on
+          data:
+            entity_id: script.flash_light

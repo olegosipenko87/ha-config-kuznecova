@@ -1,0 +1,60 @@
+bedroom_light:
+
+  sensor:
+  binary_sensor:
+  switch:
+  light:
+
+  group:
+
+  automation:
+    - alias: bedroom_switch_state_chahges_light_toggle
+      trigger:
+        - platform: state
+          entity_id: binary_sensor.bedroom_lamp_switch_contact
+          from: 'on'
+          to: 'off'
+        - platform: state
+          entity_id: binary_sensor.bedroom_lamp_switch_contact
+          from: 'off'
+          to: 'on'
+      action:
+        - choose:
+            - conditions:
+                - condition: state
+                  entity_id: light.bedroom_lamp_dimmer
+                  state: 'on'
+              sequence:
+                - service: light.turn_off
+                  entity_id: light.bedroom_lamp_dimmer
+            - conditions:
+                - condition: state
+                  entity_id: light.bedroom_lamp_dimmer
+                  state: 'off'
+              sequence:
+                - service: light.turn_on
+                  data:
+                    entity_id: light.bedroom_lamp_dimmer
+                    brightness_pct: 100
+
+
+
+  script:
+
+  scene:
+
+  input_datetime:
+  input_text:
+  input_number:
+  input_select:
+  input_boolean:
+
+  timer:
+
+  recorder:
+
+
+
+
+
+#

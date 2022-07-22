@@ -1,0 +1,15 @@
+        type: state-badge
+        entity: sensor.kitchen_temp_hum_temperature
+        hold_action: none
+        tap_action: none
+        style:
+          font-size: 12px
+          left: 88%
+          top: 84%
+          color: transparent  # скрывает подпись
+          "--label-badge-red": rgba(15, 196, 225, 1)
+
+
+
+
+# rgba(15, 196, 225, 1)

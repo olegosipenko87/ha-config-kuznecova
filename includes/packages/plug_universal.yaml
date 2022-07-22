@@ -1,0 +1,182 @@
+universal_socket:
+
+  template:
+    - binary_sensor:
+        - name: socket_state
+          state: >
+            {{ states('sensor.universal_socket_power') | float > 0 }}
+
+
+
+  sensor:
+    - platform: history_stats
+      name: socket_on_today
+      entity_id: binary_sensor.socket_state
+      state: 'on'
+      type: time
+      start: '{{ now().replace(hour=0, minute=0, second=0) }}'
+      end: '{{ now() }}'
+
+
+
+  binary_sensor:
+
+  switch:
+
+  - platform: template
+    switches:
+      conditioner_socket:
+        value_template: "{{states('switch.universal_socket')}}"
+        turn_on:
+          service: switch.turn_on
+          data:
+            entity_id: switch.universal_socket
+        turn_off:
+          service: switch.turn_off
+          data:
+            entity_id: switch.universal_socket
+
+  - platform: template
+    switches:
+      tv_bedroom_socket:
+        value_template: "{{states('switch.universal_socket')}}"
+        turn_on:
+          service: switch.turn_on
+          data:
+            entity_id: switch.universal_socket
+        turn_off:
+          service: switch.turn_off
+          data:
+            entity_id: switch.universal_socket
+
+  - platform: template
+    switches:
+      christmas_tree_socket:
+        value_template: "{{states('switch.universal_socket')}}"
+        turn_on:
+          service: switch.turn_on
+          data:
+            entity_id: switch.universal_socket
+        turn_off:
+          service: switch.turn_off
+          data:
+            entity_id: switch.universal_socket
+
+  - platform: template
+    switches:
+      fumigator_socket:
+        value_template: "{{states('switch.universal_socket')}}"
+        turn_on:
+          service: switch.turn_on
+          data:
+            entity_id: switch.universal_socket
+        turn_off:
+          service: switch.turn_off
+          data:
+            entity_id: switch.universal_socket
+
+
+  light:
+
+  group:
+
+  automation:
+
+    - alias: 'Елка'
+      initial_state: true
+      trigger:
+        - platform: time
+          at:
+            - '7:00:00'
+            - '21:30:00'
+        - platform: event
+          event_type: state_changed
+          event_data:
+            entity_id: group.person_id_1_id_2
+      condition:
+        condition: state
+        entity_id: input_select.socket_mode
+        state: "елка"
+      mode: restart
+      action:
+        - choose:
+            - conditions:
+                - condition: time
+                  after: '07:00:00'
+                  before: '21:30:00'
+                - condition: state
+                  entity_id: group.person_id_1_id_2
+                  state: 'home'
+              sequence:
+                - service: switch.turn_on
+                  entity_id: switch.christmas_tree_socket
+          default:
+            - service: switch.turn_off
+              entity_id: switch.christmas_tree_socket
+
+    - alias: 'Фумигатор'
+      id: 'Фумигатор'
+      initial_state: true
+      trigger:
+        - platform: time
+          at:
+            - '22:00:00'
+            - '05:00:00'
+        - platform: event
+          event_type: state_changed
+          event_data:
+            entity_id: group.person_id_1_id_2
+      condition:
+        condition: state
+        entity_id: input_select.socket_mode
+        state: "фумигатор"
+      mode: restart
+      action:
+        - choose:
+            - conditions:
+                - condition: time
+                  after: '22:00:00'
+                  before: '05:00:00'
+                - condition: state
+                  entity_id: group.person_id_1_id_2
+                  state: 'home'
+              sequence:
+                - service: switch.turn_on
+                  entity_id: switch.fumigator_socket
+          default:
+            - service: switch.turn_off
+              entity_id: switch.fumigator_socket
+
+  script:
+
+  scene:
+
+  input_datetime:
+  input_text:
+  input_number:
+
+  input_select:
+    socket_mode:
+      name: socket mode
+      options:
+        - бойлер
+        - елка
+        - розетка
+        - фумигатор
+        - тв
+        - кондер
+      #initial: розетка
+
+  input_boolean:
+
+  timer:
+
+  recorder:
+
+
+
+
+
+
+
+#

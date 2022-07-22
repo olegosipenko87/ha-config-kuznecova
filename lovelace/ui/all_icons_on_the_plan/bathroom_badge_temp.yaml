@@ -1,0 +1,12 @@
+        type: state-badge
+        entity: sensor.bathroom_temp_hum_temperature
+        hold_action:
+          action: more-info
+        tap_action:
+          action: more-info
+        style:
+          left: 73%
+          top: 87%
+          color: transparent
+          font-size: 5px
+          "--label-badge-red": rgba(15, 196, 225, 1)

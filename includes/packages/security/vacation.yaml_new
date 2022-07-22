@@ -1,0 +1,153 @@
+vacation:
+
+  automation:
+
+####################################################
+########  Блок автоматизаций на включение и выключение тревоги
+####################################################
+
+  # Условия при которых срабатывает охрана и переводит панель в статус trigger
+  - alias: 'Trigger alarm while armed away'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.0x00158d0004664d44_occupancy  # движение в туалете
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.0x00158d000465fa3e_occupancy  # движение в коридоре
+        to: 'on'
+      - platform: state
+        entity_id: binary_sensor.0x00158d00051e2624_contact    # открытие входной двери
+        to: 'on'
+      - platform: state
+        entity_id: switch.sonoffb1   # включение вентиляции
+        to: 'on'
+    condition:
+      - condition: state
+        entity_id: alarm_control_panel.security
+        state: armed_away
+    action:
+      service: alarm_control_panel.alarm_trigger
+      entity_id: alarm_control_panel.security
+
+  # Включение мигания света/звука при срабатывании охраны
+  - alias: 'flashing on'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.security
+        to: 'triggered'
+    action:
+      service: script.turn_on
+      entity_id: script.flash_light
+
+  # Выключение мигания света/звука при отключении охраны
+  - alias: 'flashing off'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.security
+        to: 'disarmed'
+    #condition:
+    action:
+      - service: script.turn_off
+        entity_id: script.flash_light
+      - delay:
+          seconds: 0.5
+      - service: script.turn_off
+        entity_id: script.flash_light
+      - delay:
+          seconds: 1
+      - service: script.turn_off
+        entity_id: script.flash_light
+      - delay:
+          seconds: 1.5
+      - service: switch.turn_off                 # нужно поменять на группу освещения и выключить все
+        entity_id: switch.sonoffb2
+
+####################################################
+########  Блок автоматизаций для телеги/уведомлений
+####################################################
+
+  # Отправка в телегу когда дом поставили на охрану
+  - alias: 'Send notification when alarm to armed_away'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.security
+        from: 'arming'
+        to: 'armed_away'
+    action:
+      - service: notify.oleh
+        data:
+          message: "Внимание! Дом поставили на охрану"
+
+  # Отправка в телегу когда сработала охрана
+  - alias: 'Send notification when alarm to triggered'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.security
+        to: 'triggered'
+    action:
+      - service: notify.oleh
+        data:
+          message: "Охрана! Сработал сигнал тревоги"
+
+  # Отправка в телегу когда дом сняли с охраны
+  - alias: 'Send notification when alarm to disarmed'
+    trigger:
+      - platform: state
+        entity_id: alarm_control_panel.security
+        to: 'disarmed'
+    action:
+      - service: notify.oleh
+        data:
+          message: "Внимание! Дом снят с охраны"
+
+  # Отправка в телегу напоминания поставить на охрану
+  - alias: 'sending a message when you forgot to turn on the alarm'
+    trigger:
+      - platform: state
+        entity_id: binary_sensor.0x00158d00051e2624_contact    # открытие входной двери
+        to: 'on'
+    condition:
+      -  condition: state
+         entity_id: alarm_control_panel.security
+         state: "disarmed"
+    action:
+      - service: notify.oleh
+        data:
+          message: "Внимание! Вы не забыли поставить на охрану дом ?"
+
+
+
+
+####################################################
+########  Блок мигания света
+####################################################
+  script:
+    flash_light:
+      alias: Flash light On
+      sequence:
+        - alias: Light On
+          service: homeassistant.turn_on
+          data:
+            entity_id: switch.sonoffb2
+        - delay:
+            # time for flash light on
+            seconds: 0.5
+        - alias: Light Off
+          service: homeassistant.turn_off
+          data:
+            entity_id: switch.sonoffb2
+        - alias: loop_flashing
+          service: script.turn_on
+          data:
+            entity_id: script.flash_loop
+
+    flash_loop:
+      alias: Flash loop
+      sequence:
+        - delay:
+            # time for flash light off
+            seconds: 0.5
+        - alias: loop_flashing
+          service: script.turn_on
+          data:
+            entity_id: script.flash_light

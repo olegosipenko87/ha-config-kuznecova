@@ -1,0 +1,15 @@
+entity: sensor.time
+type: state-label
+hold_action:
+  action: none
+style:
+  color: 'rgba(255, 255, 255, 0.7)'
+  font-size: 5.41vw
+  font-weight: 200
+  left: 5%
+  letter-spacing: '-0.05vw'
+  max-width: 1px
+  top: 10%
+tap_action:
+  action: navigate
+  navigation_path: /lovelace-ipad/ipad_control_rooms_light
